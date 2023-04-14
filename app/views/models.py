@@ -5,7 +5,7 @@ from django.db import models
 
 class TrafficReport(models.Model):
 
-    traffic_report_id = models.CharField(max_length=100, primary_key=True)
+    traffic_report_id = models.CharField(max_length=256, primary_key=True)
     published_date = models.DateTimeField(null=False, blank=False)
     issue_reported = models.CharField(max_length=100, blank=False, null=False)
     location = models.CharField(max_length=100, blank=False, null=False)
