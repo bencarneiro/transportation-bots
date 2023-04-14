@@ -3,6 +3,11 @@ from views.models import TrafficReport
 import requests
 import datetime
 from dateutil.parser import parse
+from app.settings import MASTODON_API_BASE_URL, MASTODON_FIRST_SECRET, MASTODON_LOGIN_EMAIL, MASTODON_LOGIN_PASSWORD, MASTODON_SECOND_SECRET, GOOGLE_MAPS_API_KEY
+from mastodon import Mastodon
+
+api = Mastodon(MASTODON_FIRST_SECRET, MASTODON_SECOND_SECRET, api_base_url=MASTODON_API_BASE_URL)
+api.log_in(MASTODON_LOGIN_EMAIL, MASTODON_LOGIN_PASSWORD, scopes=["read", "write"])
 
 class Command(BaseCommand):
 
@@ -31,6 +36,15 @@ class Command(BaseCommand):
                     traffic_report_status = report['traffic_report_status'],
                     traffic_report_status_date_time = report['traffic_report_status_date_time']
                 ).save()
+                google_maps_base_url = "https://maps.googleapis.com/maps/api/staticmap?center="
+                map_request_url = google_maps_base_url + report['latitude'] + "," + report['longitude'] + "&key=" + GOOGLE_MAPS_API_KEY + "&zoom=20&size=1000x1000&maptype=satellite"
+                response = requests.get(map_request_url)
+                uploadable_media = api.media_post(response.content, mime_type="image", file_name=f"{report['traffic_report_id']}.jpg")
+                media_id = uploadable_media['id']
+                link = "https://www.google.com/maps/search/?api=1&query=" + report['latitude'] + "%2C" + report['longitude']
+                # 30.281821%2C-97.708529
+                status_text = f"{report['issue_reported']} at {report['address']} --- {link}"
+                api.status_post(status_text, media_ids=[media_id])
                 print("NEW CRASH")
             else:
                 print("break")

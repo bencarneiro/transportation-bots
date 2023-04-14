@@ -129,3 +129,10 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MASTODON_FIRST_SECRET = os.environ.get("MASTODON_FIRST_SECRET", "")
+MASTODON_SECOND_SECRET = os.environ.get("MASTODON_SECOND_SECRET", "")
+MASTODON_API_BASE_URL = os.environ.get("MASTODON_API_BASE_URL", "https://mastodon.social")
+MASTODON_LOGIN_EMAIL = os.environ.get("MASTODON_LOGIN_EMAIL", 'bencarneiro@gmail.com')
+MASTODON_LOGIN_PASSWORD = os.environ.get("MASTODON_LOGIN_PASSWORD", "")
+GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
