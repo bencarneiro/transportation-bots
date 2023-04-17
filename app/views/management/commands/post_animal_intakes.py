@@ -15,7 +15,7 @@ class Command(BaseCommand):
     #     parser.add_argument('end_block', type=int, help='Stop Scraping Transactions when this block # is reached')
 
     def handle(self, *args, **kwargs):
-        Animal.objects.get(animal_id="A878834").delete()
+        # Animal.objects.get(animal_id="A878834").delete()
         response = requests.get('https://data.austintexas.gov/resource/wter-evkm.json?$order=DateTime%20DESC')
         animals = response.json()
         for animal in animals:
