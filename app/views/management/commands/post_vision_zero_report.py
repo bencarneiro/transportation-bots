@@ -60,7 +60,7 @@ class Command(BaseCommand):
                 crash_date = incident['crash_date'][0:10]
 
                 crash_utc_time = parse(incident['crash_date']).replace(tzinfo=tz.tzutc())
-                my_datetime_cst = crash_utc_time.astimezone(pytz.timezone('US/Central')).strftime('%H:%M:%I')
+                my_datetime_cst = crash_utc_time.astimezone(pytz.timezone('US/Central')).strftime('%I:%M:%S %p')
                 day_of_the_week = calendar.day_name[crash_utc_time.astimezone(pytz.timezone('US/Central')).weekday()]
                 time_string = my_datetime_cst + " CST"
                 description = f"Vision Zero Crash Report\n\nCollision at {address} at {time_string} on {day_of_the_week} {crash_date} involving:"
