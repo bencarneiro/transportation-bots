@@ -77,3 +77,21 @@ class Crash(models.Model):
     class Meta:
         managed = True
         db_table = 'crash'
+
+class Animal(models.Model):
+    
+    animal_id = models.CharField(max_length=128, primary_key=True)
+    name = models.CharField(max_length=256, null=True)
+    datetime = models.DateTimeField()
+    found_location = models.CharField(max_length=256, null=True)
+    intake_type = models.CharField(max_length=256, null=True)
+    intake_condition = models.CharField(max_length=256, null=True)
+    animal_type = models.CharField(max_length=256, null=True)
+    sex_upon_intake = models.CharField(max_length=256, null=True)
+    age_upon_intake = models.CharField(max_length=256, null=True)
+    breed = models.CharField(max_length=256, null=True)
+    color = models.CharField(max_length=256, null=True)
+    
+    class Meta:
+        managed = True
+        db_table = 'animal'
