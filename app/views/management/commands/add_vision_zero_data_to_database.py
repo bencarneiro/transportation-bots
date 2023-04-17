@@ -12,7 +12,7 @@ class Command(BaseCommand):
     #     parser.add_argument('end_block', type=int, help='Stop Scraping Transactions when this block # is reached')
 
     def handle(self, *args, **kwargs):
-        offset = 1000
+        offset = 0
         keep_going = True
         while keep_going:
             vision_zero_data_api_url =f"https://data.austintexas.gov/resource/y2wy-tgr5.json?$order=crash_date%20DESC&$offset={offset}"
