@@ -60,13 +60,9 @@ class Command(BaseCommand):
                 crash_date = incident['crash_date'][0:10]
 
                 crash_utc_time = parse(incident['crash_date']).replace(tzinfo=tz.tzutc())
-                my_datetime_cst = crash_utc_time.astimezone(pytz.timezone('US/Central')).strftime('%H:%M:%S')
+                my_datetime_cst = crash_utc_time.astimezone(pytz.timezone('US/Central')).strftime('%H:%M:%I')
                 day_of_the_week = calendar.day_name[crash_utc_time.astimezone(pytz.timezone('US/Central')).weekday()]
-                if int(my_datetime_cst[0:2]) > 12:
-                    new_hour = int(my_datetime_cst[0:2]) - 12
-                    time_string = str(new_hour) + my_datetime_cst[2:] + " PM CST"
-                else:
-                    time_string = my_datetime_cst + " AM CST"
+                time_string = my_datetime_cst + " CST"
                 description = f"Vision Zero Crash Report\n\nCollision at {address} at {time_string} on {day_of_the_week} {crash_date} involving:"
                 if "atd_mode_category_metadata" in incident:
                     for party in json.loads(incident['atd_mode_category_metadata']):
