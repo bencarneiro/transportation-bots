@@ -68,12 +68,10 @@ class Command(BaseCommand):
                 ).save()
 
                 print("SAVED")
-                print(animal)
                 datetime = parse(animal['datetime']).strftime('%I:%M:%S %p %Y-%m-%d')
-                print(datetime)
-                print("")
-                toot = f"{animal_type} alert! {name} is a {age_upon_intake} {sex_upon_intake} {color} {breed}. \nThey were found near {found_location} at {datetime}.\nIntake Type: {intake_type} \nIntake Condition: {intake_condition} \nThey are now at the Austin Animal Center - If unclaimed, the animal will be available for adoption in 3 days"
+                toot = f"{animal_type} alert! {name} is a {age_upon_intake} {sex_upon_intake} {color} {breed}. \nThey were found near {found_location} at {datetime}.\n\nIntake Type: {intake_type} \nIntake Condition: {intake_condition} \n\nThey are now at the Austin Animal Center - If unclaimed, the animal will be available for adoption in 3 days"
                 api.toot(toot)
                 print(f"tooted for {animal['animal_id']}")
-                print("")
+                # print(toot)
+              
                 
