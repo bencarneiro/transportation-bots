@@ -97,6 +97,7 @@ class Animal(models.Model):
         db_table = 'animal'
 
 class TransitAgency(models.Model):
+
     id = models.AutoField(primary_key=True)
     last_report_year = models.IntegerField(null=True)
     ntd_id = models.PositiveIntegerField(null=True)
@@ -125,7 +126,7 @@ class TransitAgency(models.Model):
 
 class TransitExpense(models.Model):
 
-    transit_agency_id = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     mode = models.CharField(max_length=8, null=True)
     service = models.CharField(max_length=8, null=True)
     year = models.IntegerField(null=False)
@@ -135,3 +136,80 @@ class TransitExpense(models.Model):
     class Meta:
         managed=True
         db_table = "transit_expense"
+
+class Fares(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.CharField(max_length=8, null=True)
+    service = models.CharField(max_length=8, null=True)
+    year = models.IntegerField(null=False)
+    fares = models.BigIntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "fares"
+
+class DirectionalRouteMiles(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.CharField(max_length=8, null=True)
+    service = models.CharField(max_length=8, null=True)
+    year = models.IntegerField(null=False)
+    drm = models.IntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "drm"
+
+class VehiclesOperatedMaximumService(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.CharField(max_length=8, null=True)
+    service = models.CharField(max_length=8, null=True)
+    year = models.IntegerField(null=False)
+    voms = models.IntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "voms"
+
+class VehicleRevenueMiles(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.CharField(max_length=8, null=True)
+    service = models.CharField(max_length=8, null=True)
+    year = models.IntegerField(null=False)
+    vrm = models.BigIntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "vrm"
+
+class VehicleRevenueHours(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.CharField(max_length=8, null=True)
+    service = models.CharField(max_length=8, null=True)
+    year = models.IntegerField(null=False)
+    vrh = models.BigIntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "vrh"
+
+class UnlinkedPassengerTrips(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.CharField(max_length=8, null=True)
+    service = models.CharField(max_length=8, null=True)
+    year = models.IntegerField(null=False)
+    upt = models.BigIntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "upt"
+
+class PassengerMilesTraveled(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.CharField(max_length=8, null=True)
+    service = models.CharField(max_length=8, null=True)
+    year = models.IntegerField(null=False)
+    pmt = models.BigIntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "pmt"

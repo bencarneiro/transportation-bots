@@ -39,9 +39,9 @@ class Command(BaseCommand):
             # print(expense_other_capital[year][x])
             for year in years:
                 new_transit_expense = TransitExpense(
-                    transit_agency_id=transit_agency,
+                    transit_agency=transit_agency,
                     mode = expense_other_capital['Mode'][x],
-                    service = "DO"
+                    service = "DO",
                     year = int(year),
                     expense_type = "OC",
                     expense = expense_other_capital[year][x]

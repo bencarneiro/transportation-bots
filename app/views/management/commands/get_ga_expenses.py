@@ -39,7 +39,7 @@ class Command(BaseCommand):
             # print(expense_ga[year][x])
             for year in years:
                 new_transit_expense = TransitExpense(
-                    transit_agency_id=transit_agency,
+                    transit_agency=transit_agency,
                     mode = expense_ga['Mode'][x],
                     service = expense_ga['Service'][x],
                     year = int(year),
