@@ -1,0 +1,41 @@
+from django.core.management.base import BaseCommand
+from views.models import TransitExpense
+import pandas as pd
+
+
+class Command(BaseCommand):
+
+    def handle(self, *args, **kwargs):
+        years = []
+        for x in range(1991,2022):
+            years += [str(x)]
+        expense_ga = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2022-10/TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode_0.xlsx', sheet_name="OpExp GA", engine="openpyxl")
+        expense_ga[years] = expense_ga[years].fillna(0)
+        expense_ga[['UZA', 'UZA Area SQ Miles', 'UZA Population']] = expense_ga[['UZA', 'UZA Area SQ Miles', 'UZA Population']].fillna(0)
+        for x in expense_ga.index:
+            print(x)
+            # print(expense_ga[year][x])
+            for year in years:
+                new_transit_expense = TransitExpense(
+                    last_report_year=expense_ga['Last Report Year'][x],
+                    ntd_id = expense_ga['NTD ID'][x],
+                    legacy_ntd_id = expense_ga['Legacy NTD ID'][x],
+                    agency_name = expense_ga['Agency Name'][x],
+                    agency_status = expense_ga['Agency Status'][x],
+                    reporter_type = expense_ga['Reporter Type'][x],
+                    reporting_module = expense_ga['Reporting Module'][x],
+                    city = expense_ga['City'][x],
+                    state = expense_ga['State'][x],
+                    census_year = expense_ga['Census Year'][x],
+                    uza_name = expense_ga['UZA Name'][x],
+                    uza = expense_ga['UZA'][x],
+                    uza_area_sqm = expense_ga['UZA Area SQ Miles'][x],
+                    uza_population = expense_ga['UZA Population'][x],
+                    status_2021 = expense_ga['2021 Status'][x],
+                    mode = expense_ga['Mode'][x],
+                    service = expense_ga['Service'][x],
+                    status_mode = expense_ga['Mode Status'][x],
+                    year = int(year),
+                    expense_type = "GA",
+                    expense = expense_ga[year][x]
+                ).save()

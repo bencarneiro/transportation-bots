@@ -1,14 +1,9 @@
 from django.core.management.base import BaseCommand
 from views.models import TransitExpense
-import requests
 import pandas as pd
 
 
 class Command(BaseCommand):
-
-    # def add_arguments(self, parser):
-    #     parser.add_argument('start_block', type=int, help='scrape transactions starting with this Block #')
-    #     parser.add_argument('end_block', type=int, help='Stop Scraping Transactions when this block # is reached')
 
     def handle(self, *args, **kwargs):
         years = []
@@ -16,7 +11,8 @@ class Command(BaseCommand):
             years += [str(x)]
         expense_vo = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2022-10/TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode_0.xlsx', sheet_name="OpExp VO", engine="openpyxl")
         expense_vo[years] = expense_vo[years].fillna(0)
-        for x in expense_vo.index:
+        expense_vo[['UZA', 'UZA Area SQ Miles', 'UZA Population']] = expense_vo[['UZA', 'UZA Area SQ Miles', 'UZA Population']].fillna(0)
+        for x in expense_vo.index: 
             print(x)
             # print(expense_vo[year][x])
             for year in years:
@@ -43,4 +39,3 @@ class Command(BaseCommand):
                     expense_type = "VO",
                     expense = expense_vo[year][x]
                 ).save()
-            break
