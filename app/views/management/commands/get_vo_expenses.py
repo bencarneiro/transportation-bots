@@ -42,7 +42,6 @@ class Command(BaseCommand):
                     transit_agency_id=transit_agency,
                     mode = expense_vo['Mode'][x],
                     service = expense_vo['Service'][x],
-                    status_mode = expense_vo['Mode Status'][x],
                     year = int(year),
                     expense_type = "VO",
                     expense = expense_vo[year][x]

@@ -128,7 +128,6 @@ class TransitExpense(models.Model):
     transit_agency_id = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     mode = models.CharField(max_length=8, null=True)
     service = models.CharField(max_length=8, null=True)
-    status_mode = models.CharField(max_length=64, null=True)
     year = models.IntegerField(null=False)
     expense_type = models.CharField(max_length=64, null=False)
     expense = models.BigIntegerField(null=False)
