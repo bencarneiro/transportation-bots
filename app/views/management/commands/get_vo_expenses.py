@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from views.models import TransitExpense
+from views.models import TransitExpense, TransitAgency
 import pandas as pd
 
 
@@ -13,10 +13,9 @@ class Command(BaseCommand):
         expense_vo[years] = expense_vo[years].fillna(0)
         expense_vo[['UZA', 'UZA Area SQ Miles', 'UZA Population']] = expense_vo[['UZA', 'UZA Area SQ Miles', 'UZA Population']].fillna(0)
         for x in expense_vo.index: 
-            print(x)
-            # print(expense_vo[year][x])
-            for year in years:
-                new_transit_expense = TransitExpense(
+            transit_agencies = TransitAgency.objects.filter(ntd_id=expense_vo['NTD ID'][x], legacy_ntd_id=expense_vo['Legacy NTD ID'][x])
+            if len(transit_agencies) < 1:
+                transit_agency = TransitAgency(
                     last_report_year=expense_vo['Last Report Year'][x],
                     ntd_id = expense_vo['NTD ID'][x],
                     legacy_ntd_id = expense_vo['Legacy NTD ID'][x],
@@ -32,6 +31,15 @@ class Command(BaseCommand):
                     uza_area_sqm = expense_vo['UZA Area SQ Miles'][x],
                     uza_population = expense_vo['UZA Population'][x],
                     status_2021 = expense_vo['2021 Status'][x],
+                )
+                transit_agency.save()
+            else:
+                transit_agency = transit_agencies[0]
+            print(x)
+            # print(expense_vo[year][x])
+            for year in years:
+                new_transit_expense = TransitExpense(
+                    transit_agency_id=transit_agency,
                     mode = expense_vo['Mode'][x],
                     service = expense_vo['Service'][x],
                     status_mode = expense_vo['Mode Status'][x],

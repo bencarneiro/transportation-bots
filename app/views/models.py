@@ -96,8 +96,8 @@ class Animal(models.Model):
         managed = True
         db_table = 'animal'
 
-class TransitExpense(models.Model):
-
+class TransitAgency(models.Model):
+    id = models.AutoField(primary_key=True)
     last_report_year = models.IntegerField(null=True)
     ntd_id = models.PositiveIntegerField(null=True)
     legacy_ntd_id = models.CharField(max_length=128, null=True)
@@ -113,6 +113,19 @@ class TransitExpense(models.Model):
     uza_area_sqm = models.IntegerField(null=True)
     uza_population = models.BigIntegerField(null=True)
     status_2021 = models.CharField(max_length=64, null=True)
+
+    class Meta:
+        managed = True
+        db_table = "transit_agency"
+        constraints = [
+            models.UniqueConstraint(fields=['ntd_id', 'legacy_ntd_id'], name='unique_registration')
+        ]
+
+    
+
+class TransitExpense(models.Model):
+
+    transit_agency_id = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     mode = models.CharField(max_length=8, null=True)
     service = models.CharField(max_length=8, null=True)
     status_mode = models.CharField(max_length=64, null=True)
