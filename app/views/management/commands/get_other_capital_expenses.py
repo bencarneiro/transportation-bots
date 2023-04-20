@@ -11,7 +11,7 @@ class Command(BaseCommand):
             years += [str(x)]
         expense_other_capital = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2022-10/TS3.1%20Capital%20Expenditures%20Time%20Series_0.xlsx', sheet_name="Other", engine="openpyxl")
         expense_other_capital[years] = expense_other_capital[years].fillna(0)
-        expense_other_capital[['UZA', 'UZA Area SQ Miles', 'UZA Population']] = expense_other_capital[['UZA', 'UZA Area SQ Miles', 'UZA Population']].fillna(0)
+        expense_other_capital[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = expense_other_capital[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in expense_other_capital.index: 
             transit_agencies = TransitAgency.objects.filter(ntd_id=expense_other_capital['NTD ID'][x], legacy_ntd_id=expense_other_capital['Legacy NTD ID'][x])
             if len(transit_agencies) < 1:

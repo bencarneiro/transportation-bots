@@ -11,7 +11,7 @@ class Command(BaseCommand):
             years += [str(x)]
         expense_nvm = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2022-10/TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode_0.xlsx', sheet_name="OpExp NVM", engine="openpyxl")
         expense_nvm[years] = expense_nvm[years].fillna(0)
-        expense_nvm[['UZA', 'UZA Area SQ Miles', 'UZA Population']] = expense_nvm[['UZA', 'UZA Area SQ Miles', 'UZA Population']].fillna(0)
+        expense_nvm[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = expense_nvm[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in expense_nvm.index: 
             transit_agencies = TransitAgency.objects.filter(ntd_id=expense_nvm['NTD ID'][x], legacy_ntd_id=expense_nvm['Legacy NTD ID'][x])
             if len(transit_agencies) < 1:

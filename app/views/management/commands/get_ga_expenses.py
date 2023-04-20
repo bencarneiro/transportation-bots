@@ -11,7 +11,7 @@ class Command(BaseCommand):
             years += [str(x)]
         expense_ga = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2022-10/TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode_0.xlsx', sheet_name="OpExp GA", engine="openpyxl")
         expense_ga[years] = expense_ga[years].fillna(0)
-        expense_ga[['UZA', 'UZA Area SQ Miles', 'UZA Population']] = expense_ga[['UZA', 'UZA Area SQ Miles', 'UZA Population']].fillna(0)
+        expense_ga[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = expense_ga[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in expense_ga.index: 
             transit_agencies = TransitAgency.objects.filter(ntd_id=expense_ga['NTD ID'][x], legacy_ntd_id=expense_ga['Legacy NTD ID'][x])
             if len(transit_agencies) < 1:

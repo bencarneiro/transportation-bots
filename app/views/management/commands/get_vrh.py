@@ -11,7 +11,7 @@ class Command(BaseCommand):
             years += [str(x)]
         vrh = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2022-10/TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode_0.xlsx', sheet_name="VRH", engine="openpyxl")
         vrh[years] = vrh[years].fillna(0)
-        vrh[['UZA', 'UZA Area SQ Miles', 'UZA Population']] = vrh[['UZA', 'UZA Area SQ Miles', 'UZA Population']].fillna(0)
+        vrh[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = vrh[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in vrh.index: 
             transit_agencies = TransitAgency.objects.filter(ntd_id=vrh['NTD ID'][x], legacy_ntd_id=vrh['Legacy NTD ID'][x])
             if len(transit_agencies) < 1:

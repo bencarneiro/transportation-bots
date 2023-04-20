@@ -11,7 +11,7 @@ class Command(BaseCommand):
             years += [str(x)]
         pmt = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2022-10/TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode_0.xlsx', sheet_name="PMT", engine="openpyxl")
         pmt[years] = pmt[years].fillna(0)
-        pmt[['UZA', 'UZA Area SQ Miles', 'UZA Population']] = pmt[['UZA', 'UZA Area SQ Miles', 'UZA Population']].fillna(0)
+        pmt[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = pmt[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in pmt.index: 
             transit_agencies = TransitAgency.objects.filter(ntd_id=pmt['NTD ID'][x], legacy_ntd_id=pmt['Legacy NTD ID'][x])
             if len(transit_agencies) < 1:

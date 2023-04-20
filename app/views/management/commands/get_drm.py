@@ -11,7 +11,7 @@ class Command(BaseCommand):
             years += [str(x)]
         drm = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2022-10/TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode_0.xlsx', sheet_name="DRM", engine="openpyxl")
         drm[years] = drm[years].fillna(0)
-        drm[['UZA', 'UZA Area SQ Miles', 'UZA Population']] = drm[['UZA', 'UZA Area SQ Miles', 'UZA Population']].fillna(0)
+        drm[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = drm[['UZA', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in drm.index: 
             transit_agencies = TransitAgency.objects.filter(ntd_id=drm['NTD ID'][x], legacy_ntd_id=drm['Legacy NTD ID'][x])
             if len(transit_agencies) < 1:
