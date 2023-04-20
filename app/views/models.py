@@ -95,3 +95,31 @@ class Animal(models.Model):
     class Meta:
         managed = True
         db_table = 'animal'
+
+class TransitExpense(models.Model):
+
+    last_report_year = models.IntegerField(null=True)
+    ntd_id = models.PositiveIntegerField(null=True)
+    legacy_ntd_id = models.CharField(max_length=128, null=True)
+    agency_name = models.CharField(max_length=256, null=True)
+    agency_status = models.CharField(max_length=64, null=True)
+    reporter_type = models.CharField(max_length=64, null=True)
+    reporting_module = models.CharField(max_length=64, null=True)
+    city = models.CharField(max_length=64, null=True)
+    state = models.CharField(max_length=8, null=True)
+    census_year = models.IntegerField(null=True)
+    uza_name = models.CharField(max_length=64, null=True)
+    uza = models.IntegerField(null=True)
+    uza_area_sqm = models.IntegerField(null=True)
+    uza_population = models.BigIntegerField(null=True)
+    status_2021 = models.CharField(max_length=64, null=True)
+    mode = models.CharField(max_length=8, null=True)
+    service = models.CharField(max_length=8, null=True)
+    status_mode = models.CharField(max_length=64, null=True)
+    year = models.IntegerField(null=False)
+    expense_type = models.CharField(max_length=64, null=False)
+    expense = models.BigIntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "transit_expense"
