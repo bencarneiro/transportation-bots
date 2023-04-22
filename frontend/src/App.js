@@ -19,7 +19,14 @@ function App() {
   return (
     <div className="App">
      
-      <body><TimeSeriesChart chartData={data}/></body>
+      <body>
+        <TimeSeriesChart chartData={data}/>
+        <TimeSeriesChart chartData={data}/>
+        <TimeSeriesChart chartData={data}/>
+        <TimeSeriesChart chartData={data}/>
+        <TimeSeriesChart chartData={data}/>
+        <TimeSeriesChart chartData={data}/>
+      </body>
     </div>
   );
 }

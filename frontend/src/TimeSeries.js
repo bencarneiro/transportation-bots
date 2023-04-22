@@ -17,11 +17,11 @@ import {
 const moment = require('moment')
 
 const TimeSeriesChart = ({ chartData }) => (
-  <ResponsiveContainer width = '90%' height = {500} >
+  <ResponsiveContainer width = '90%' height = {300} >
     <ScatterChart>
       <XAxis
         dataKey = 'year'
-        domain = {['auto', 'auto']}
+        domain = {['auto', 2021]}
         name = 'Time'
         // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
         type = 'number'
