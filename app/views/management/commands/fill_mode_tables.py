@@ -9,6 +9,9 @@ class Command(BaseCommand):
         # Save all the Service types
         Service(id="DO", name="Directly Operated").save()
         Service(id="PT", name="Purchased Transportation").save()
+        Service(id="TX", name="Purchased Transportation").save()
+        Service(id="TN", name="Other").save()
+        Service(id="nan", name="Other").save()
 
         # Save all the expense types
         ExpenseType(id="VO", name="Vehicle Operations", budget="Operating").save()

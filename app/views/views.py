@@ -352,18 +352,19 @@ def get_expense_timeseries_group_by_service(request):
     return JsonResponse(resp, safe=False)
 
 
-# @csrf_exempt
-# def get_expense_timeseries_group_by_mode(request):
+@csrf_exempt
+def get_expense_timeseries_group_by_mode(request):
 
-#     filters, q = process_params(request.GET)
-#     ts = TransitExpense.objects.filter(q).values("year", "mode").annotate(expense=Sum('expense'))
-#     data = []
-#     for x in ts:
-#         data += [x]
-#     length = len(data)
-#     resp = {
-#         "filters": filters,
-#         "length": length,
-#         "data": data
-#     }
-#     return JsonResponse(resp, safe=False)
+    filters, q = process_params(request.GET)
+    ts = TransitExpense.objects.filter(q).values("year", "mode_id__name").annotate(expense=Sum('expense'))
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    print(data)
+    return JsonResponse(resp, safe=False)

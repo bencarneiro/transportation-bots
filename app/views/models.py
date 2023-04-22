@@ -96,6 +96,33 @@ class Animal(models.Model):
         managed = True
         db_table = 'animal'
 
+
+class Mode(models.Model):
+    id = models.CharField(primary_key=True, max_length=8)
+    name = models.CharField(max_length=64, null=False)
+    type = models.CharField(max_length=64, null=False)
+
+    class Meta:
+        managed=True
+        db_table = "mode"
+
+class Service(models.Model):
+    id = models.CharField(primary_key=True, max_length=8)
+    name = models.CharField(max_length=64, null=False)
+
+    class Meta:
+        managed=True
+        db_table = "service"
+
+class ExpenseType(models.Model):
+    id = models.CharField(primary_key=True, max_length=8)
+    name = models.CharField(max_length=64, null=False)
+    budget = models.CharField(max_length=64, null=False)
+
+    class Meta:
+        managed=True
+        db_table = "expense_type"
+
 class TransitAgency(models.Model):
 
     id = models.AutoField(primary_key=True)
@@ -127,10 +154,10 @@ class TransitAgency(models.Model):
 class TransitExpense(models.Model):
 
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    mode = models.CharField(max_length=8, null=True)
-    service = models.CharField(max_length=8, null=True)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
     year = models.IntegerField(null=False)
-    expense_type = models.CharField(max_length=64, null=False)
+    expense_type = models.ForeignKey(ExpenseType, on_delete=models.DO_NOTHING, default="VO")
     expense = models.BigIntegerField(null=False)
 
     class Meta:
@@ -138,9 +165,9 @@ class TransitExpense(models.Model):
         db_table = "transit_expense"
 
 class Fares(models.Model):
-    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    mode = models.CharField(max_length=8, null=True)
-    service = models.CharField(max_length=8, null=True)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING, default="nan")
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
     year = models.IntegerField(null=False)
     fares = models.BigIntegerField(null=False)
 
@@ -150,8 +177,8 @@ class Fares(models.Model):
 
 class DirectionalRouteMiles(models.Model):
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    mode = models.CharField(max_length=8, null=True)
-    service = models.CharField(max_length=8, null=True)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
     year = models.IntegerField(null=False)
     drm = models.IntegerField(null=False)
 
@@ -161,8 +188,8 @@ class DirectionalRouteMiles(models.Model):
 
 class VehiclesOperatedMaximumService(models.Model):
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    mode = models.CharField(max_length=8, null=True)
-    service = models.CharField(max_length=8, null=True)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
     year = models.IntegerField(null=False)
     voms = models.IntegerField(null=False)
 
@@ -172,8 +199,8 @@ class VehiclesOperatedMaximumService(models.Model):
 
 class VehicleRevenueMiles(models.Model):
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    mode = models.CharField(max_length=8, null=True)
-    service = models.CharField(max_length=8, null=True)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
     year = models.IntegerField(null=False)
     vrm = models.BigIntegerField(null=False)
 
@@ -183,8 +210,8 @@ class VehicleRevenueMiles(models.Model):
 
 class VehicleRevenueHours(models.Model):
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    mode = models.CharField(max_length=8, null=True)
-    service = models.CharField(max_length=8, null=True)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
     year = models.IntegerField(null=False)
     vrh = models.BigIntegerField(null=False)
 
@@ -194,8 +221,8 @@ class VehicleRevenueHours(models.Model):
 
 class UnlinkedPassengerTrips(models.Model):
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    mode = models.CharField(max_length=8, null=True)
-    service = models.CharField(max_length=8, null=True)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
     year = models.IntegerField(null=False)
     upt = models.BigIntegerField(null=False)
 
@@ -205,8 +232,8 @@ class UnlinkedPassengerTrips(models.Model):
 
 class PassengerMilesTraveled(models.Model):
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    mode = models.CharField(max_length=8, null=True)
-    service = models.CharField(max_length=8, null=True)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
     year = models.IntegerField(null=False)
     pmt = models.BigIntegerField(null=False)
 
@@ -214,28 +241,3 @@ class PassengerMilesTraveled(models.Model):
         managed=True
         db_table = "pmt"
 
-class Mode(models.Model):
-    id = models.CharField(primary_key=True, max_length=8)
-    name = models.CharField(max_length=64, null=False)
-    type = models.CharField(max_length=64, null=False)
-
-    class Meta:
-        managed=True
-        db_table = "mode"
-
-class Service(models.Model):
-    id = models.CharField(primary_key=True, max_length=8)
-    name = models.CharField(max_length=64, null=False)
-
-    class Meta:
-        managed=True
-        db_table = "service"
-
-class ExpenseType(models.Model):
-    id = models.CharField(primary_key=True, max_length=8)
-    name = models.CharField(max_length=64, null=False)
-    budget = models.CharField(max_length=64, null=False)
-
-    class Meta:
-        managed=True
-        db_table = "expense_type"
