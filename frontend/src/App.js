@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 function App() {
 
   React.useEffect(() => {
-    axios.get('http://localhost:8000/get_expense_timeseries/?transit_agency_id=1&uza=14')
+    axios.get('http://localhost:8000/get_expense_timeseries_group_by_mode/?ntd_id=60048')
         .then(response => setData(response.data.data));
   }, []);
   const [data, setData] = React.useState(null)
@@ -20,11 +20,13 @@ function App() {
     <div className="App">
      
       <body>
+        <></>
+        <TimeSeriesChart  title="Chart of PU x UV" chartData={data}/>
+        <TimeSeriesChart  title="Chart of PU x UV" chartData={data}/>
         <TimeSeriesChart chartData={data}/>
         <TimeSeriesChart chartData={data}/>
         <TimeSeriesChart chartData={data}/>
-        <TimeSeriesChart chartData={data}/>
-        <TimeSeriesChart chartData={data}/>
+        <h2>Test Title</h2>
         <TimeSeriesChart chartData={data}/>
       </body>
     </div>

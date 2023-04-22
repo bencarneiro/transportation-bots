@@ -5,6 +5,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.db.models import Sum, Count, Q
 
+"""
+HI it's ben, the amateurish developer!
+
+this file is going to cointain a lot of views which return timeseries data, all for different key performance and expenditure metrics for public transit. 
+They're all going to take the same parameters
+Think of it as "one endpoint per chart"
+
+"""
+
 # Create your views here.
 
 def save_crash(incident):
@@ -246,38 +255,115 @@ def save_crash(incident):
     print(f"SUCCESSFULLY SAVED CRASH_ID {incident['crash_id']}")
 
 
+def process_params(params):
+
+    filters = {}
+    q = Q()
+
+    if "transit_agency_id" in params and params['transit_agency_id']:
+        filters['transit_agency_id'] = params['transit_agency_id']
+        q &= Q(transit_agency_id=params['transit_agency_id'])
+
+    if "mode" in params and params["mode"]:
+        filters['mode'] = params["mode"]
+        q &= Q(mode=params['mode'])
+
+    if "service" in params and params['service']:
+        filters['service'] = params['service']
+        q &= Q(service=params['service'])
+
+    if "budget_type" in params:
+        if params['budget_type'] == "operating":
+            q &= Q(expense_type__in=["VO", "VM", "NVM", "GA"]), 
+            filters['budget_type'] = "operating"
+        if params['budget_type'] == "capital":
+            q &= Q(expense_type__in=["RS", "FC", "OC"]),
+            filters['budget_type'] = "capital"
+            
+    if "expense_type" in params and params['expense_type']:
+        filters['expense_type'] = params['expense_type']
+        q &= Q(expense_type=params['expense_type'])
+    
+
+    # Filter Fields on the Transit Agency model
+
+    if "ntd_id" in params and params['ntd_id']:
+        filters['ntd_id'] = params['ntd_id']
+        q &= Q(transit_agency_id__ntd_id=params['ntd_id'])
+
+    if "uza" in params and params['uza']:
+        filters['uza'] = params['uza']
+        q &= Q(transit_agency_id__uza=params['uza'])
+
+    if "city" in params and params['city']:
+        filters['city'] = params['city']
+        q &= Q(transit_agency_id__city=params['city'])
+
+    if "state" in params and params['state']:
+        filters['state'] = params['state']
+        q &= Q(transit_agency_id__state=params['state'])
+    
+    if "uza_population__gte" in params and params['uza_population__gte']:
+        filters['uza_population__gte'] = params['uza_population__gte']
+        q &= Q(transit_agency_id__uza_population__gte=params['uza_population__gte'])
+
+    if "uza_population__lte" in params and params['uza_population__lte']:
+        filters['uza_population__lte'] = params['uza_population__lte']
+        q &= Q(transit_agency_id__uza_population__lte=params['uza_population__lte'])
+    
+    return filters, q
 
 
-# agencies
+
+
+# Get a timeseries of TOTAL EXPENSES - no groupings
 @csrf_exempt
 def get_expense_timeseries(request):
-    q = Q()
-    filters = {}
 
-
-    if "transit_agency_id" in request.GET and request.GET['transit_agency_id']:
-        filters['transit_agency_id'] = request.GET['transit_agency_id']
-        q &= Q(transit_agency_id=request.GET['transit_agency_id'])
-    else:
-        return JsonResponse({})
-    
-
-    if "uza" in request.GET and request.GET['uza']:
-        filters['uza'] = request.GET['uza']
-        q &= Q(transit_agency_id__uza=request.GET['uza'])
-
-
+    filters, q = process_params(request.GET)
     ts = TransitExpense.objects.filter(q).values("year").annotate(expense=Sum('expense'))
-    
     data = []
     for x in ts:
         data += [x]
-
     length = len(data)
     resp = {
         "filters": filters,
         "length": length,
         "data": data
     }
-    list_resp = list(data)
     return JsonResponse(resp, safe=False)
+
+# Get a timeseries of TOTAL EXPENSES - GROUP BY service (DO/PT)
+# Capital expenses are all under DO
+@csrf_exempt
+def get_expense_timeseries_group_by_service(request):
+
+    filters, q = process_params(request.GET)
+    ts = TransitExpense.objects.filter(q).values("year", "service").annotate(expense=Sum('expense'))
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+
+# @csrf_exempt
+# def get_expense_timeseries_group_by_mode(request):
+
+#     filters, q = process_params(request.GET)
+#     ts = TransitExpense.objects.filter(q).values("year", "mode").annotate(expense=Sum('expense'))
+#     data = []
+#     for x in ts:
+#         data += [x]
+#     length = len(data)
+#     resp = {
+#         "filters": filters,
+#         "length": length,
+#         "data": data
+#     }
+#     return JsonResponse(resp, safe=False)

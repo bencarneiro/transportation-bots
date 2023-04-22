@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from views.views import get_expense_timeseries
+from views.views import get_expense_timeseries, get_expense_timeseries_group_by_service
+# , get_expense_timeseries_group_by_mode
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('get_expense_timeseries/', get_expense_timeseries, name="get_expense_timeseries"),
+    path('get_expense_timeseries_group_by_service/', get_expense_timeseries_group_by_service, name="get_expense_timeseries_group_by_service"),
+    # path("get_expense_timeseries_group_by_mode/", get_expense_timeseries_group_by_mode, name="get_expense_timeseries_group_by_mode")
 ]
