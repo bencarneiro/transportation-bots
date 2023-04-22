@@ -213,3 +213,28 @@ class PassengerMilesTraveled(models.Model):
     class Meta:
         managed=True
         db_table = "pmt"
+
+class Mode(models.Model):
+    id = models.CharField(primary_key=True, max_length=8)
+    name = models.CharField(max_length=64, null=False)
+
+    class Meta:
+        managed=True
+        db_table = "mode"
+
+class Service(models.Model):
+    id = models.CharField(primary_key=True, max_length=8)
+    name = models.CharField(max_length=64, null=False)
+
+    class Meta:
+        managed=True
+        db_table = "service"
+
+class ExpenseType(models.Model):
+    id = models.CharField(primary_key=True, max_length=8)
+    name = models.CharField(max_length=64, null=False)
+    budget = models.CharField(max_length=64, null=False)
+
+    class Meta:
+        managed=True
+        db_table = "expense_type"
