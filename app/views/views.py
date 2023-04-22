@@ -3,7 +3,7 @@ from views.models import Crash, TransitAgency, TransitExpense, UnlinkedPassenger
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, F
 
 """
 HI it's ben, the amateurish developer!
@@ -357,6 +357,24 @@ def get_expense_timeseries_group_by_mode(request):
 
     filters, q = process_params(request.GET)
     ts = TransitExpense.objects.filter(q).values("year", "mode_id__name").annotate(expense=Sum('expense'))
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    print(data)
+    return JsonResponse(resp, safe=False)
+
+
+@csrf_exempt
+def inflation_adjusted_timeseries(request):
+
+    filters, q = process_params(request.GET)
+    ts = TransitExpense.objects.filter(q).values("year").annotate(expense=Sum(F('expense')*F("year_id__in_todays_dollars")))
     data = []
     for x in ts:
         data += [x]

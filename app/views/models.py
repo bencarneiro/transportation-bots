@@ -149,14 +149,20 @@ class TransitAgency(models.Model):
             models.UniqueConstraint(fields=['ntd_id', 'legacy_ntd_id'], name='unique_registration')
         ]
 
-    
+class ConsumerPriceIndex(models.Model):
+    year = models.IntegerField(primary_key=True)
+    in_todays_dollars = models.FloatField(default=1)
+
+    class Meta:
+        managed=True
+        db_table = "cpi"
 
 class TransitExpense(models.Model):
 
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
     service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
-    year = models.IntegerField(null=False)
+    year = models.ForeignKey(ConsumerPriceIndex, on_delete=models.DO_NOTHING)
     expense_type = models.ForeignKey(ExpenseType, on_delete=models.DO_NOTHING, default="VO")
     expense = models.BigIntegerField(null=False)
 
@@ -240,4 +246,5 @@ class PassengerMilesTraveled(models.Model):
     class Meta:
         managed=True
         db_table = "pmt"
+
 
