@@ -1,5 +1,9 @@
 from django.shortcuts import render
-from views.models import Crash
+from views.models import Crash, TransitAgency, TransitExpense, UnlinkedPassengerTrips
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.db.models import Sum, Count, Q
 
 # Create your views here.
 
@@ -240,3 +244,40 @@ def save_crash(incident):
     )
     new_crash.save()
     print(f"SUCCESSFULLY SAVED CRASH_ID {incident['crash_id']}")
+
+
+
+
+# agencies
+@csrf_exempt
+def get_expense_timeseries(request):
+    q = Q()
+    filters = {}
+
+
+    if "transit_agency_id" in request.GET and request.GET['transit_agency_id']:
+        filters['transit_agency_id'] = request.GET['transit_agency_id']
+        q &= Q(transit_agency_id=request.GET['transit_agency_id'])
+    else:
+        return JsonResponse({})
+    
+
+    if "uza" in request.GET and request.GET['uza']:
+        filters['uza'] = request.GET['uza']
+        q &= Q(transit_agency_id__uza=request.GET['uza'])
+
+
+    ts = TransitExpense.objects.filter(q).values("year").annotate(expense=Sum('expense'))
+    
+    data = []
+    for x in ts:
+        data += [x]
+
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    list_resp = list(data)
+    return JsonResponse(resp, safe=False)

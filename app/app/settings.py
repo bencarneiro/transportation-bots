@@ -139,3 +139,6 @@ MASTODON_PUPPY_EMAIL = os.environ.get("MASTODON_PUPPY_EMAIL", 'bencarneiro+1@gma
 VISION_ZERO_EMAIL = os.environ.get("VISION_ZERO_EMAIL", "bencarneiro+2@gmail.com")
 MASTODON_LOGIN_PASSWORD = os.environ.get("MASTODON_LOGIN_PASSWORD", "")
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
+
+TRANSIT_READ_USER = os.environ.get("TRANSIT_READ_USER", "reader")
+TRANSIT_READ_PASSWORD = os.environ.get("TRANSIT_READ_PASSWORD", "3}pL>u*U@o]A,2jSX}Yv")

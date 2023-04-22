@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from views.views import get_expense_timeseries
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('get_expense_timeseries/', get_expense_timeseries, name="get_expense_timeseries"),
 ]
