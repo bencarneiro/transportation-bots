@@ -262,46 +262,52 @@ def process_params(params):
 
     if "transit_agency_id" in params and params['transit_agency_id']:
         filters['transit_agency_id'] = params['transit_agency_id']
-        q &= Q(transit_agency_id=params['transit_agency_id'])
+        transit_agency_id_list = params['transit_agency_id'].split(",")
+        q &= Q(transit_agency_id=transit_agency_id_list)
 
     if "mode" in params and params["mode"]:
         filters['mode'] = params["mode"]
-        q &= Q(mode=params['mode'])
+        mode_list = params['mode'].split(",")
+        q &= Q(mode=mode_list)
 
     if "service" in params and params['service']:
         filters['service'] = params['service']
-        q &= Q(service=params['service'])
+        service_list = params['service'].split(",")
+        q &= Q(service=service_list)
 
-    if "budget_type" in params:
-        if params['budget_type'] == "operating":
-            q &= Q(expense_type__in=["VO", "VM", "NVM", "GA"]), 
-            filters['budget_type'] = "operating"
-        if params['budget_type'] == "capital":
-            q &= Q(expense_type__in=["RS", "FC", "OC"]),
-            filters['budget_type'] = "capital"
+    # if "budget_type" in params:
+    #     if params['budget_type'] == "operating":
+    #         q &= Q(expense_type__in=["VO", "VM", "NVM", "GA"]), 
+    #         filters['budget_type'] = "operating"
+    #     if params['budget_type'] == "capital":
+    #         q &= Q(expense_type__in=["RS", "FC", "OC"]),
+    #         filters['budget_type'] = "capital"
             
-    if "expense_type" in params and params['expense_type']:
-        filters['expense_type'] = params['expense_type']
-        q &= Q(expense_type=params['expense_type'])
+    # if "expense_type" in params and params['expense_type']:
+    #     filters['expense_type'] = params['expense_type']
+    #     q &= Q(expense_type=params['expense_type'])
     
 
     # Filter Fields on the Transit Agency model
 
     if "ntd_id" in params and params['ntd_id']:
         filters['ntd_id'] = params['ntd_id']
-        q &= Q(transit_agency_id__ntd_id=params['ntd_id'])
+        ntd_id_list = params['ntd_id'].split(",")
+        q &= Q(transit_agency_id__ntd_id__in=ntd_id_list)
 
     if "uza" in params and params['uza']:
         filters['uza'] = params['uza']
-        q &= Q(transit_agency_id__uza=params['uza'])
+        uza_id_list = params['uza'].split(",")
+        q &= Q(transit_agency_id__uza=uza_id_list)
 
-    if "city" in params and params['city']:
-        filters['city'] = params['city']
-        q &= Q(transit_agency_id__city=params['city'])
+    # if "city" in params and params['city']:
+    #     filters['city'] = params['city']
+    #     q &= Q(transit_agency_id__city=params['city'])
 
     if "state" in params and params['state']:
         filters['state'] = params['state']
-        q &= Q(transit_agency_id__state=params['state'])
+        state_list = params['state'].split(",")
+        q &= Q(transit_agency_id__state=state_list)
     
     if "uza_population__gte" in params and params['uza_population__gte']:
         filters['uza_population__gte'] = params['uza_population__gte']
@@ -321,7 +327,7 @@ def process_params(params):
 def get_expense_timeseries(request):
 
     filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year").annotate(expense=Sum('expense'))
+    ts = TransitExpense.objects.filter(q).values("year", "mode_id__type").annotate(expense=Sum('expense')).order_by("year")
     data = []
     for x in ts:
         data += [x]
@@ -356,7 +362,7 @@ def get_expense_timeseries_group_by_service(request):
 def get_expense_timeseries_group_by_mode(request):
 
     filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year", "mode_id__name").annotate(expense=Sum('expense'))
+    ts = TransitExpense.objects.filter(q).values("year", "mode_id__name").annotate(expense=Sum('expense')).order_by("year")
     data = []
     for x in ts:
         data += [x]

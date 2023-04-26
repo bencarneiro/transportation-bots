@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 function App() {
 
   React.useEffect(() => {
-    axios.get('http://localhost:8000/inflation_adjusted_timeseries/?ntd_id=60048')
+    axios.get('http://localhost:8000/get_expense_timeseries/?ntd_id=60048')
         .then(response => setData(response.data.data));
   }, []);
   const [data, setData] = React.useState(null)
