@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import TimeSeriesChart from  './TimeSeries.js'
+import BarChart from './BarChart.js'
 
 import axios from "axios"
 import React, { useState } from 'react';
@@ -21,11 +22,7 @@ function App() {
      
       <body>
         <></>
-        <TimeSeriesChart  title="Chart of PU x UV" chartData={data}/>
-        <TimeSeriesChart  title="Chart of PU x UV" chartData={data}/>
-        <TimeSeriesChart chartData={data}/>
-        <TimeSeriesChart chartData={data}/>
-        <TimeSeriesChart chartData={data}/>
+        <BarChart chartData={data}/>
         <h2>Test Title</h2>
         <TimeSeriesChart chartData={data}/>
       </body>

@@ -19,10 +19,11 @@ const moment = require('moment')
 const TimeSeriesChart = ({ chartData }) => (
   <ResponsiveContainer width = '90%' height = {300} >
     <ScatterChart>
+      <Tooltip/>
       <XAxis
         dataKey = 'year'
         domain = {['auto', 2021]}
-        name = 'Time'
+        name = 'Year'
         // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
         type = 'number'
       />
@@ -45,18 +46,9 @@ const TimeSeriesChart = ({ chartData }) => (
         lineType = 'joint'
         name = 'Values'
       />
-
     </ScatterChart>
   </ResponsiveContainer>
 )
 
-TimeSeriesChart.propTypes = {
-  chartData: PropTypes.arrayOf(
-    PropTypes.shape({
-      year: PropTypes.number,
-      expense: PropTypes.number
-    })
-  ).isRequired
-}
 
 export default TimeSeriesChart
