@@ -392,3 +392,330 @@ def inflation_adjusted_timeseries(request):
     }
     print(data)
     return JsonResponse(resp, safe=False)
+
+# SPENDING DASHBOARD API ENDPOINTS
+
+@csrf_exempt
+def spending_by_budget(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def opexp_by_category(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def capexp_by_category(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def opexp_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def capexp_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def opexp_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def capexp_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def opexp_by_service(request):
+    return(JsonResponse({}))
+
+
+# SERVICE DASHBOARD API ENDPOINTS
+
+@csrf_exempt
+def upt(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrm(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrh(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def drm(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def voms(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrm_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrh_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def drm_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def voms_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrm_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrh_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def drm_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def voms_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrm_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrh_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def drm_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def voms_by_mode(request):
+    return(JsonResponse({}))
+
+
+
+
+
+# PERFORMANCE DASHBOARD APIS
+
+@csrf_exempt
+def cost_per_upt(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_pmt(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def frr(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrh(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrm(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrh(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrm_per_vrh(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_per_vrh(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_per_vrm(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_per_vrh(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_per_vrm(request):
+    return(JsonResponse({}))
+
+
+
+
+
+@csrf_exempt
+def cost_per_upt_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_pmt_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def frr_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrh_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrm_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrh_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrm_per_vrh_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_per_vrh_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_per_vrm_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_per_vrh_by_mode_type(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_per_vrm_by_mode_type(request):
+    return(JsonResponse({}))
+
+
+
+
+
+@csrf_exempt
+def cost_per_upt_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_pmt_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def frr_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrh_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrm_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrh_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrm_per_vrh_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_per_vrh_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_per_vrm_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_per_vrh_by_mode(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_per_vrm_by_mode(request):
+    return(JsonResponse({}))
+
+
+
+
+
+@csrf_exempt
+def cost_per_upt_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_pmt_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def frr_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrh_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrm_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def cost_per_vrh_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def vrm_per_vrh_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_per_vrh_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def upt_per_vrm_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_per_vrh_by_service(request):
+    return(JsonResponse({}))
+
+@csrf_exempt
+def pmt_per_vrm_by_service(request):
+    return(JsonResponse({}))
