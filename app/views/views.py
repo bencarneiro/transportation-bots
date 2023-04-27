@@ -371,7 +371,13 @@ def spending_by_category(request):
 @csrf_exempt
 def spending_by_mode_type(request):
     filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year", "mode_id__type").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(bus=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id__type="Bus"))), \
+                                 rail=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id__type="Rail"))), \
+                                 microtransit=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id__type="MicroTransit"))), \
+                                 ferry=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id__type="Ferry"))), \
+                                 other=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id__type="Other")))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -382,7 +388,6 @@ def spending_by_mode_type(request):
         "data": data
     }
     return JsonResponse(resp, safe=False)
-    # return(JsonResponse({}))
 
 @csrf_exempt
 def spending_by_mode(request):
