@@ -4,6 +4,7 @@ from views.models import Crash, TransitAgency, TransitExpense, UnlinkedPassenger
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.db.models import Sum, Count, Q, F
+from django.db.models.functions import Round
 
 """
 HI it's ben, the amateurish developer!
@@ -321,111 +322,88 @@ def process_params(params):
 
 
 
-
-# Get a timeseries of TOTAL EXPENSES - no groupings
-@csrf_exempt
-def get_expense_timeseries(request):
-
-    filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year", "mode_id__type").annotate(expense=Sum('expense')).order_by("year")
-    data = []
-    for x in ts:
-        data += [x]
-    length = len(data)
-    resp = {
-        "filters": filters,
-        "length": length,
-        "data": data
-    }
-    return JsonResponse(resp, safe=False)
-
-# Get a timeseries of TOTAL EXPENSES - GROUP BY service (DO/PT)
-# Capital expenses are all under DO
-@csrf_exempt
-def get_expense_timeseries_group_by_service(request):
-
-    filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year", "service").annotate(expense=Sum('expense'))
-    data = []
-    for x in ts:
-        data += [x]
-    length = len(data)
-    resp = {
-        "filters": filters,
-        "length": length,
-        "data": data
-    }
-    return JsonResponse(resp, safe=False)
-
-
-@csrf_exempt
-def get_expense_timeseries_group_by_mode(request):
-
-    filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year", "mode_id__name").annotate(expense=Sum('expense')).order_by("year")
-    data = []
-    for x in ts:
-        data += [x]
-    length = len(data)
-    resp = {
-        "filters": filters,
-        "length": length,
-        "data": data
-    }
-    print(data)
-    return JsonResponse(resp, safe=False)
-
-
-@csrf_exempt
-def inflation_adjusted_timeseries(request):
-
-    filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year").annotate(expense=Sum(F('expense')*F("year_id__in_todays_dollars")))
-    data = []
-    for x in ts:
-        data += [x]
-    length = len(data)
-    resp = {
-        "filters": filters,
-        "length": length,
-        "data": data
-    }
-    print(data)
-    return JsonResponse(resp, safe=False)
-
 # SPENDING DASHBOARD API ENDPOINTS
 
 @csrf_exempt
 def spending_by_budget(request):
-    return(JsonResponse({}))
+
+    filters, q = process_params(request.GET)
+    ts = TransitExpense.objects.filter(q).values("year", "expense_type_id__budget").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
-def opexp_by_category(request):
-    return(JsonResponse({}))
+def spending_by_category(request):
+    filters, q = process_params(request.GET)
+    ts = TransitExpense.objects.filter(q).values("year", "expense_type_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
-def capexp_by_category(request):
-    return(JsonResponse({}))
+def spending_by_mode_type(request):
+    filters, q = process_params(request.GET)
+    ts = TransitExpense.objects.filter(q).values("year", "mode_id__type").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
-def opexp_by_mode_type(request):
-    return(JsonResponse({}))
-
-@csrf_exempt
-def capexp_by_mode_type(request):
-    return(JsonResponse({}))
-
-@csrf_exempt
-def opexp_by_mode(request):
-    return(JsonResponse({}))
-
-@csrf_exempt
-def capexp_by_mode(request):
-    return(JsonResponse({}))
+def spending_by_mode(request):
+    filters, q = process_params(request.GET)
+    ts = TransitExpense.objects.filter(q).values("year", "mode_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
 def opexp_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 
 # SERVICE DASHBOARD API ENDPOINTS

@@ -15,15 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from views.views import get_expense_timeseries, get_expense_timeseries_group_by_service, get_expense_timeseries_group_by_mode, inflation_adjusted_timeseries
 from views.views import spending_by_budget,\
-opexp_by_category,\
-capexp_by_category,\
-opexp_by_mode_type,\
-capexp_by_mode_type,\
-opexp_by_mode,\
-capexp_by_mode,\
+spending_by_category,\
+spending_by_mode,\
+spending_by_mode_type,\
 opexp_by_service,\
+spending_by_budget,\
 upt,\
 pmt,\
 vrm,\
@@ -95,17 +92,10 @@ pmt_per_vrm_by_service\
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('get_expense_timeseries/', get_expense_timeseries, name="get_expense_timeseries"),
-    path('get_expense_timeseries_group_by_service/', get_expense_timeseries_group_by_service, name="get_expense_timeseries_group_by_service"),
-    path("get_expense_timeseries_group_by_mode/", get_expense_timeseries_group_by_mode, name="get_expense_timeseries_group_by_mode"),
-    path("inflation_adjusted_timeseries/", inflation_adjusted_timeseries, name="inflation_adjusted_timeseries"),
     path('spending_by_budget/', spending_by_budget, name='spending_by_budget'),
-    path('opexp_by_category/', opexp_by_category, name='opexp_by_category'),
-    path('capexp_by_category/', capexp_by_category, name='capexp_by_category'),
-    path('opexp_by_mode_type/', opexp_by_mode_type, name='opexp_by_mode_type'),
-    path('capexp_by_mode_type/', capexp_by_mode_type, name='capexp_by_mode_type'),
-    path('opexp_by_mode/', opexp_by_mode, name='opexp_by_mode'),
-    path('capexp_by_mode/', capexp_by_mode, name='capexp_by_mode'),
+    path('spending_by_category/', spending_by_category, name='spending_by_category'),
+    path('spending_by_mode_type/', spending_by_mode_type, name='spending_by_mode_type'),
+    path('spending_by_mode/', spending_by_mode, name='spending_by_mode'),
     path('opexp_by_service/', opexp_by_service, name='opexp_by_service'),
     path('upt/', upt, name='upt'),
     path('pmt/', pmt, name='pmt'),
