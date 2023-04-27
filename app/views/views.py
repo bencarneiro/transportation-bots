@@ -278,15 +278,16 @@ def process_params(params):
 
     # if "budget_type" in params:
     #     if params['budget_type'] == "operating":
-    #         q &= Q(expense_type__in=["VO", "VM", "NVM", "GA"]), 
+    #         q &= Q(expense_type_id__in=["VO", "VM", "NVM", "GA"]), 
     #         filters['budget_type'] = "operating"
     #     if params['budget_type'] == "capital":
-    #         q &= Q(expense_type__in=["RS", "FC", "OC"]),
+    #         q &= Q(expense_type_id__in=["RS", "FC", "OC"]),
     #         filters['budget_type'] = "capital"
             
-    # if "expense_type" in params and params['expense_type']:
-    #     filters['expense_type'] = params['expense_type']
-    #     q &= Q(expense_type=params['expense_type'])
+    if "expense_type" in params and params['expense_type']:
+        filters['expense_type'] = params['expense_type']
+        expense_type_list = params['expense_type'].split(",")
+        q &= Q(expense_type_id__in=expense_type_list)
     
 
     # Filter Fields on the Transit Agency model
@@ -346,7 +347,15 @@ def spending_by_budget(request):
 @csrf_exempt
 def spending_by_category(request):
     filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year", "expense_type_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(vehicle_operations=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id="VO"))), \
+                                 vehicle_maintenance=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id="VM"))), \
+                                 non_vehicle_maintenance=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id="NVM"))), \
+                                 general_administration=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id="GA"))), \
+                                 rolling_stock=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id="RS"))), \
+                                 facilities=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id="FC"))), \
+                                 other_capital=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id="OC")))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
