@@ -19,7 +19,7 @@ import {
 const moment = require('moment')
 
 const CustomTooltip = ({ active, payload, label }) => {
-    console.log(payload)
+    // console.log(payload)
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip" style={{backgroundColor: "white", fontSize:"16px", margin:"10px"}}>

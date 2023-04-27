@@ -328,17 +328,13 @@ def process_params(params):
 def spending_by_budget(request):
 
     filters, q = process_params(request.GET)
-    op_q = q & Q(expense_type_id__budget="Operating")
-    cap_q = q & Q(expense_type_id__budget="Capital")
-    op = TransitExpense.objects.filter(op_q).values("year").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
-    cap = TransitExpense.objects.filter(cap_q).values("year").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating"))), \
+                                 capexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Capital")))).\
+        order_by('year')
     data = []
-    for operating_year in op:
-        if operating_year['year'] == 1991:
-            data += [{"year": 1991, "opexp": operating_year['expense'], "capexp": 0}]
-        else:
-            capital_year = cap.get(year_id=operating_year['year'])
-            data += [{"year": operating_year['year'], "opexp": operating_year['expense'], "capexp": capital_year['expense']}]
+    for x in ts:
+        data += [x]
     length = len(data)
     resp = {
         "filters": filters,
@@ -346,7 +342,6 @@ def spending_by_budget(request):
         "data": data
     }
     return JsonResponse(resp, safe=False)
-    # return(JsonResponse({}))
 
 @csrf_exempt
 def spending_by_category(request):
