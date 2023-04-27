@@ -328,10 +328,17 @@ def process_params(params):
 def spending_by_budget(request):
 
     filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year", "expense_type_id__budget").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    op_q = q & Q(expense_type_id__budget="Operating")
+    cap_q = q & Q(expense_type_id__budget="Capital")
+    op = TransitExpense.objects.filter(op_q).values("year").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    cap = TransitExpense.objects.filter(cap_q).values("year").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
     data = []
-    for x in ts:
-        data += [x]
+    for operating_year in op:
+        if operating_year['year'] == 1991:
+            data += [{"year": 1991, "opexp": operating_year['expense'], "capexp": 0}]
+        else:
+            capital_year = cap.get(year_id=operating_year['year'])
+            data += [{"year": operating_year['year'], "opexp": operating_year['expense'], "capexp": capital_year['expense']}]
     length = len(data)
     resp = {
         "filters": filters,
