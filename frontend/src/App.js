@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 function App() {
 
   React.useEffect(() => {
-    axios.get('http://localhost:8000/spending_by_budget/?ntd_id=60048')
+    axios.get('http://localhost:8000/upt_by_mode_type/?ntd_id=1')
         .then(response => setData(response.data.data));
   }, []);
   const [data, setData] = React.useState(null)
@@ -24,7 +24,7 @@ function App() {
         <></>
         <BarChart chartData={data}/>
         <h2>Test Title</h2>
-        <TimeSeriesChart chartData={data}/>
+        {/* <TimeSeriesChart chartData={data}/> */}
       </body>
     </div>
   );

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from views.models import Crash, TransitAgency, TransitExpense, UnlinkedPassengerTrips
+from views.models import Crash, TransitAgency, TransitExpense, UnlinkedPassengerTrips, PassengerMilesTraveled, VehicleRevenueHours, VehicleRevenueMiles, VehiclesOperatedMaximumService, DirectionalRouteMiles
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -410,99 +410,369 @@ def opexp_by_service(request):
 
 @csrf_exempt
 def upt(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = UnlinkedPassengerTrips.objects.filter(q).values("year").annotate(upt=Round(Sum("upt"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
 def pmt(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = PassengerMilesTraveled.objects.filter(q).values("year").annotate(pmt=Round(Sum("pmt"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
 def vrm(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehicleRevenueMiles.objects.filter(q).values("year").annotate(vrm=Round(Sum("vrm"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
 def vrh(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehicleRevenueHours.objects.filter(q).values("year").annotate(vrh=Round(Sum("vrh"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
 def drm(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = DirectionalRouteMiles.objects.filter(q).values("year").annotate(drm=Round(Sum("drm"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
 def voms(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehiclesOperatedMaximumService.objects.filter(q).values("year").annotate(voms=Round(Sum("voms"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
 
 @csrf_exempt
 def upt_by_mode_type(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = UnlinkedPassengerTrips.objects.filter(q).values("year", "mode_id__type").annotate(upt=Round(Sum("upt"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_by_mode_type(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = PassengerMilesTraveled.objects.filter(q).values("year", "mode_id__type").annotate(pmt=Round(Sum("pmt"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def vrm_by_mode_type(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehicleRevenueMiles.objects.filter(q).values("year", "mode_id__type").annotate(vrm=Round(Sum("vrm"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def vrh_by_mode_type(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehicleRevenueHours.objects.filter(q).values("year", "mode_id__type").annotate(vrh=Round(Sum("vrh"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def drm_by_mode_type(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = DirectionalRouteMiles.objects.filter(q).values("year", "mode_id__type").annotate(drm=Round(Sum("drm"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def voms_by_mode_type(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehiclesOperatedMaximumService.objects.filter(q).values("year", "mode_id__type").annotate(voms=Round(Sum("voms"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def upt_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = UnlinkedPassengerTrips.objects.filter(q).values("year", "service_id__name").annotate(upt=Round(Sum("upt"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = PassengerMilesTraveled.objects.filter(q).values("year", "service_id__name").annotate(pmt=Round(Sum("pmt"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def vrm_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehicleRevenueMiles.objects.filter(q).values("year", "service_id__name").annotate(vrm=Round(Sum("vrm"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def vrh_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehicleRevenueHours.objects.filter(q).values("year", "service_id__name").annotate(vrh=Round(Sum("vrh"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def drm_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = DirectionalRouteMiles.objects.filter(q).values("year", "service_id__name").annotate(drm=Round(Sum("drm"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def voms_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehiclesOperatedMaximumService.objects.filter(q).values("year", "service_id__name").annotate(voms=Round(Sum("voms"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def upt_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = UnlinkedPassengerTrips.objects.filter(q).values("year", "mode_id__name").annotate(upt=Round(Sum("upt"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = PassengerMilesTraveled.objects.filter(q).values("year", "mode_id__name").annotate(pmt=Round(Sum("pmt"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def vrm_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehicleRevenueMiles.objects.filter(q).values("year", "mode_id__name").annotate(vrm=Round(Sum("vrm"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def vrh_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehicleRevenueHours.objects.filter(q).values("year", "mode_id__name").annotate(vrh=Round(Sum("vrh"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def drm_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = DirectionalRouteMiles.objects.filter(q).values("year", "mode_id__name").annotate(drm=Round(Sum("drm"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def voms_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    ts = VehiclesOperatedMaximumService.objects.filter(q).values("year", "mode_id__name").annotate(voms=Round(Sum("voms"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 
 
