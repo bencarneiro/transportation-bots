@@ -983,3 +983,13 @@ def pmt_per_vrh_by_service(request):
 @csrf_exempt
 def pmt_per_vrm_by_service(request):
     return(JsonResponse({}))
+
+@csrf_exempt
+def get_uzas(request):
+    # print(request.GET['q'])
+    if "q" in request.GET and request.GET['q']:
+        uzas = TransitAgency.objects.filter(uza_name__icontains=request.GET['q']).values('uza_name', 'uza').distinct().order_by('uza_name')
+        return JsonResponse(list(uzas), safe=False)
+    else:
+        uzas = TransitAgency.objects.values('uza_name', 'uza').distinct().order_by('uza_name')
+        return JsonResponse(list(uzas), safe=False)

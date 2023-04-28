@@ -88,7 +88,8 @@ vrm_per_vrh_by_service,\
 upt_per_vrh_by_service,\
 upt_per_vrm_by_service,\
 pmt_per_vrh_by_service,\
-pmt_per_vrm_by_service\
+pmt_per_vrm_by_service,\
+get_uzas
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -164,5 +165,6 @@ urlpatterns = [
     path('upt_per_vrh_by_service/', upt_per_vrh_by_service, name='upt_per_vrh_by_service'),
     path('upt_per_vrm_by_service/', upt_per_vrm_by_service, name='upt_per_vrm_by_service'),
     path('pmt_per_vrh_by_service/', pmt_per_vrh_by_service, name='pmt_per_vrh_by_service'),
-    path('pmt_per_vrm_by_service/', pmt_per_vrm_by_service, name='pmt_per_vrm_by_service')
+    path('pmt_per_vrm_by_service/', pmt_per_vrm_by_service, name='pmt_per_vrm_by_service'),
+    path('get_uzas/', get_uzas, name='get_uzas')
 ]

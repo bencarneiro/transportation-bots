@@ -10,6 +10,8 @@ import OpexpByCategory from './OpexpByCategory'
 import CapexpByCategory from "./CapexpByCategory"
 import OpexpByModeType from "./OpexpByModeType"
 import CapexpByModeType from "./CapexpByModeType"
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 function App() {
 
@@ -24,18 +26,60 @@ function App() {
         .then(response => setOpexpByModeType(response.data.data));
     axios.get('http://localhost:8000/spending_by_mode_type/?expense_type=RS,FC,OC&ntd_id=1')
         .then(response => setCapexpByModeType(response.data.data));
+    axios.get('http://localhost:8000/get_uzas/')
+        .then(response => setUzaList(response.data));
   }, []);
+
+  // React.useEffect(() => {
+
+  // }, []);
+
+  const [checked, setChecked] = React.useState(false)
+  const [uzas, setUzas] = React.useState(null)
+  const [uzaList, setUzaList] = React.useState([])
+  const [agencies, setAgencies] = React.useState([])
+  const [states, setStates] = React.useState([])
   const [spendingByBudget, setSpendingByBudget] = React.useState(null)
   const [opexpByCategory, setOpexpByCategory] = React.useState(null)
   const [capexpByCategory, setCapexpByCategory] = React.useState(null)
   const [opexpByModeType, setOpexpByModeType] = React.useState(null)
   const [capexpByModeType, setCapexpByModeType] = React.useState(null)
 
-  
+  const handleChange = () =>{
+    setChecked(!checked)
+  }
         
   return (
     <div className="App">
-     
+     <header>
+     <label>
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={handleChange}
+        />
+        My Value
+      </label>
+      {checked && (
+        <p>Penis</p>
+      )}
+      {uzas && (
+        <h1>{uzas.uza_name}</h1>
+      )}
+      {uzaList && (
+        <Autocomplete
+        id="combo-box-demo"
+        getOptionLabel={(option) => option.uza_name}
+        options={uzaList.map((option) => option)}
+        sx={{ width: 300 }}
+        value={uzas}
+        renderInput={(params) => <TextField {...params} label="Movie" />}
+        // onChange={(event)=>{console.log(event)}}
+      />
+      )}
+      
+
+     </header>
       <body>
         <></>
         <h2>Expense by Budget</h2>
