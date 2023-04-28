@@ -296,6 +296,11 @@ def process_params(params):
         filters['ntd_id'] = params['ntd_id']
         ntd_id_list = params['ntd_id'].split(",")
         q &= Q(transit_agency_id__ntd_id__in=ntd_id_list)
+        
+    if "agency" in params and params['agency']:
+        filters['agency'] = params['agency']
+        id_list = params['agency'].split(",")
+        q &= Q(transit_agency_id__in=id_list)
 
     if "uza" in params and params['uza']:
         filters['uza'] = params['uza']
@@ -309,7 +314,7 @@ def process_params(params):
     if "state" in params and params['state']:
         filters['state'] = params['state']
         state_list = params['state'].split(",")
-        q &= Q(transit_agency_id__state=state_list)
+        q &= Q(transit_agency_id__state__in=state_list)
     
     if "uza_population__gte" in params and params['uza_population__gte']:
         filters['uza_population__gte'] = params['uza_population__gte']
@@ -993,3 +998,23 @@ def get_uzas(request):
     else:
         uzas = TransitAgency.objects.values('uza_name', 'uza').distinct().order_by('uza_name')
         return JsonResponse(list(uzas), safe=False)
+
+@csrf_exempt
+def get_states(request):
+    # print(request.GET['q'])
+    if "q" in request.GET and request.GET['q']:
+        states = TransitAgency.objects.filter(state__icontains=request.GET['q']).values('state').distinct().order_by('state')
+        return JsonResponse(list(states), safe=False)
+    else:
+        states = TransitAgency.objects.values('state').distinct().order_by('state')
+        return JsonResponse(list(states), safe=False)
+
+@csrf_exempt
+def get_agencies(request):
+    # print(request.GET['q'])
+    if "q" in request.GET and request.GET['q']:
+        agencies = TransitAgency.objects.filter(agency_name__icontains=request.GET['q']).values('agency_name', 'id').distinct().order_by('agency_name')
+        return JsonResponse(list(agencies), safe=False)
+    else:
+        agencies = TransitAgency.objects.values('agency_name', 'id').distinct().order_by('agency_name')
+        return JsonResponse(list(agencies), safe=False)
