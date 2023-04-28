@@ -300,7 +300,7 @@ def process_params(params):
     if "uza" in params and params['uza']:
         filters['uza'] = params['uza']
         uza_id_list = params['uza'].split(",")
-        q &= Q(transit_agency_id__uza=uza_id_list)
+        q &= Q(transit_agency_id__uza__in=uza_id_list)
 
     # if "city" in params and params['city']:
     #     filters['city'] = params['city']

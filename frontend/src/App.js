@@ -17,28 +17,14 @@ import UzaField from "./UzaField"
 
 function App() {
 
-  React.useEffect(() => {
-    axios.get('http://localhost:8000/spending_by_budget/?ntd_id=1')
-      .then(response => setSpendingByBudget(response.data.data));
-    axios.get('http://localhost:8000/spending_by_category/?expense_type=VO,VM,NVM,GA&ntd_id=1')
-      .then(response => setOpexpByCategory(response.data.data));
-    axios.get('http://localhost:8000/spending_by_category/?expense_type=RS,FC,OC&ntd_id=1')
-      .then(response => setCapexpByCategory(response.data.data));
-    axios.get('http://localhost:8000/spending_by_mode_type/?expense_type=VO,VM,NVM,GA&ntd_id=1')
-      .then(response => setOpexpByModeType(response.data.data));
-    axios.get('http://localhost:8000/spending_by_mode_type/?expense_type=RS,FC,OC&ntd_id=1')
-      .then(response => setCapexpByModeType(response.data.data));
-    axios.get('http://localhost:8000/get_uzas/')
-      .then(response => setUzaList(response.data));
-  }, []);
 
-  // React.useEffect(() => {
 
-  // }, []);
+ 
 
 
   const [uzaIds, setUzaIds] = React.useState([])
-  const [checked, setChecked] = React.useState(false)
+  const [params, setParams] = React.useState("?test=hello")
+  const [uzaParams, setUzaParams] = React.useState("")
   const [uzas, setUzas] = React.useState(null)
   const [uzaList, setUzaList] = React.useState([])
   const [agencies, setAgencies] = React.useState([])
@@ -50,14 +36,52 @@ function App() {
   const [opexpByModeType, setOpexpByModeType] = React.useState(null)
   const [capexpByModeType, setCapexpByModeType] = React.useState(null)
 
-  const handleChange = () => {
-    setChecked(!checked)
-  }
+
+  React.useEffect(() => {
+    axios.get(`http://localhost:8000/spending_by_budget/${params}`)
+      .then(response => setSpendingByBudget(response.data.data));
+    axios.get(`http://localhost:8000/spending_by_category/${params}&expense_type=VO,VM,NVM,GA`)
+      .then(response => setOpexpByCategory(response.data.data));
+    axios.get(`http://localhost:8000/spending_by_category/${params}&expense_type=RS,FC,OC`)
+      .then(response => setCapexpByCategory(response.data.data));
+    axios.get(`http://localhost:8000/spending_by_mode_type/${params}&expense_type=VO,VM,NVM,GA`)
+      .then(response => setOpexpByModeType(response.data.data));
+    axios.get(`http://localhost:8000/spending_by_mode_type/${params}&expense_type=RS,FC,OC`)
+      .then(response => setCapexpByModeType(response.data.data));
+    // axios.get('http://localhost:8000/get_uzas/')
+    //   .then(response => setUzaList(response.data));
+  }, [params]);
+
+
+  React.useEffect(() => {
+
+    let i = 0;
+    let param = "?uza="
+    if (uzaIds) {
+      while (i < uzaIds.length) {
+        param = param.concat(uzaIds[i]['uza'],",")
+        i++;
+    }
+    }
+    
+    console.log(param)
+    if (param !== "&uza=") {
+      setUzaParams(param.substring(0,param.length-1)
+      )
+    } else {
+      setUzaParams("")
+    }
+  }, [uzaIds]);
+
+  React.useEffect(() => {
+    setParams(uzaParams)
+  }, [uzaParams])
+
 
   return (
     <div className="App">
       <header>
-        <h1>Search by State, Urbanized Area, or Transit Agency</h1>
+        <h1>Search by State, Urbanized Area, or Transit</h1>
         <UzaField setUzaIds={(filters) => { setUzaIds(filters) }} />
         {/* {uzaIds && (
         <h1>{uzaIds.map((val)=><div>{val.uza_name}</div>)}</h1>
