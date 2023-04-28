@@ -35,14 +35,6 @@ const CustomTooltip = ({ active, payload, label }) => {
         </div>
       );
     }
-    <YAxis dataKey={'upt'}
-    tickFormatter={(value) =>
-      new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        compactDisplay: "short",
-      }).format(value)
-    } />
-    return null;
   };
 
 const SpendingByBudget = ({ chartData }) => (
@@ -53,14 +45,14 @@ const SpendingByBudget = ({ chartData }) => (
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
-    <YAxis dataKey={"opexp"}
+    <YAxis 
           tickFormatter={(value) =>
             new Intl.NumberFormat("en-US", {
               notation: "compact",
               compactDisplay: "short",
             }).format(value)
           }/>
-    <YAxis dataKey={"capexp"}
+    <YAxis
           tickFormatter={(value) =>
             new Intl.NumberFormat("en-US", {
               notation: "compact",

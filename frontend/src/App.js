@@ -15,6 +15,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import UzaField from "./UzaField"
 import StateField from "./StateField"
 import AgencyField from "./AgencyField"
+import OpexpByService from './OpexpByService';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
   const [capexpByCategory, setCapexpByCategory] = React.useState(null)
   const [opexpByModeType, setOpexpByModeType] = React.useState(null)
   const [capexpByModeType, setCapexpByModeType] = React.useState(null)
+  const [opexpByService, setOpexpByService] = React.useState(null)
   const [stateIds, setStateIds] = React.useState([])
   const [agencyIds, setAgencyIds] = React.useState([])
 
@@ -54,6 +56,8 @@ function App() {
       .then(response => setOpexpByModeType(response.data.data));
     axios.get(`http://localhost:8000/spending_by_mode_type/?t=t${params}&expense_type=RS,FC,OC`)
       .then(response => setCapexpByModeType(response.data.data));
+      axios.get(`http://localhost:8000/opexp_by_service/?t=t${params}&expense_type=VO,VM,NVM,GA`)
+      .then(response => setOpexpByService(response.data.data));
     // axios.get('http://localhost:8000/get_uzas/')
     //   .then(response => setUzaList(response.data));
   }, [params]);
@@ -160,6 +164,8 @@ function App() {
         <OpexpByModeType chartData={opexpByModeType} />
         <h2>Capital Expense By Mode Type</h2>
         <CapexpByModeType chartData={capexpByModeType} />
+        <h2>Operating Expense By Service</h2>
+        <OpexpByService chartData={opexpByService}/>
       </body>
     </div>
   );

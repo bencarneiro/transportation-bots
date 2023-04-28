@@ -70,7 +70,7 @@ const OpexpByModeType = ({ chartData }) => (
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
-    <YAxis dataKey={"bus"}
+    <YAxis 
           tickFormatter={(value) =>
             new Intl.NumberFormat("en-US", {
               notation: "compact",

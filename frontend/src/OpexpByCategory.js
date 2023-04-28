@@ -43,7 +43,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         </div>
       );
     }
-    <YAxis dataKey={'upt'}
+    <YAxis 
     tickFormatter={(value) =>
       new Intl.NumberFormat("en-US", {
         notation: "compact",
@@ -61,7 +61,7 @@ const OpexpByCategory = ({ chartData }) => (
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
-    <YAxis dataKey={"vehicle_operations"}
+    <YAxis 
           tickFormatter={(value) =>
             new Intl.NumberFormat("en-US", {
               notation: "compact",
