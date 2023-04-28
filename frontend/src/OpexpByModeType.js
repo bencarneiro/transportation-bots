@@ -24,39 +24,42 @@ const CustomTooltip = ({ active, payload, label }) => {
     // console.log(payload)
     if (active && payload && payload.length) {
       return (
-        <div className="custom-tooltip" style={{backgroundColor: "white", fontSize:"16px", margin:"10px"}}>
-        <p className="label">{`Year: ${payload[0].payload.year}`}</p>
-        <p className="label">{`Bus: ${new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        compactDisplay: "short",
-      }).format(payload[0].payload.bus)}`}</p>
-        <p className="label">{`Rail: ${new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        compactDisplay: "short",
-      }).format(payload[0].payload.rail)}`}</p>
-    <p className="label">{`MicroTransit: ${new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        compactDisplay: "short",
-      }).format(payload[0].payload.microtransit)}`}</p>
-    <p className="label">{`Ferry: ${new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        compactDisplay: "short",
-      }).format(payload[0].payload.ferry)}`}</p>
-      <p className="label">{`Other: ${new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        compactDisplay: "short",
-      }).format(payload[0].payload.other)}`}</p>
+        <div className="custom-tooltip" style={{ backgroundColor: "white", fontSize: "16px", margin: "10px" }}>
+          <p className="label">{`Year: ${payload[0].payload.year}`}</p>
+          {payload[0].payload.bus > 0 && (
+            <p className="label">{`Bus: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.bus)}`}</p>
+          )}
+  
+          {payload[0].payload.rail > 0 && (
+            <p className="label">{`Rail: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.rail)}`}</p>
+          )}
+          {payload[0].payload.microtransit > 0 && (
+            <p className="label">{`MicroTransit: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.microtransit)}`}</p>
+          )}
+          {payload[0].payload.ferry > 0 && (
+            <p className="label">{`Ferry: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.ferry)}`}</p>
+          )}
+          {payload[0].payload.other > 0 && (
+            <p className="label">{`Other: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.other)}`}</p>
+          )}
         </div>
       );
     }
-    <YAxis dataKey={'upt'}
-    tickFormatter={(value) =>
-      new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        compactDisplay: "short",
-      }).format(value)
-    } />
-    return null;
   };
 
 const OpexpByModeType = ({ chartData }) => (
