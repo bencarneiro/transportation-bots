@@ -845,7 +845,26 @@ def voms_by_mode(request):
 
 @csrf_exempt
 def cost_per_upt(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    spending_ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating")))\
+        .order_by('year')
+    passengers_ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(upt=Round(Sum("upt"))).order_by('year')
+    data = []
+    for x in spending_ts:
+        cost = x['opexp']
+        riders = passengers_ts.get(year=x['year'])['upt']
+        cost_per_upt = round(cost/riders, 2)
+        data += [{"year": x['year'], "cost_per_upt": cost_per_upt}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def cost_per_pmt(request):

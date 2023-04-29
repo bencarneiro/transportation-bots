@@ -28,6 +28,7 @@ import VrhByModeType from './VrhByModeType';
 import VrmByModeType from './VrmByModeType';
 import VomsByModeType from './VomsByModeType';
 import DrmByModeType from "./DrmByModeType"
+import CostPerUpt from './CostPerUpt';
 
 function App() {
 
@@ -62,6 +63,8 @@ function App() {
   const [vrmByModeType, setVrmByModeType] = React.useState(null)
   const [vomsByModeType, setVomsByModeType] = React.useState(null)
   const [drmByModeType, setDrmByModeType] = React.useState(null)
+
+  const [costPerUpt, setCostPerUpt] = React.useState(null)
   
 
 
@@ -102,6 +105,8 @@ function App() {
       .then(response => setVomsByModeType(response.data.data))
       axios.get(`http://localhost:8000/drm_by_mode_type/?t=t${params}`)
       .then(response => setDrmByModeType(response.data.data))
+      axios.get(`http://localhost:8000/cost_per_upt/?t=t${params}`)
+      .then(response => setCostPerUpt(response.data.data))
 
     // axios.get('http://localhost:8000/get_uzas/')
     //   .then(response => setUzaList(response.data));
@@ -246,6 +251,9 @@ function App() {
         <VrhByModeType chartData={vrhByModeType}/>
         <h2>Vehicle Service Miles by Mode Type</h2>
         <VrmByModeType chartData={vrmByModeType}/>
+        <br/>
+        <h2>Cost Per Passenger</h2>
+        <CostPerUpt chartData={costPerUpt}/>
         <br/>
       </body>
     </div>
