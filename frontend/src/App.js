@@ -300,7 +300,7 @@ function App() {
         <h2>Cost Per Vehicle Service Hour</h2>
         <CostPerVrh chartData={costPerVrh}/>
         <br/>
-        <h2>Fare Recover Ratio</h2>
+        <h2>Fare Recovery Ratio</h2>
         <Frr chartData={frr}/>
         <br/>
         <h2>Vehicle Miles per Vehicle Hour</h2>
