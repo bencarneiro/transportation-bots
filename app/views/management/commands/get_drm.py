@@ -40,8 +40,8 @@ class Command(BaseCommand):
             for year in years:
                 new_transit_expense = DirectionalRouteMiles(
                     transit_agency=transit_agency,
-                    mode = drm['Mode'][x],
-                    service = drm['Service'][x],
+                    mode_id = drm['Mode'][x],
+                    service_id = drm['Service'][x],
                     year = int(year),
                     drm = drm[year][x]
                 ).save()

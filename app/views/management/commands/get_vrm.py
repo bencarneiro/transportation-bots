@@ -40,8 +40,8 @@ class Command(BaseCommand):
             for year in years:
                 new_transit_expense = VehicleRevenueMiles(
                     transit_agency=transit_agency,
-                    mode = vrm['Mode'][x],
-                    service = vrm['Service'][x],
+                    mode_id = vrm['Mode'][x],
+                    service_id = vrm['Service'][x],
                     year = int(year),
                     vrm = vrm[year][x]
                 ).save()

@@ -40,8 +40,8 @@ class Command(BaseCommand):
             for year in years:
                 new_transit_expense = PassengerMilesTraveled(
                     transit_agency=transit_agency,
-                    mode = pmt['Mode'][x],
-                    service = pmt['Service'][x],
+                    mode_id = pmt['Mode'][x],
+                    service_id = pmt['Service'][x],
                     year = int(year),
                     pmt = pmt[year][x]
                 ).save()

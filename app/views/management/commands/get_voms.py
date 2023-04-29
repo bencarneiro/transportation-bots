@@ -40,8 +40,8 @@ class Command(BaseCommand):
             for year in years:
                 new_transit_expense = VehiclesOperatedMaximumService(
                     transit_agency=transit_agency,
-                    mode = voms['Mode'][x],
-                    service = voms['Service'][x],
+                    mode_id = voms['Mode'][x],
+                    service_id = voms['Service'][x],
                     year = int(year),
                     voms = voms[year][x]
                 ).save()
