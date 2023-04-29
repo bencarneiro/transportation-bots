@@ -56,8 +56,9 @@ export default function UzaField(props) {
                 }
                 renderInput={(params) => (
                     <TextField
+                    style={{width: "50%", alignContent: "center", alignItems: "center"}} 
                         {...params}
-                        label="Transit Agencies"
+                        label="Filter by Transit Agencies"
                     />
                 )}
             />

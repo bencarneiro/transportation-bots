@@ -106,13 +106,18 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>Explore Transit Spending</h1>
+        <h1>The Transit Explorer</h1>
         <br/>
-        <UzaField setUzaIds={(filters) => { setUzaIds(filters) }} />
+        {/* <h2>Search by City</h2> */}
+        <div  >
+        <UzaField  setUzaIds={(filters) => { setUzaIds(filters) }} />
+        </div>
         <br/>
-        <StateField setStateIds={(filters) => { setStateIds(filters) }} />
+        {/* <h2>Search by State</h2> */}
+        <StateField id="state"  setStateIds={(filters) => { setStateIds(filters) }} />
         <br/>
-        <AgencyField setAgencyIds={(filters) => {setAgencyIds(filters)}}/>
+        {/* <h2>Search by Transit Agency</h2> */}
+        <AgencyField id="agency" setAgencyIds={(filters) => {setAgencyIds(filters)}}/>
         <br/>
         {/* {uzaIds && (
         <h1>{uzaIds.map((val)=><div>{val.uza_name}</div>)}</h1>
