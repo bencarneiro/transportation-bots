@@ -129,7 +129,6 @@ urlpatterns = [
     path('frr/', frr, name='frr'),
     path('cost_per_vrh/', cost_per_vrh, name='cost_per_vrh'),
     path('cost_per_vrm/', cost_per_vrm, name='cost_per_vrm'),
-    path('cost_per_vrh/', cost_per_vrh, name='cost_per_vrh'),
     path('vrm_per_vrh/', vrm_per_vrh, name='vrm_per_vrh'),
     path('upt_per_vrh/', upt_per_vrh, name='upt_per_vrh'),
     path('upt_per_vrm/', upt_per_vrm, name='upt_per_vrm'),
