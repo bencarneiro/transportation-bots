@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from views.models import Crash, TransitAgency, TransitExpense, UnlinkedPassengerTrips, PassengerMilesTraveled, VehicleRevenueHours, VehicleRevenueMiles, VehiclesOperatedMaximumService, DirectionalRouteMiles
+from views.models import Crash, TransitAgency, TransitExpense, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, VehicleRevenueHours, VehicleRevenueMiles, VehiclesOperatedMaximumService, DirectionalRouteMiles
 
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -895,7 +895,30 @@ def cost_per_pmt(request):
 
 @csrf_exempt
 def frr(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    spending_ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating")))\
+        .order_by('year')
+    fares_ts = Fares.objects.filter(q)\
+        .values("year").annotate(fares=Sum(F('fares')))\
+        .order_by('year')
+    data = []
+    for x in spending_ts:
+        cost = x['opexp']
+        print(x)
+        revenue = fares_ts.get(year=x['year'])['fares']
+        if cost == 0:
+            cost = 1
+        frr = round(revenue/cost, 4)
+        data += [{"year": x['year'], "frr": frr}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def cost_per_vrh(request):
@@ -949,23 +972,119 @@ def cost_per_vrm(request):
 
 @csrf_exempt
 def vrm_per_vrh(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    vrm_ts = VehicleRevenueMiles.objects.filter(q)\
+        .values("year").annotate(vrm=Sum("vrm")).order_by("year")
+    vrh_ts = VehicleRevenueHours.objects.filter(q)\
+        .values("year").annotate(vrh=Sum("vrh")).order_by("year")
+    data = []
+    for x in vrm_ts:
+        vrm = x['vrm']
+        vrh = vrh_ts.get(year=x['year'])['vrh']
+        if vrh == 0:
+            vrh = 1
+        vrm_per_vrh = round(vrm/vrh,2)
+        data += [{"year": x['year'], "vrm_per_vrh": vrm_per_vrh}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
 
 @csrf_exempt
 def upt_per_vrh(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(upt=Sum("upt")).order_by("year")
+    vrh_ts = VehicleRevenueHours.objects.filter(q)\
+        .values("year").annotate(vrh=Sum("vrh")).order_by("year")
+    data = []
+    for x in upt_ts:
+        upt = x['upt']
+        vrh = vrh_ts.get(year=x['year'])['vrh']
+        if vrh == 0:
+            vrh = 1
+        upt_per_vrh = round(upt/vrh,2)
+        data += [{"year": x['year'], "upt_per_vrh": upt_per_vrh}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def upt_per_vrm(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(upt=Sum("upt")).order_by("year")
+    vrm_ts = VehicleRevenueMiles.objects.filter(q)\
+        .values("year").annotate(vrm=Sum("vrm")).order_by("year")
+    data = []
+    for x in upt_ts:
+        upt = x['upt']
+        vrm = vrm_ts.get(year=x['year'])['vrm']
+        if vrm == 0:
+            vrm = 1
+        upt_per_vrm = round(upt/vrm,2)
+        data += [{"year": x['year'], "upt_per_vrm": upt_per_vrm}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_per_vrh(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    pmt_ts = PassengerMilesTraveled.objects.filter(q)\
+        .values("year").annotate(pmt=Sum("pmt")).order_by("year")
+    vrh_ts = VehicleRevenueHours.objects.filter(q)\
+        .values("year").annotate(vrh=Sum("vrh")).order_by("year")
+    data = []
+    for x in pmt_ts:
+        pmt = x['pmt']
+        vrh = vrh_ts.get(year=x['year'])['vrh']
+        if vrh == 0:
+            vrh = 1
+        pmt_per_vrh = round(pmt/vrh,2)
+        data += [{"year": x['year'], "pmt_per_vrh": pmt_per_vrh}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_per_vrm(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    pmt_ts = PassengerMilesTraveled.objects.filter(q)\
+        .values("year").annotate(pmt=Sum("pmt")).order_by("year")
+    vrm_ts = VehicleRevenueMiles.objects.filter(q)\
+        .values("year").annotate(vrm=Sum("vrm")).order_by("year")
+    data = []
+    for x in pmt_ts:
+        pmt = x['pmt']
+        vrm = vrm_ts.get(year=x['year'])['vrm']
+        if vrm == 0:
+            vrm = 1
+        pmt_per_vrm = round(pmt/vrm,2)
+        data += [{"year": x['year'], "pmt_per_vrm": pmt_per_vrm}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 
 
