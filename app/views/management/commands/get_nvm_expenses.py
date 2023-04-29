@@ -40,9 +40,9 @@ class Command(BaseCommand):
             for year in years:
                 new_transit_expense = TransitExpense(
                     transit_agency=transit_agency,
-                    mode = expense_nvm['Mode'][x],
-                    service = expense_nvm['Service'][x],
-                    year = int(year),
-                    expense_type = "NVM",
+                    mode_id = expense_nvm['Mode'][x],
+                    service_id = expense_nvm['Service'][x],
+                    year_id = int(year),
+                    expense_type_id = "NVM",
                     expense = expense_nvm[year][x]
                 ).save()

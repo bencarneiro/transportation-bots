@@ -40,8 +40,8 @@ class Command(BaseCommand):
             for year in years:
                 new_transit_expense = UnlinkedPassengerTrips(
                     transit_agency=transit_agency,
-                    mode = upt['Mode'][x],
-                    service = upt['Service'][x],
+                    mode_id = upt['Mode'][x],
+                    service_id = upt['Service'][x],
                     year = int(year),
                     upt = upt[year][x]
                 ).save()
