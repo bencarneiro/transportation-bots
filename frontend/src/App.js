@@ -16,6 +16,12 @@ import UzaField from "./UzaField"
 import StateField from "./StateField"
 import AgencyField from "./AgencyField"
 import OpexpByService from './OpexpByService';
+import Upt from "./Upt"
+import Pmt from "./Pmt"
+import Voms from "./Voms"
+import Drm from "./Drm"
+import Vrm from "./Vrm"
+import Vrh from "./Vrh"
 
 
 function App() {
@@ -25,24 +31,27 @@ function App() {
  
 
 
-  const [uzaIds, setUzaIds] = React.useState([])
+  
   const [params, setParams] = React.useState("")
   const [uzaParams, setUzaParams] = React.useState("")
   const [stateParams, setStateParams] = React.useState("")
   const [agencyParams, setAgencyParams] = React.useState("")
-  const [uzas, setUzas] = React.useState(null)
-  const [uzaList, setUzaList] = React.useState([])
-  const [agencies, setAgencies] = React.useState([])
-  const [states, setStates] = React.useState([])
-  const [uzaQ, setUzaQ] = React.useState(null)
+  const [uzaIds, setUzaIds] = React.useState([])
+  const [stateIds, setStateIds] = React.useState([])
+  const [agencyIds, setAgencyIds] = React.useState([])
   const [spendingByBudget, setSpendingByBudget] = React.useState(null)
   const [opexpByCategory, setOpexpByCategory] = React.useState(null)
   const [capexpByCategory, setCapexpByCategory] = React.useState(null)
   const [opexpByModeType, setOpexpByModeType] = React.useState(null)
   const [capexpByModeType, setCapexpByModeType] = React.useState(null)
   const [opexpByService, setOpexpByService] = React.useState(null)
-  const [stateIds, setStateIds] = React.useState([])
-  const [agencyIds, setAgencyIds] = React.useState([])
+  const [upt, setUpt] = React.useState(null)
+  const [pmt, setPmt] = React.useState(null)
+  const [vrm, setVrm] = React.useState(null)
+  const [vrh, setVrh] = React.useState(null)
+  const [voms, setVoms] = React.useState(null)
+  const [drm, setDrm] = React.useState(null)
+  
 
 
   React.useEffect(() => {
@@ -58,6 +67,19 @@ function App() {
       .then(response => setCapexpByModeType(response.data.data));
       axios.get(`http://localhost:8000/opexp_by_service/?t=t${params}&expense_type=VO,VM,NVM,GA`)
       .then(response => setOpexpByService(response.data.data));
+      axios.get(`http://localhost:8000/upt/?t=t${params}`)
+      .then(response => setUpt(response.data.data));
+      axios.get(`http://localhost:8000/pmt/?t=t${params}`)
+      .then(response => setPmt(response.data.data));
+      axios.get(`http://localhost:8000/vrh/?t=t${params}`)
+      .then(response => setVrh(response.data.data));
+      axios.get(`http://localhost:8000/vrm/?t=t${params}`)
+      .then(response => setVrm(response.data.data));
+      axios.get(`http://localhost:8000/voms/?t=t${params}`)
+      .then(response => setVoms(response.data.data));
+      axios.get(`http://localhost:8000/drm/?t=t${params}`)
+      .then(response => setDrm(response.data.data));
+
     // axios.get('http://localhost:8000/get_uzas/')
     //   .then(response => setUzaList(response.data));
   }, [params]);
@@ -156,16 +178,40 @@ function App() {
         <></>
         <h2>Expense by Budget</h2>
         <SpendingByBudget chartData={spendingByBudget} />
+        <br/>
         <h2>Operating Expense by Type</h2>
         <OpexpByCategory chartData={opexpByCategory} />
+        <br/>
         <h2>Capital Expense by Type</h2>
         <CapexpByCategory chartData={capexpByCategory} />
+        <br/>
         <h2>Operating Expense By Mode Type</h2>
         <OpexpByModeType chartData={opexpByModeType} />
+        <br/>
         <h2>Capital Expense By Mode Type</h2>
         <CapexpByModeType chartData={capexpByModeType} />
+        <br/>
         <h2>Operating Expense By Service</h2>
         <OpexpByService chartData={opexpByService}/>
+        <br/>
+        <h2>Passenger Trips</h2>
+        <Upt chartData={upt}/>
+        <br/>
+        <h2>Passenger Miles</h2>
+        <Pmt chartData={pmt}/>
+        <br/>
+        <h2>Vehicles Operated in Maximum Service</h2>
+        <Voms chartData={voms}/>
+        <br/>
+        <h2>Directional Route Miles</h2>
+        <Drm chartData={drm}/>
+        <br/>
+        <h2>Vehicle Miles</h2>
+        <Vrm chartData={vrm}/>
+        <br/>
+        <h2>Vehicle Hours</h2>
+        <Vrh chartData={vrh}/>
+        <br/>
       </body>
     </div>
   );

@@ -174,7 +174,7 @@ class Fares(models.Model):
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING, default="nan")
     mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
     service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
-    year = models.IntegerField(null=False)
+    year = models.ForeignKey(ConsumerPriceIndex, on_delete=models.DO_NOTHING)
     fares = models.BigIntegerField(null=False)
 
     class Meta:
