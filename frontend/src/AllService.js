@@ -65,7 +65,7 @@ function AllService(props) {
   
       // axios.get('http://localhost:8000/get_uzas/')
       //   .then(response => setUzaList(response.data));
-    }, [props]);
+    }, [props.params]);
 
 
 

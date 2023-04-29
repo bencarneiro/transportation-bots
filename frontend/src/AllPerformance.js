@@ -50,7 +50,7 @@ function AllPerformance(props) {
       axios.get(`http://localhost:8000/pmt_per_vrm/?t=t${props.params}`)
       .then(response => setPmtPerVrm(response.data.data))
 
-  }, [props]);
+  }, [props.params]);
 
 
 

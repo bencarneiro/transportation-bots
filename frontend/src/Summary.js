@@ -16,15 +16,9 @@ import FerrySummary from './FerrySummary';
 function Summary(props) {
 
 
-  const [spendingByBudget, setSpendingByBudget] = React.useState(null)
 
   const [alignment, setAlignment] = React.useState('all');
 
-
-  React.useEffect(() => {
-    axios.get(`http://localhost:8000/spending_by_budget/?t=t${props.params}`)
-      .then(response => setSpendingByBudget(response.data.data));}
-  , [props])
   
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
