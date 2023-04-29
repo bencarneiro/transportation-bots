@@ -1,43 +1,17 @@
-import logo from './logo.svg';
 import './App.css';
-import TimeSeriesChart from './TimeSeries.js'
-import BarChart from './BarChart.js'
+
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import axios from "axios"
 import React, { useState } from 'react';
-import SpendingByBudget from './SpendingByBudget';
-import OpexpByCategory from './OpexpByCategory'
-import CapexpByCategory from "./CapexpByCategory"
-import OpexpByModeType from "./OpexpByModeType"
-import CapexpByModeType from "./CapexpByModeType"
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 import UzaField from "./UzaField"
 import StateField from "./StateField"
 import AgencyField from "./AgencyField"
-import OpexpByService from './OpexpByService';
-import Upt from "./Upt"
-import Pmt from "./Pmt"
-import Voms from "./Voms"
-import Drm from "./Drm"
-import Vrm from "./Vrm"
-import Vrh from "./Vrh"
-import UptByModeType from "./UptByModeType"
-import PmtByModeType from './PmtByModeType';
-import VrhByModeType from './VrhByModeType';
-import VrmByModeType from './VrmByModeType';
-import VomsByModeType from './VomsByModeType';
-import DrmByModeType from "./DrmByModeType"
-import CostPerUpt from './CostPerUpt';
-import CostPerPmt from './CostPerPmt';
-import CostPerVrh from './CostPerVrh';
-import CostPerVrm from './CostPerVrm';
-import Frr from './Frr';
-import VrmPerVrh from './VrmPerVrh';
-import PmtPerVrh from './PmtPerVrh';
-import PmtPerVrm from './PmtPerVrm';
-import UptPerVrh from './UptPerVrh';
-import UptPerVrm from './UptPerVrm';
+import Expenses from './Expenses';
+import Service from './Service';
+import Performance from './Performance';
+import Summary from './Summary';
 
 function App() {
 
@@ -47,6 +21,7 @@ function App() {
 
 
   
+  const [alignment, setAlignment] = React.useState('summary');
   const [params, setParams] = React.useState("")
   const [uzaParams, setUzaParams] = React.useState("")
   const [stateParams, setStateParams] = React.useState("")
@@ -54,100 +29,6 @@ function App() {
   const [uzaIds, setUzaIds] = React.useState([])
   const [stateIds, setStateIds] = React.useState([])
   const [agencyIds, setAgencyIds] = React.useState([])
-  const [spendingByBudget, setSpendingByBudget] = React.useState(null)
-  const [opexpByCategory, setOpexpByCategory] = React.useState(null)
-  const [capexpByCategory, setCapexpByCategory] = React.useState(null)
-  const [opexpByModeType, setOpexpByModeType] = React.useState(null)
-  const [capexpByModeType, setCapexpByModeType] = React.useState(null)
-  const [opexpByService, setOpexpByService] = React.useState(null)
-  const [upt, setUpt] = React.useState(null)
-  const [pmt, setPmt] = React.useState(null)
-  const [vrm, setVrm] = React.useState(null)
-  const [vrh, setVrh] = React.useState(null)
-  const [voms, setVoms] = React.useState(null)
-  const [drm, setDrm] = React.useState(null)
-  const [uptByModeType, setUptByModeType] = React.useState(null)
-  const [pmtByModeType, setPmtByModeType] = React.useState(null)
-  const [vrhByModeType, setVrhByModeType] = React.useState(null)
-  const [vrmByModeType, setVrmByModeType] = React.useState(null)
-  const [vomsByModeType, setVomsByModeType] = React.useState(null)
-  const [drmByModeType, setDrmByModeType] = React.useState(null)
-
-  const [costPerUpt, setCostPerUpt] = React.useState(null)
-  const [costPerPmt, setCostPerPmt] = React.useState(null)
-  const [costPerVrh, setCostPerVrh] = React.useState(null)
-  const [costPerVrm, setCostPerVrm] = React.useState(null)
-  const [frr, setFrr] = React.useState(null)
-  const [vrmPerVrh, setVrmPerVrh] = React.useState(null)
-  const [uptPerVrh, setUptPerVrh] = React.useState(null)
-  const [uptPerVrm, setUptPerVrm] = React.useState(null)
-  const [pmtPerVrh, setPmtPerVrh] = React.useState(null)
-  const [pmtPerVrm, setPmtPerVrm] = React.useState(null)
-  
-
-
-  React.useEffect(() => {
-    axios.get(`http://localhost:8000/spending_by_budget/?t=t${params}`)
-      .then(response => setSpendingByBudget(response.data.data));
-    axios.get(`http://localhost:8000/spending_by_category/?t=t${params}&expense_type=VO,VM,NVM,GA`)
-      .then(response => setOpexpByCategory(response.data.data));
-    axios.get(`http://localhost:8000/spending_by_category/?t=t${params}&expense_type=RS,FC,OC`)
-      .then(response => setCapexpByCategory(response.data.data));
-    axios.get(`http://localhost:8000/spending_by_mode_type/?t=t${params}&expense_type=VO,VM,NVM,GA`)
-      .then(response => setOpexpByModeType(response.data.data));
-    axios.get(`http://localhost:8000/spending_by_mode_type/?t=t${params}&expense_type=RS,FC,OC`)
-      .then(response => setCapexpByModeType(response.data.data));
-      axios.get(`http://localhost:8000/opexp_by_service/?t=t${params}&expense_type=VO,VM,NVM,GA`)
-      .then(response => setOpexpByService(response.data.data));
-      axios.get(`http://localhost:8000/upt/?t=t${params}`)
-      .then(response => setUpt(response.data.data));
-      axios.get(`http://localhost:8000/pmt/?t=t${params}`)
-      .then(response => setPmt(response.data.data));
-      axios.get(`http://localhost:8000/vrh/?t=t${params}`)
-      .then(response => setVrh(response.data.data));
-      axios.get(`http://localhost:8000/vrm/?t=t${params}`)
-      .then(response => setVrm(response.data.data));
-      axios.get(`http://localhost:8000/voms/?t=t${params}`)
-      .then(response => setVoms(response.data.data));
-      axios.get(`http://localhost:8000/drm/?t=t${params}`)
-      .then(response => setDrm(response.data.data));
-      axios.get(`http://localhost:8000/upt_by_mode_type/?t=t${params}`)
-      .then(response => setUptByModeType(response.data.data))
-      axios.get(`http://localhost:8000/pmt_by_mode_type/?t=t${params}`)
-      .then(response => setPmtByModeType(response.data.data))
-      axios.get(`http://localhost:8000/vrm_by_mode_type/?t=t${params}`)
-      .then(response => setVrmByModeType(response.data.data))
-      axios.get(`http://localhost:8000/vrh_by_mode_type/?t=t${params}`)
-      .then(response => setVrhByModeType(response.data.data))
-      axios.get(`http://localhost:8000/voms_by_mode_type/?t=t${params}`)
-      .then(response => setVomsByModeType(response.data.data))
-      axios.get(`http://localhost:8000/drm_by_mode_type/?t=t${params}`)
-      .then(response => setDrmByModeType(response.data.data))
-      axios.get(`http://localhost:8000/cost_per_upt/?t=t${params}`)
-      .then(response => setCostPerUpt(response.data.data))
-      axios.get(`http://localhost:8000/cost_per_pmt/?t=t${params}`)
-      .then(response => setCostPerPmt(response.data.data))
-      axios.get(`http://localhost:8000/cost_per_vrh/?t=t${params}`)
-      .then(response => setCostPerVrh(response.data.data))
-      axios.get(`http://localhost:8000/cost_per_vrm/?t=t${params}`)
-      .then(response => setCostPerVrm(response.data.data))
-      axios.get(`http://localhost:8000/frr/?t=t${params}`)
-      .then(response => setFrr(response.data.data))
-      axios.get(`http://localhost:8000/vrm_per_vrh/?t=t${params}`)
-      .then(response => setVrmPerVrh(response.data.data))
-      axios.get(`http://localhost:8000/upt_per_vrh/?t=t${params}`)
-      .then(response => setUptPerVrh(response.data.data))
-      axios.get(`http://localhost:8000/upt_per_vrm/?t=t${params}`)
-      .then(response => setUptPerVrm(response.data.data))
-      axios.get(`http://localhost:8000/pmt_per_vrh/?t=t${params}`)
-      .then(response => setPmtPerVrh(response.data.data))
-      axios.get(`http://localhost:8000/pmt_per_vrm/?t=t${params}`)
-      .then(response => setPmtPerVrm(response.data.data))
-
-    // axios.get('http://localhost:8000/get_uzas/')
-    //   .then(response => setUzaList(response.data));
-  }, [params]);
-
 
   React.useEffect(() => {
 
@@ -218,7 +99,9 @@ function App() {
     setParams(uzaParams.concat(stateParams,agencyParams))
   }, [uzaParams, stateParams, agencyParams])
   
-
+  const handleChange = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  };
 
   return (
     <div className="App">
@@ -238,86 +121,34 @@ function App() {
 
 
       </header>
+      <ToggleButtonGroup
+      size="large"
+      color="primary"
+      value={alignment}
+      exclusive
+      onChange={handleChange}
+      aria-label="Platform"
+    >
+      
+      <ToggleButton value="summary">Executive Summary</ToggleButton>
+      <ToggleButton value="expenses">Expenses</ToggleButton>
+      <ToggleButton value="service">Service</ToggleButton>
+      <ToggleButton value="performance">Performance</ToggleButton>
+    </ToggleButtonGroup>
       <body>
         <></>
-        <h2>Expense by Budget</h2>
-        <SpendingByBudget chartData={spendingByBudget} />
-        <br/>
-        <h2>Operating Expense by Type</h2>
-        <OpexpByCategory chartData={opexpByCategory} />
-        <br/>
-        <h2>Capital Expense by Type</h2>
-        <CapexpByCategory chartData={capexpByCategory} />
-        <br/>
-        <h2>Operating Expense By Mode Type</h2>
-        <OpexpByModeType chartData={opexpByModeType} />
-        <br/>
-        <h2>Capital Expense By Mode Type</h2>
-        <CapexpByModeType chartData={capexpByModeType} />
-        <br/>
-        <h2>Operating Expense By Service</h2>
-        <OpexpByService chartData={opexpByService}/>
-        <br/>
-        <h2>Passenger Trips</h2>
-        <Upt chartData={upt}/>
-        <br/>
-        <h2>Passenger Miles</h2>
-        <Pmt chartData={pmt}/>
-        <br/>
-        <h2>Vehicles Operated in Maximum Service</h2>
-        <Voms chartData={voms}/>
-        <br/>
-        <h2>Directional Route Miles</h2>
-        <Drm chartData={drm}/>
-        <br/>
-        <h2>Vehicle Miles</h2>
-        <Vrm chartData={vrm}/>
-        <br/>
-        <h2>Vehicle Hours</h2>
-        <Vrh chartData={vrh}/>
-        <h2>Passengers by Mode Type</h2>
-        <UptByModeType chartData={uptByModeType}/>
-        <h2>Passenger Miles by Mode Type</h2>
-        <PmtByModeType chartData={pmtByModeType}/>
-        <h2>Vehicles in Max Service by Mode Type</h2>
-        <VomsByModeType chartData={vomsByModeType}/>
-        <h2>Route Miles by Mode Type</h2>
-        <DrmByModeType chartData={drmByModeType}/>
-        <h2>Vehicle Service Hours by Mode Type</h2>
-        <VrhByModeType chartData={vrhByModeType}/>
-        <h2>Vehicle Service Miles by Mode Type</h2>
-        <VrmByModeType chartData={vrmByModeType}/>
-        <br/>
-        <h2>Cost Per Passenger</h2>
-        <CostPerUpt chartData={costPerUpt}/>
-        <br/>
-        <h2>Cost Per Passenger Mile</h2>
-        <CostPerPmt chartData={costPerPmt}/>
-        <br/>
-        <h2>Cost Per Vehicle Service Mile</h2>
-        <CostPerVrm chartData={costPerVrm}/>
-        <br/>
-        <h2>Cost Per Vehicle Service Hour</h2>
-        <CostPerVrh chartData={costPerVrh}/>
-        <br/>
-        <h2>Fare Recovery Ratio</h2>
-        <Frr chartData={frr}/>
-        <br/>
-        <h2>Vehicle Miles per Vehicle Hour</h2>
-        <VrmPerVrh chartData={vrmPerVrh}/>
-        <br/>
-        <h2>Passengers per Service Mile</h2>
-        <UptPerVrm chartData={uptPerVrm}/>
-        <br/>
-        <h2>Passengers per Service Hour</h2>
-        <UptPerVrh chartData={uptPerVrh}/>
-        <br/>
-        <h2>Passenger Miles per Vehicle Mile</h2>
-        <PmtPerVrm chartData={pmtPerVrm}/>
-        <br/>
-        <h2>Passenger Miles per Vehicle Hours</h2>
-        <PmtPerVrh chartData={pmtPerVrh}/>
-        <br/>
+        {alignment == "summary" && (
+          <Summary params={params}/>
+        )}
+        {alignment == "expenses" && (
+          <Expenses params={params}/>
+        )}
+        {alignment == "service" && (
+          <Service params={params}/>
+        )}
+        {alignment == "performance" && (
+          <Performance params={params}/>
+        )}
       </body>
     </div>
   );
