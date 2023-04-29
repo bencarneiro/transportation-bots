@@ -534,7 +534,13 @@ def voms(request):
 @csrf_exempt
 def upt_by_mode_type(request):
     filters, q = process_params(request.GET)
-    ts = UnlinkedPassengerTrips.objects.filter(q).values("year", "mode_id__type").annotate(upt=Round(Sum("upt"))).order_by('year')
+    ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(bus=Round(Sum(F('upt'), filter=Q(mode_id__type="Bus"))), \
+                                 rail=Round(Sum(F('upt'), filter=Q(mode_id__type="Rail"))), \
+                                 microtransit=Round(Sum(F('upt'), filter=Q(mode_id__type="MicroTransit"))), \
+                                 ferry=Round(Sum(F('upt'), filter=Q(mode_id__type="Ferry"))), \
+                                 other=Round(Sum(F('upt'), filter=Q(mode_id__type="Other")))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -549,7 +555,13 @@ def upt_by_mode_type(request):
 @csrf_exempt
 def pmt_by_mode_type(request):
     filters, q = process_params(request.GET)
-    ts = PassengerMilesTraveled.objects.filter(q).values("year", "mode_id__type").annotate(pmt=Round(Sum("pmt"))).order_by('year')
+    ts = PassengerMilesTraveled.objects.filter(q)\
+        .values("year").annotate(bus=Round(Sum(F('pmt'), filter=Q(mode_id__type="Bus"))), \
+                                 rail=Round(Sum(F('pmt'), filter=Q(mode_id__type="Rail"))), \
+                                 microtransit=Round(Sum(F('pmt'), filter=Q(mode_id__type="MicroTransit"))), \
+                                 ferry=Round(Sum(F('pmt'), filter=Q(mode_id__type="Ferry"))), \
+                                 other=Round(Sum(F('pmt'), filter=Q(mode_id__type="Other")))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -564,7 +576,13 @@ def pmt_by_mode_type(request):
 @csrf_exempt
 def vrm_by_mode_type(request):
     filters, q = process_params(request.GET)
-    ts = VehicleRevenueMiles.objects.filter(q).values("year", "mode_id__type").annotate(vrm=Round(Sum("vrm"))).order_by('year')
+    ts = VehicleRevenueMiles.objects.filter(q)\
+        .values("year").annotate(bus=Round(Sum(F('vrm'), filter=Q(mode_id__type="Bus"))), \
+                                 rail=Round(Sum(F('vrm'), filter=Q(mode_id__type="Rail"))), \
+                                 microtransit=Round(Sum(F('vrm'), filter=Q(mode_id__type="MicroTransit"))), \
+                                 ferry=Round(Sum(F('vrm'), filter=Q(mode_id__type="Ferry"))), \
+                                 other=Round(Sum(F('vrm'), filter=Q(mode_id__type="Other")))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -579,7 +597,13 @@ def vrm_by_mode_type(request):
 @csrf_exempt
 def vrh_by_mode_type(request):
     filters, q = process_params(request.GET)
-    ts = VehicleRevenueHours.objects.filter(q).values("year", "mode_id__type").annotate(vrh=Round(Sum("vrh"))).order_by('year')
+    ts = VehicleRevenueHours.objects.filter(q)\
+        .values("year").annotate(bus=Round(Sum(F('vrh'), filter=Q(mode_id__type="Bus"))), \
+                                 rail=Round(Sum(F('vrh'), filter=Q(mode_id__type="Rail"))), \
+                                 microtransit=Round(Sum(F('vrh'), filter=Q(mode_id__type="MicroTransit"))), \
+                                 ferry=Round(Sum(F('vrh'), filter=Q(mode_id__type="Ferry"))), \
+                                 other=Round(Sum(F('vrh'), filter=Q(mode_id__type="Other")))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -594,7 +618,13 @@ def vrh_by_mode_type(request):
 @csrf_exempt
 def drm_by_mode_type(request):
     filters, q = process_params(request.GET)
-    ts = DirectionalRouteMiles.objects.filter(q).values("year", "mode_id__type").annotate(drm=Round(Sum("drm"))).order_by('year')
+    ts = DirectionalRouteMiles.objects.filter(q)\
+        .values("year").annotate(bus=Round(Sum(F('drm'), filter=Q(mode_id__type="Bus"))), \
+                                 rail=Round(Sum(F('drm'), filter=Q(mode_id__type="Rail"))), \
+                                 microtransit=Round(Sum(F('drm'), filter=Q(mode_id__type="MicroTransit"))), \
+                                 ferry=Round(Sum(F('drm'), filter=Q(mode_id__type="Ferry"))), \
+                                 other=Round(Sum(F('drm'), filter=Q(mode_id__type="Other")))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -609,7 +639,13 @@ def drm_by_mode_type(request):
 @csrf_exempt
 def voms_by_mode_type(request):
     filters, q = process_params(request.GET)
-    ts = VehiclesOperatedMaximumService.objects.filter(q).values("year", "mode_id__type").annotate(voms=Round(Sum("voms"))).order_by('year')
+    ts = VehiclesOperatedMaximumService.objects.filter(q)\
+        .values("year").annotate(bus=Round(Sum(F('voms'), filter=Q(mode_id__type="Bus"))), \
+                                 rail=Round(Sum(F('voms'), filter=Q(mode_id__type="Rail"))), \
+                                 microtransit=Round(Sum(F('voms'), filter=Q(mode_id__type="MicroTransit"))), \
+                                 ferry=Round(Sum(F('voms'), filter=Q(mode_id__type="Ferry"))), \
+                                 other=Round(Sum(F('voms'), filter=Q(mode_id__type="Other")))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]

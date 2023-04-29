@@ -51,7 +51,7 @@ const Drm = ({ chartData }) => (
               notation: "compact",
               compactDisplay: "short",
             }).format(value)
-          }/>
+    }/>
     {/* <YAxis dataKey={"capexp"}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en-US", {
@@ -72,7 +72,9 @@ Drm.propTypes = {
     chartData: PropTypes.arrayOf(
       PropTypes.shape({
         year: PropTypes.number,
-        drm: PropTypes.number
+        bus: PropTypes.number,
+        rail: PropTypes.number,
+        microtransit: PropTypes.number
       })
     ).isRequired
   }
