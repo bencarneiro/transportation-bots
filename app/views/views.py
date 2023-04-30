@@ -397,7 +397,31 @@ def spending_by_mode_type(request):
 @csrf_exempt
 def spending_by_mode(request):
     filters, q = process_params(request.GET)
-    ts = TransitExpense.objects.filter(q).values("year", "mode_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(mb=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="MB"))), \
+                                 cb=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="CB"))), \
+                                 rb=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="RB"))), \
+                                 tb=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="TB"))), \
+                                 pb=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="PB"))), \
+                                 hr=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="HR"))), \
+                                 lr=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="LR"))), \
+                                 cr=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="CR"))), \
+                                 yr=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="YR"))), \
+                                 sr=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="SR"))), \
+                                 cc=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="CC"))), \
+                                 mg=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="MG"))), \
+                                 ip=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="IP"))), \
+                                 ar=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="AR"))), \
+                                 other_rail=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="OR"))), \
+                                 dr=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="DR"))), \
+                                 dt=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="DT"))), \
+                                 vp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="VP"))), \
+                                 jt=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="JT"))), \
+                                 fb=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="FB"))), \
+                                 tr=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id="TR"))), \
+                                 ot=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+
     data = []
     for x in ts:
         data += [x]
