@@ -1346,7 +1346,7 @@ def cost_per_upt_by_mode_type(request):
         ferry_cpp = round(ferry_opexp/ferry_upt, 2)
         other_cpp = round(other_opexp/other_upt, 2)
 
-        data += [{"year": x['year'], "bus_cpp": bus_cpp, "rail_cpp": rail_cpp, "microtransit_cpp": microtransit_cpp, "ferry_cpp": ferry_cpp, "other_cpp": other_cpp}]
+        data += [{"year": x['year'], "bus": bus_cpp, "rail": rail_cpp, "microtransit": microtransit_cpp, "ferry": ferry_cpp, "other": other_cpp}]
     length = len(data)
     resp = {
         "filters": filters,
@@ -1357,7 +1357,70 @@ def cost_per_upt_by_mode_type(request):
 
 @csrf_exempt
 def cost_per_pmt_by_mode_type(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    spending_ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(
+            bus_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id__type="Bus")),
+            rail_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id__type="Rail")),
+            microtransit_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id__type="MicroTransit")),
+            ferry_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id__type="Ferry")),
+            other_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id__type="Other"))
+        )\
+        .order_by('year')
+    pmt_ts = PassengerMilesTraveled.objects.filter(q)\
+        .values("year").annotate(
+            bus_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="Bus")),
+            rail_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="Rail")),
+            microtransit_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="MicroTransit")),
+            ferry_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="Ferry")),
+            other_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="Other")),
+        ).order_by('year')
+    data = []
+    for x in spending_ts:
+        bus_opexp = x['bus_opexp']
+        rail_opexp = x['rail_opexp']
+        microtransit_opexp = x['microtransit_opexp']
+        ferry_opexp = x['ferry_opexp']
+        other_opexp = x['other_opexp']
+
+        ridership = pmt_ts.get(year=x['year'])
+
+        if ridership['bus_pmt'] and ridership['bus_pmt'] > 0:
+            bus_pmt = ridership['bus_pmt']
+        else:
+            bus_pmt = 1
+        if ridership['rail_pmt'] and ridership['rail_pmt'] > 0:
+            rail_pmt = ridership['rail_pmt']
+        else:
+            rail_pmt = 1
+        if ridership['microtransit_pmt'] and ridership['microtransit_pmt'] > 0:
+            microtransit_pmt = ridership['microtransit_pmt']
+        else:
+            microtransit_pmt = 1
+        if ridership['ferry_pmt'] and ridership['ferry_pmt'] > 0:
+            ferry_pmt = ridership['ferry_pmt']
+        else:
+            ferry_pmt = 1
+        if ridership['other_pmt'] and ridership['other_pmt'] > 0:
+            other_pmt = ridership['other_pmt']
+        else:
+            other_pmt = 1
+
+        bus_cpp = round(bus_opexp/bus_pmt, 2)
+        rail_cpp = round(rail_opexp/rail_pmt, 2)
+        microtransit_cpp = round(microtransit_opexp/microtransit_pmt, 2)
+        ferry_cpp = round(ferry_opexp/ferry_pmt, 2)
+        other_cpp = round(other_opexp/other_pmt, 2)
+
+        data += [{"year": x['year'], "bus": bus_cpp, "rail": rail_cpp, "microtransit": microtransit_cpp, "ferry": ferry_cpp, "other": other_cpp}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def frr_by_mode_type(request):
