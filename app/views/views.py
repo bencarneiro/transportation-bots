@@ -684,7 +684,13 @@ def voms_by_mode_type(request):
 @csrf_exempt
 def upt_by_service(request):
     filters, q = process_params(request.GET)
-    ts = UnlinkedPassengerTrips.objects.filter(q).values("year", "service_id__name").annotate(upt=Round(Sum("upt"))).order_by('year')
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(directly_operated=Round(Sum(F('upt'), filter=Q(service_id="DO"))), \
+                                 purchased_transportation=Round(Sum(F('upt'), filter=Q(service_id="PT"))), \
+                                 taxi=Round(Sum(F('upt'), filter=Q(service_id="TX"))), \
+                                 other=Round(Sum(F('upt'), filter=Q(service_id="OT")))) \
+        .order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -699,7 +705,13 @@ def upt_by_service(request):
 @csrf_exempt
 def pmt_by_service(request):
     filters, q = process_params(request.GET)
-    ts = PassengerMilesTraveled.objects.filter(q).values("year", "service_id__name").annotate(pmt=Round(Sum("pmt"))).order_by('year')
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = PassengerMilesTraveled.objects.filter(q)\
+        .values("year").annotate(directly_operated=Round(Sum(F('pmt'), filter=Q(service_id="DO"))), \
+                                 purchased_transportation=Round(Sum(F('pmt'), filter=Q(service_id="PT"))), \
+                                 taxi=Round(Sum(F('pmt'), filter=Q(service_id="TX"))), \
+                                 other=Round(Sum(F('pmt'), filter=Q(service_id="OT")))) \
+        .order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -714,7 +726,13 @@ def pmt_by_service(request):
 @csrf_exempt
 def vrm_by_service(request):
     filters, q = process_params(request.GET)
-    ts = VehicleRevenueMiles.objects.filter(q).values("year", "service_id__name").annotate(vrm=Round(Sum("vrm"))).order_by('year')
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = VehicleRevenueMiles.objects.filter(q)\
+        .values("year").annotate(directly_operated=Round(Sum(F('vrm'), filter=Q(service_id="DO"))), \
+                                 purchased_transportation=Round(Sum(F('vrm'), filter=Q(service_id="PT"))), \
+                                 taxi=Round(Sum(F('vrm'), filter=Q(service_id="TX"))), \
+                                 other=Round(Sum(F('vrm'), filter=Q(service_id="OT")))) \
+        .order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -729,7 +747,13 @@ def vrm_by_service(request):
 @csrf_exempt
 def vrh_by_service(request):
     filters, q = process_params(request.GET)
-    ts = VehicleRevenueHours.objects.filter(q).values("year", "service_id__name").annotate(vrh=Round(Sum("vrh"))).order_by('year')
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = VehicleRevenueHours.objects.filter(q)\
+        .values("year").annotate(directly_operated=Round(Sum(F('vrh'), filter=Q(service_id="DO"))), \
+                                 purchased_transportation=Round(Sum(F('vrh'), filter=Q(service_id="PT"))), \
+                                 taxi=Round(Sum(F('vrh'), filter=Q(service_id="TX"))), \
+                                 other=Round(Sum(F('vrh'), filter=Q(service_id="OT")))) \
+        .order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -744,7 +768,13 @@ def vrh_by_service(request):
 @csrf_exempt
 def drm_by_service(request):
     filters, q = process_params(request.GET)
-    ts = DirectionalRouteMiles.objects.filter(q).values("year", "service_id__name").annotate(drm=Round(Sum("drm"))).order_by('year')
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = DirectionalRouteMiles.objects.filter(q)\
+        .values("year").annotate(directly_operated=Round(Sum(F('drm'), filter=Q(service_id="DO"))), \
+                                 purchased_transportation=Round(Sum(F('drm'), filter=Q(service_id="PT"))), \
+                                 taxi=Round(Sum(F('drm'), filter=Q(service_id="TX"))), \
+                                 other=Round(Sum(F('drm'), filter=Q(service_id="OT")))) \
+        .order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -759,7 +789,13 @@ def drm_by_service(request):
 @csrf_exempt
 def voms_by_service(request):
     filters, q = process_params(request.GET)
-    ts = VehiclesOperatedMaximumService.objects.filter(q).values("year", "service_id__name").annotate(voms=Round(Sum("voms"))).order_by('year')
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    ts = VehiclesOperatedMaximumService.objects.filter(q)\
+        .values("year").annotate(directly_operated=Round(Sum(F('voms'), filter=Q(service_id="DO"))), \
+                                 purchased_transportation=Round(Sum(F('voms'), filter=Q(service_id="PT"))), \
+                                 taxi=Round(Sum(F('voms'), filter=Q(service_id="TX"))), \
+                                 other=Round(Sum(F('voms'), filter=Q(service_id="OT")))) \
+        .order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -774,7 +810,30 @@ def voms_by_service(request):
 @csrf_exempt
 def upt_by_mode(request):
     filters, q = process_params(request.GET)
-    ts = UnlinkedPassengerTrips.objects.filter(q).values("year", "mode_id__name").annotate(upt=Round(Sum("upt"))).order_by('year')
+    ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(mb=Round(Sum(F('upt'), filter=Q(mode_id="MB"))), \
+                                 cb=Round(Sum(F('upt'), filter=Q(mode_id="CB"))), \
+                                 rb=Round(Sum(F('upt'), filter=Q(mode_id="RB"))), \
+                                 tb=Round(Sum(F('upt'), filter=Q(mode_id="TB"))), \
+                                 pb=Round(Sum(F('upt'), filter=Q(mode_id="PB"))), \
+                                 hr=Round(Sum(F('upt'), filter=Q(mode_id="HR"))), \
+                                 lr=Round(Sum(F('upt'), filter=Q(mode_id="LR"))), \
+                                 cr=Round(Sum(F('upt'), filter=Q(mode_id="CR"))), \
+                                 yr=Round(Sum(F('upt'), filter=Q(mode_id="YR"))), \
+                                 sr=Round(Sum(F('upt'), filter=Q(mode_id="SR"))), \
+                                 cc=Round(Sum(F('upt'), filter=Q(mode_id="CC"))), \
+                                 mg=Round(Sum(F('upt'), filter=Q(mode_id="MG"))), \
+                                 ip=Round(Sum(F('upt'), filter=Q(mode_id="IP"))), \
+                                 ar=Round(Sum(F('upt'), filter=Q(mode_id="AR"))), \
+                                 other_rail=Round(Sum(F('upt'), filter=Q(mode_id="OR"))), \
+                                 dr=Round(Sum(F('upt'), filter=Q(mode_id="DR"))), \
+                                 dt=Round(Sum(F('upt'), filter=Q(mode_id="DT"))), \
+                                 vp=Round(Sum(F('upt'), filter=Q(mode_id="VP"))), \
+                                 jt=Round(Sum(F('upt'), filter=Q(mode_id="JT"))), \
+                                 fb=Round(Sum(F('upt'), filter=Q(mode_id="FB"))), \
+                                 tr=Round(Sum(F('upt'), filter=Q(mode_id="TR"))), \
+                                 ot=Round(Sum(F('upt'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -789,7 +848,30 @@ def upt_by_mode(request):
 @csrf_exempt
 def pmt_by_mode(request):
     filters, q = process_params(request.GET)
-    ts = PassengerMilesTraveled.objects.filter(q).values("year", "mode_id__name").annotate(pmt=Round(Sum("pmt"))).order_by('year')
+    ts = PassengerMilesTraveled.objects.filter(q)\
+        .values("year").annotate(mb=Round(Sum(F('pmt'), filter=Q(mode_id="MB"))), \
+                                 cb=Round(Sum(F('pmt'), filter=Q(mode_id="CB"))), \
+                                 rb=Round(Sum(F('pmt'), filter=Q(mode_id="RB"))), \
+                                 tb=Round(Sum(F('pmt'), filter=Q(mode_id="TB"))), \
+                                 pb=Round(Sum(F('pmt'), filter=Q(mode_id="PB"))), \
+                                 hr=Round(Sum(F('pmt'), filter=Q(mode_id="HR"))), \
+                                 lr=Round(Sum(F('pmt'), filter=Q(mode_id="LR"))), \
+                                 cr=Round(Sum(F('pmt'), filter=Q(mode_id="CR"))), \
+                                 yr=Round(Sum(F('pmt'), filter=Q(mode_id="YR"))), \
+                                 sr=Round(Sum(F('pmt'), filter=Q(mode_id="SR"))), \
+                                 cc=Round(Sum(F('pmt'), filter=Q(mode_id="CC"))), \
+                                 mg=Round(Sum(F('pmt'), filter=Q(mode_id="MG"))), \
+                                 ip=Round(Sum(F('pmt'), filter=Q(mode_id="IP"))), \
+                                 ar=Round(Sum(F('pmt'), filter=Q(mode_id="AR"))), \
+                                 other_rail=Round(Sum(F('pmt'), filter=Q(mode_id="OR"))), \
+                                 dr=Round(Sum(F('pmt'), filter=Q(mode_id="DR"))), \
+                                 dt=Round(Sum(F('pmt'), filter=Q(mode_id="DT"))), \
+                                 vp=Round(Sum(F('pmt'), filter=Q(mode_id="VP"))), \
+                                 jt=Round(Sum(F('pmt'), filter=Q(mode_id="JT"))), \
+                                 fb=Round(Sum(F('pmt'), filter=Q(mode_id="FB"))), \
+                                 tr=Round(Sum(F('pmt'), filter=Q(mode_id="TR"))), \
+                                 ot=Round(Sum(F('pmt'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -804,7 +886,30 @@ def pmt_by_mode(request):
 @csrf_exempt
 def vrm_by_mode(request):
     filters, q = process_params(request.GET)
-    ts = VehicleRevenueMiles.objects.filter(q).values("year", "mode_id__name").annotate(vrm=Round(Sum("vrm"))).order_by('year')
+    ts = VehicleRevenueMiles.objects.filter(q)\
+        .values("year").annotate(mb=Round(Sum(F('vrm'), filter=Q(mode_id="MB"))), \
+                                 cb=Round(Sum(F('vrm'), filter=Q(mode_id="CB"))), \
+                                 rb=Round(Sum(F('vrm'), filter=Q(mode_id="RB"))), \
+                                 tb=Round(Sum(F('vrm'), filter=Q(mode_id="TB"))), \
+                                 pb=Round(Sum(F('vrm'), filter=Q(mode_id="PB"))), \
+                                 hr=Round(Sum(F('vrm'), filter=Q(mode_id="HR"))), \
+                                 lr=Round(Sum(F('vrm'), filter=Q(mode_id="LR"))), \
+                                 cr=Round(Sum(F('vrm'), filter=Q(mode_id="CR"))), \
+                                 yr=Round(Sum(F('vrm'), filter=Q(mode_id="YR"))), \
+                                 sr=Round(Sum(F('vrm'), filter=Q(mode_id="SR"))), \
+                                 cc=Round(Sum(F('vrm'), filter=Q(mode_id="CC"))), \
+                                 mg=Round(Sum(F('vrm'), filter=Q(mode_id="MG"))), \
+                                 ip=Round(Sum(F('vrm'), filter=Q(mode_id="IP"))), \
+                                 ar=Round(Sum(F('vrm'), filter=Q(mode_id="AR"))), \
+                                 other_rail=Round(Sum(F('vrm'), filter=Q(mode_id="OR"))), \
+                                 dr=Round(Sum(F('vrm'), filter=Q(mode_id="DR"))), \
+                                 dt=Round(Sum(F('vrm'), filter=Q(mode_id="DT"))), \
+                                 vp=Round(Sum(F('vrm'), filter=Q(mode_id="VP"))), \
+                                 jt=Round(Sum(F('vrm'), filter=Q(mode_id="JT"))), \
+                                 fb=Round(Sum(F('vrm'), filter=Q(mode_id="FB"))), \
+                                 tr=Round(Sum(F('vrm'), filter=Q(mode_id="TR"))), \
+                                 ot=Round(Sum(F('vrm'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -819,7 +924,30 @@ def vrm_by_mode(request):
 @csrf_exempt
 def vrh_by_mode(request):
     filters, q = process_params(request.GET)
-    ts = VehicleRevenueHours.objects.filter(q).values("year", "mode_id__name").annotate(vrh=Round(Sum("vrh"))).order_by('year')
+    ts = VehicleRevenueHours.objects.filter(q)\
+        .values("year").annotate(mb=Round(Sum(F('vrh'), filter=Q(mode_id="MB"))), \
+                                 cb=Round(Sum(F('vrh'), filter=Q(mode_id="CB"))), \
+                                 rb=Round(Sum(F('vrh'), filter=Q(mode_id="RB"))), \
+                                 tb=Round(Sum(F('vrh'), filter=Q(mode_id="TB"))), \
+                                 pb=Round(Sum(F('vrh'), filter=Q(mode_id="PB"))), \
+                                 hr=Round(Sum(F('vrh'), filter=Q(mode_id="HR"))), \
+                                 lr=Round(Sum(F('vrh'), filter=Q(mode_id="LR"))), \
+                                 cr=Round(Sum(F('vrh'), filter=Q(mode_id="CR"))), \
+                                 yr=Round(Sum(F('vrh'), filter=Q(mode_id="YR"))), \
+                                 sr=Round(Sum(F('vrh'), filter=Q(mode_id="SR"))), \
+                                 cc=Round(Sum(F('vrh'), filter=Q(mode_id="CC"))), \
+                                 mg=Round(Sum(F('vrh'), filter=Q(mode_id="MG"))), \
+                                 ip=Round(Sum(F('vrh'), filter=Q(mode_id="IP"))), \
+                                 ar=Round(Sum(F('vrh'), filter=Q(mode_id="AR"))), \
+                                 other_rail=Round(Sum(F('vrh'), filter=Q(mode_id="OR"))), \
+                                 dr=Round(Sum(F('vrh'), filter=Q(mode_id="DR"))), \
+                                 dt=Round(Sum(F('vrh'), filter=Q(mode_id="DT"))), \
+                                 vp=Round(Sum(F('vrh'), filter=Q(mode_id="VP"))), \
+                                 jt=Round(Sum(F('vrh'), filter=Q(mode_id="JT"))), \
+                                 fb=Round(Sum(F('vrh'), filter=Q(mode_id="FB"))), \
+                                 tr=Round(Sum(F('vrh'), filter=Q(mode_id="TR"))), \
+                                 ot=Round(Sum(F('vrh'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -834,7 +962,30 @@ def vrh_by_mode(request):
 @csrf_exempt
 def drm_by_mode(request):
     filters, q = process_params(request.GET)
-    ts = DirectionalRouteMiles.objects.filter(q).values("year", "mode_id__name").annotate(drm=Round(Sum("drm"))).order_by('year')
+    ts = DirectionalRouteMiles.objects.filter(q)\
+        .values("year").annotate(mb=Round(Sum(F('drm'), filter=Q(mode_id="MB"))), \
+                                 cb=Round(Sum(F('drm'), filter=Q(mode_id="CB"))), \
+                                 rb=Round(Sum(F('drm'), filter=Q(mode_id="RB"))), \
+                                 tb=Round(Sum(F('drm'), filter=Q(mode_id="TB"))), \
+                                 pb=Round(Sum(F('drm'), filter=Q(mode_id="PB"))), \
+                                 hr=Round(Sum(F('drm'), filter=Q(mode_id="HR"))), \
+                                 lr=Round(Sum(F('drm'), filter=Q(mode_id="LR"))), \
+                                 cr=Round(Sum(F('drm'), filter=Q(mode_id="CR"))), \
+                                 yr=Round(Sum(F('drm'), filter=Q(mode_id="YR"))), \
+                                 sr=Round(Sum(F('drm'), filter=Q(mode_id="SR"))), \
+                                 cc=Round(Sum(F('drm'), filter=Q(mode_id="CC"))), \
+                                 mg=Round(Sum(F('drm'), filter=Q(mode_id="MG"))), \
+                                 ip=Round(Sum(F('drm'), filter=Q(mode_id="IP"))), \
+                                 ar=Round(Sum(F('drm'), filter=Q(mode_id="AR"))), \
+                                 other_rail=Round(Sum(F('drm'), filter=Q(mode_id="OR"))), \
+                                 dr=Round(Sum(F('drm'), filter=Q(mode_id="DR"))), \
+                                 dt=Round(Sum(F('drm'), filter=Q(mode_id="DT"))), \
+                                 vp=Round(Sum(F('drm'), filter=Q(mode_id="VP"))), \
+                                 jt=Round(Sum(F('drm'), filter=Q(mode_id="JT"))), \
+                                 fb=Round(Sum(F('drm'), filter=Q(mode_id="FB"))), \
+                                 tr=Round(Sum(F('drm'), filter=Q(mode_id="TR"))), \
+                                 ot=Round(Sum(F('drm'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
@@ -849,7 +1000,30 @@ def drm_by_mode(request):
 @csrf_exempt
 def voms_by_mode(request):
     filters, q = process_params(request.GET)
-    ts = VehiclesOperatedMaximumService.objects.filter(q).values("year", "mode_id__name").annotate(voms=Round(Sum("voms"))).order_by('year')
+    ts = VehiclesOperatedMaximumService.objects.filter(q)\
+        .values("year").annotate(mb=Round(Sum(F('voms'), filter=Q(mode_id="MB"))), \
+                                 cb=Round(Sum(F('voms'), filter=Q(mode_id="CB"))), \
+                                 rb=Round(Sum(F('voms'), filter=Q(mode_id="RB"))), \
+                                 tb=Round(Sum(F('voms'), filter=Q(mode_id="TB"))), \
+                                 pb=Round(Sum(F('voms'), filter=Q(mode_id="PB"))), \
+                                 hr=Round(Sum(F('voms'), filter=Q(mode_id="HR"))), \
+                                 lr=Round(Sum(F('voms'), filter=Q(mode_id="LR"))), \
+                                 cr=Round(Sum(F('voms'), filter=Q(mode_id="CR"))), \
+                                 yr=Round(Sum(F('voms'), filter=Q(mode_id="YR"))), \
+                                 sr=Round(Sum(F('voms'), filter=Q(mode_id="SR"))), \
+                                 cc=Round(Sum(F('voms'), filter=Q(mode_id="CC"))), \
+                                 mg=Round(Sum(F('voms'), filter=Q(mode_id="MG"))), \
+                                 ip=Round(Sum(F('voms'), filter=Q(mode_id="IP"))), \
+                                 ar=Round(Sum(F('voms'), filter=Q(mode_id="AR"))), \
+                                 other_rail=Round(Sum(F('voms'), filter=Q(mode_id="OR"))), \
+                                 dr=Round(Sum(F('voms'), filter=Q(mode_id="DR"))), \
+                                 dt=Round(Sum(F('voms'), filter=Q(mode_id="DT"))), \
+                                 vp=Round(Sum(F('voms'), filter=Q(mode_id="VP"))), \
+                                 jt=Round(Sum(F('voms'), filter=Q(mode_id="JT"))), \
+                                 fb=Round(Sum(F('voms'), filter=Q(mode_id="FB"))), \
+                                 tr=Round(Sum(F('voms'), filter=Q(mode_id="TR"))), \
+                                 ot=Round(Sum(F('voms'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
     data = []
     for x in ts:
         data += [x]
