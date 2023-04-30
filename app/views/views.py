@@ -1424,7 +1424,69 @@ def cost_per_pmt_by_mode_type(request):
 
 @csrf_exempt
 def frr_by_mode_type(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    spending_ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(
+            bus_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id__type="Bus")),
+            rail_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id__type="Rail")),
+            microtransit_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id__type="MicroTransit")),
+            ferry_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id__type="Ferry")),
+            other_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id__type="Other"))
+        )\
+        .order_by('year')
+    fares_ts = Fares.objects.filter(q)\
+        .values("year").annotate(
+            bus_fares=Sum(F('fares'), mode_id__type="Bus"),
+            rail_fares=Sum(F('fares'), mode_id__type="Rail"),
+            microtransit_fares=Sum(F('fares'), mode_id__type="MicroTransit"),
+            ferry_fares=Sum(F('fares'), mode_id__type="Ferry"),
+            other_fares=Sum(F('fares'), mode_id__type="Other"),
+        )\
+        .order_by('year')
+    data = []
+
+    for x in spending_ts:
+        if x['bus_opexp'] and x['bus_opexp'] > 0:
+            bus_opexp = x['bus_opexp']
+        else:
+            bus_opexp = 1
+        if x['rail_opexp'] and x['rail_opexp'] > 0:
+            rail_opexp = x['rail_opexp']
+        else: 
+            rail_opexp = 1
+        if x['microtransit_opexp'] and x['microtransit_opexp'] > 0:
+            microtransit_opexp = x['microtransit_opexp']
+        else: 
+            microtransit_opexp = 1
+        if x['ferry_opexp'] and x['ferry_opexp'] > 0:
+            ferry_opexp = x['ferry_opexp']
+        else: 
+            ferry_opexp = 1
+        if x['other_opexp'] and x['other_opexp'] > 0:
+            other_opexp = x['other_opexp']
+        else: 
+            other_opexp = 1
+        
+        revenue = fares_ts.get(year=x['year'])
+        bus_fares=revenue['bus_fares']
+        rail_fares=revenue['rail_fares']
+        microtransit_fares=revenue['microtransit_fares']
+        ferry_fares=revenue['ferry_fares']
+        other_fares=revenue['other_fares']
+        bus_frr = round(bus_fares/bus_opexp, 4)
+        rail_frr = round(rail_fares/rail_opexp, 4)
+        microtransit_frr = round(microtransit_fares/microtransit_opexp, 4)
+        ferry_frr = round(ferry_fares/ferry_opexp, 4)
+        other_frr = round(other_fares/other_opexp, 4)
+        data += [{"year": x['year'], "bus": bus_frr, "rail": rail_frr, "microtransit": microtransit_frr, "ferry": ferry_frr, "other": other_frr}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def cost_per_vrh_by_mode_type(request):
