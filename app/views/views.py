@@ -2049,7 +2049,58 @@ def vrm_per_vrh_by_service(request):
 
 @csrf_exempt
 def upt_per_vrh_by_service(request):
-    return(JsonResponse({}))
+    data = []
+    filters, q = process_params(request.GET)
+    upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
+    .values("year").annotate(
+        do=Sum(F('upt'), filter=Q(service_id="DO")),
+        pt=Sum(F('upt'), filter=Q(service_id="PT")),
+        tx=Sum(F('upt'), filter=Q(service_id="TX")),
+        other=Sum(F('upt'), filter=Q(service_id__in=['TN', "nan"]))
+    )\
+    .order_by('year')
+    vrh_ts = VehicleRevenueHours.objects.filter(q)\
+    .values("year").annotate(
+        do=Sum(F('vrh'), filter=Q(service_id="DO")),
+        pt=Sum(F('vrh'), filter=Q(service_id="PT")),
+        tx=Sum(F('vrh'), filter=Q(service_id="TX")),
+        other=Sum(F('vrh'), filter=Q(service_id__in=['TN', "nan"]))
+    )\
+    .order_by('year')
+    for x in vrh_ts:
+        if x['do'] and x["do"] > 0:
+            do_vrh = x['do']
+        else:
+            do_vrh = 1
+        if x['pt'] and x["pt"] > 0:
+            pt_vrh = x['pt']
+        else:
+            pt_vrh = 1
+        if x['tx'] and x["tx"] > 0:
+            tx_vrh = x['tx']
+        else:
+            tx_vrh = 1
+        if x['other'] and x["other"] > 0:
+            other_vrh = x['other']
+        else:
+            other_vrh = 1
+        upt = upt_ts.get(year=x['year'])
+        do_upt = upt['do']
+        pt_upt = upt['pt']
+        tx_upt = upt['tx']
+        other_upt = upt['other']
+        do_pph = round(do_upt / do_vrh, 2)
+        pt_pph = round(pt_upt / pt_vrh, 2)
+        tx_pph = round(tx_upt / tx_vrh, 2)
+        other_pph = round(other_upt / other_vrh, 2)
+        data += [{"year": x['year'], "do": do_pph, "pt": pt_pph, "tx": tx_pph, "other": other_pph}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def upt_per_vrm_by_service(request):
@@ -2057,7 +2108,59 @@ def upt_per_vrm_by_service(request):
 
 @csrf_exempt
 def pmt_per_vrh_by_service(request):
-    return(JsonResponse({}))
+    data = []
+    filters, q = process_params(request.GET)
+    pmt_ts = PassengerMilesTraveled.objects.filter(q)\
+    .values("year").annotate(
+        do=Sum(F('pmt'), filter=Q(service_id="DO")),
+        pt=Sum(F('pmt'), filter=Q(service_id="PT")),
+        tx=Sum(F('pmt'), filter=Q(service_id="TX")),
+        other=Sum(F('pmt'), filter=Q(service_id__in=['TN', "nan"]))
+    )\
+    .order_by('year')
+    vrh_ts = VehicleRevenueHours.objects.filter(q)\
+    .values("year").annotate(
+        do=Sum(F('vrh'), filter=Q(service_id="DO")),
+        pt=Sum(F('vrh'), filter=Q(service_id="PT")),
+        tx=Sum(F('vrh'), filter=Q(service_id="TX")),
+        other=Sum(F('vrh'), filter=Q(service_id__in=['TN', "nan"]))
+    )\
+    .order_by('year')
+    for x in vrh_ts:
+        if x['do'] and x["do"] > 0:
+            do_vrh = x['do']
+        else:
+            do_vrh = 1
+        if x['pt'] and x["pt"] > 0:
+            pt_vrh = x['pt']
+        else:
+            pt_vrh = 1
+        if x['tx'] and x["tx"] > 0:
+            tx_vrh = x['tx']
+        else:
+            tx_vrh = 1
+        if x['other'] and x["other"] > 0:
+            other_vrh = x['other']
+        else:
+            other_vrh = 1
+        pmt = pmt_ts.get(year=x['year'])
+        do_pmt = pmt['do']
+        pt_pmt = pmt['pt']
+        tx_pmt = pmt['tx']
+        other_pmt = pmt['other']
+        do_pmph = round(do_pmt / do_vrh, 2)
+        pt_pmph = round(pt_pmt / pt_vrh, 2)
+        tx_pmph = round(tx_pmt / tx_vrh, 2)
+        # other_pmph = 0
+        other_pmph = round(other_pmt / other_vrh, 2)
+        data += [{"year": x['year'], "do": do_pmph, "pt": pt_pmph, "tx": tx_pmph, "other": other_pmph}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_per_vrm_by_service(request):
