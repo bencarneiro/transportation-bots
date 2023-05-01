@@ -1981,7 +1981,61 @@ def cost_per_pmt_by_service(request):
 
 @csrf_exempt
 def frr_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    spending_ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(
+            do_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", service_id="DO")),
+            pt_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", service_id="PT")),
+            tx_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", service_id="TX")),
+            other_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", service_id__in=["TN", "nan"]))
+        )\
+        .order_by('year')
+    fares_ts = Fares.objects.filter(q)\
+        .values("year").annotate(
+            do_fares=Sum(F('fares'), service_id="DO"),
+            pt_fares=Sum(F('fares'), service_id="PT"),
+            tx_fares=Sum(F('fares'), service_id="TX"),
+            other_fares=Sum(F('fares'), service_id__in=["DO", "nan"]),
+        )\
+        .order_by('year')
+    data = []
+
+    for x in spending_ts:
+        if x['do_opexp'] and x['do_opexp'] > 0:
+            do_opexp = x['do_opexp']
+        else:
+            do_opexp = 1
+        if x['pt_opexp'] and x['pt_opexp'] > 0:
+            pt_opexp = x['pt_opexp']
+        else: 
+            pt_opexp = 1
+        if x['tx_opexp'] and x['tx_opexp'] > 0:
+            tx_opexp = x['tx_opexp']
+        else: 
+            tx_opexp = 1
+        if x['other_opexp'] and x['other_opexp'] > 0:
+            other_opexp = x['other_opexp']
+        else: 
+            other_opexp = 1
+        
+        revenue = fares_ts.get(year=x['year'])
+        do_fares=revenue['do_fares']
+        pt_fares=revenue['pt_fares']
+        tx_fares=revenue['tx_fares']
+        other_fares=revenue['other_fares']
+        do_frr = round(do_fares/do_opexp, 4)
+        pt_frr = round(pt_fares/pt_opexp, 4)
+        tx_frr = round(tx_fares/tx_opexp, 4)
+        other_frr = round(other_fares/other_opexp, 4)
+        data += [{"year": x['year'], "do": do_frr, "pt": pt_frr, "tx": tx_frr, "other": other_frr}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 # @csrf_exempt
 # def cost_per_vrh_by_service(request):
