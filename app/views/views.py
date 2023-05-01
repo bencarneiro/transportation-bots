@@ -1488,17 +1488,13 @@ def frr_by_mode_type(request):
     }
     return JsonResponse(resp, safe=False)
 
-@csrf_exempt
-def cost_per_vrh_by_mode_type(request):
-    return(JsonResponse({}))
+# @csrf_exempt
+# def cost_per_vrh_by_mode_type(request):
+#     return(JsonResponse({}))
 
-@csrf_exempt
-def cost_per_vrm_by_mode_type(request):
-    return(JsonResponse({}))
-
-@csrf_exempt
-def cost_per_vrh_by_mode_type(request):
-    return(JsonResponse({}))
+# @csrf_exempt
+# def cost_per_vrm_by_mode_type(request):
+#     return(JsonResponse({}))
 
 @csrf_exempt
 def vrm_per_vrh_by_mode_type(request):
@@ -1536,17 +1532,13 @@ def cost_per_pmt_by_mode(request):
 def frr_by_mode(request):
     return(JsonResponse({}))
 
-@csrf_exempt
-def cost_per_vrh_by_mode(request):
-    return(JsonResponse({}))
+# @csrf_exempt
+# def cost_per_vrh_by_mode(request):
+#     return(JsonResponse({}))
 
-@csrf_exempt
-def cost_per_vrm_by_mode(request):
-    return(JsonResponse({}))
-
-@csrf_exempt
-def cost_per_vrh_by_mode(request):
-    return(JsonResponse({}))
+# @csrf_exempt
+# def cost_per_vrm_by_mode(request):
+#     return(JsonResponse({}))
 
 @csrf_exempt
 def vrm_per_vrh_by_mode(request):
@@ -1584,17 +1576,13 @@ def cost_per_pmt_by_service(request):
 def frr_by_service(request):
     return(JsonResponse({}))
 
-@csrf_exempt
-def cost_per_vrh_by_service(request):
-    return(JsonResponse({}))
+# @csrf_exempt
+# def cost_per_vrh_by_service(request):
+#     return(JsonResponse({}))
 
-@csrf_exempt
-def cost_per_vrm_by_service(request):
-    return(JsonResponse({}))
-
-@csrf_exempt
-def cost_per_vrh_by_service(request):
-    return(JsonResponse({}))
+# @csrf_exempt
+# def cost_per_vrm_by_service(request):
+#     return(JsonResponse({}))
 
 @csrf_exempt
 def vrm_per_vrh_by_service(request):
