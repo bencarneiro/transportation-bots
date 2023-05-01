@@ -1550,7 +1550,7 @@ def vrm_per_vrh_by_mode_type(request):
         microtransit_mph = round(microtransit_vrm / microtransit_vrh, 2)
         ferry_mph = round(ferry_vrm / ferry_vrh, 2)
         other_mph = round(other_vrm / other_vrh, 2)
-        data += [{"bus": bus_mph, "rail": rail_mph, "microtransit": microtransit_mph, "ferry": ferry_mph, "other": other_mph}]
+        data += [{"year": x['year'], "bus": bus_mph, "rail": rail_mph, "microtransit": microtransit_mph, "ferry": ferry_mph, "other": other_mph}]
     length = len(data)
     resp = {
         "filters": filters,
@@ -1613,7 +1613,7 @@ def upt_per_vrh_by_mode_type(request):
         microtransit_pph = round(microtransit_upt / microtransit_vrh, 2)
         ferry_pph = round(ferry_upt / ferry_vrh, 2)
         other_pph = round(other_upt / other_vrh, 2)
-        data += [{"bus": bus_pph, "rail": rail_pph, "microtransit": microtransit_pph, "ferry": ferry_pph, "other": other_pph}]
+        data += [{"year": x['year'], "bus": bus_pph, "rail": rail_pph, "microtransit": microtransit_pph, "ferry": ferry_pph, "other": other_pph}]
     length = len(data)
     resp = {
         "filters": filters,
@@ -1676,7 +1676,7 @@ def upt_per_vrm_by_mode_type(request):
         microtransit_ppm = round(microtransit_upt / microtransit_vrm, 2)
         ferry_ppm = round(ferry_upt / ferry_vrm, 2)
         other_ppm = round(other_upt / other_vrm, 2)
-        data += [{"bus": bus_ppm, "rail": rail_ppm, "microtransit": microtransit_ppm, "ferry": ferry_ppm, "other": other_ppm}]
+        data += [{"year": x['year'], "bus": bus_ppm, "rail": rail_ppm, "microtransit": microtransit_ppm, "ferry": ferry_ppm, "other": other_ppm}]
     length = len(data)
     resp = {
         "filters": filters,
@@ -1739,7 +1739,7 @@ def pmt_per_vrh_by_mode_type(request):
         microtransit_pmph = round(microtransit_pmt / microtransit_vrh, 2)
         ferry_pmph = round(ferry_pmt / ferry_vrh, 2)
         other_pmph = round(other_pmt / other_vrh, 2)
-        data += [{"bus": bus_pmph, "rail": rail_pmph, "microtransit": microtransit_pmph, "ferry": ferry_pmph, "other": other_pmph}]
+        data += [{"year": x['year'], "bus": bus_pmph, "rail": rail_pmph, "microtransit": microtransit_pmph, "ferry": ferry_pmph, "other": other_pmph}]
     length = len(data)
     resp = {
         "filters": filters,
@@ -1802,7 +1802,7 @@ def pmt_per_vrm_by_mode_type(request):
         microtransit_pmpm = round(microtransit_pmt / microtransit_vrm, 2)
         ferry_pmpm = round(ferry_pmt / ferry_vrm, 2)
         other_pmpm = round(other_pmt / other_vrm, 2)
-        data += [{"bus": bus_pmpm, "rail": rail_pmpm, "microtransit": microtransit_pmpm, "ferry": ferry_pmpm, "other": other_pmpm}]
+        data += [{"year": x['year'], "bus": bus_pmpm, "rail": rail_pmpm, "microtransit": microtransit_pmpm, "ferry": ferry_pmpm, "other": other_pmpm}]
     length = len(data)
     resp = {
         "filters": filters,
@@ -1861,11 +1861,123 @@ def pmt_per_vrm_by_mode(request):
 
 @csrf_exempt
 def cost_per_upt_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    spending_ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(
+            do_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", service_id="DO")),
+            pt_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", service_id="PT")),
+            tx_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", service_id="TX")),
+            other_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", service_id__in=["TN", "nan"]))
+        )\
+        .order_by('year')
+    upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(
+            do_upt=Round(Sum("upt"), filter=Q(service_id="DO")),
+            pt_upt=Round(Sum("upt"), filter=Q(service_id="PT")),
+            tx_upt=Round(Sum("upt"), filter=Q(service_id="TX")),
+            other_upt=Round(Sum("upt"), filter=Q(service_id__in=["TN", "nan"])),
+        ).order_by('year')
+    data = []
+
+    for x in spending_ts:
+        do_opexp = x['do_opexp']
+        pt_opexp = x['pt_opexp']
+        tx_opexp = x['tx_opexp']
+        other_opexp = x['other_opexp']
+
+        ridership = upt_ts.get(year=x['year'])
+
+        if ridership['do_upt'] and ridership['do_upt'] > 0:
+            do_upt = ridership['do_upt']
+        else:
+            do_upt = 1
+        if ridership['pt_upt'] and ridership['pt_upt'] > 0:
+            pt_upt = ridership['pt_upt']
+        else:
+            pt_upt = 1
+        if ridership['tx_upt'] and ridership['tx_upt'] > 0:
+            tx_upt = ridership['tx_upt']
+        else:
+            tx_upt = 1
+        if ridership['other_upt'] and ridership['other_upt'] > 0:
+            other_upt = ridership['other_upt']
+        else:
+            other_upt = 1
+
+        do_cpp = round(do_opexp/do_upt, 2)
+        pt_cpp = round(pt_opexp/pt_upt, 2)
+        tx_cpp = round(tx_opexp/tx_upt, 2)
+        other_cpp = round(other_opexp/other_upt, 2)
+
+        data += [{"year": x['year'], "do": do_cpp, "pt": pt_cpp, "tx": tx_cpp, "other": other_cpp}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def cost_per_pmt_by_service(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    spending_ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(
+            do_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", service_id="DO")),
+            pt_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", service_id="PT")),
+            tx_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", service_id="TX")),
+            other_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", service_id__in=["TN", "nan"]))
+        )\
+        .order_by('year')
+    pmt_ts = PassengerMilesTraveled.objects.filter(q)\
+        .values("year").annotate(
+            do_pmt=Round(Sum("pmt"), filter=Q(service_id="DO")),
+            pt_pmt=Round(Sum("pmt"), filter=Q(service_id="PT")),
+            tx_pmt=Round(Sum("pmt"), filter=Q(service_id="TX")),
+            other_pmt=Round(Sum("pmt"), filter=Q(service_id__in=["TN", "nan"])),
+        ).order_by('year')
+    data = []
+
+    for x in spending_ts:
+        do_opexp = x['do_opexp']
+        pt_opexp = x['pt_opexp']
+        tx_opexp = x['tx_opexp']
+        other_opexp = x['other_opexp']
+
+        ridership = pmt_ts.get(year=x['year'])
+
+        if ridership['do_pmt'] and ridership['do_pmt'] > 0:
+            do_pmt = ridership['do_pmt']
+        else:
+            do_pmt = 1
+        if ridership['pt_pmt'] and ridership['pt_pmt'] > 0:
+            pt_pmt = ridership['pt_pmt']
+        else:
+            pt_pmt = 1
+        if ridership['tx_pmt'] and ridership['tx_pmt'] > 0:
+            tx_pmt = ridership['tx_pmt']
+        else:
+            tx_pmt = 1
+        if ridership['other_pmt'] and ridership['other_pmt'] > 0:
+            other_pmt = ridership['other_pmt']
+        else:
+            other_pmt = 1
+
+        do_cpp = round(do_opexp/do_pmt, 2)
+        pt_cpp = round(pt_opexp/pt_pmt, 2)
+        tx_cpp = round(tx_opexp/tx_pmt, 2)
+        other_cpp = round(other_opexp/other_pmt, 2)
+
+        data += [{"year": x['year'], "do": do_cpp, "pt": pt_cpp, "tx": tx_cpp, "other": other_cpp}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def frr_by_service(request):
