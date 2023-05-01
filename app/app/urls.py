@@ -59,9 +59,6 @@ pmt_per_vrm,\
 cost_per_upt_by_mode_type,\
 cost_per_pmt_by_mode_type,\
 frr_by_mode_type,\
-cost_per_vrh_by_mode_type,\
-cost_per_vrm_by_mode_type,\
-cost_per_vrh_by_mode_type,\
 vrm_per_vrh_by_mode_type,\
 upt_per_vrh_by_mode_type,\
 upt_per_vrm_by_mode_type,\
@@ -70,9 +67,6 @@ pmt_per_vrm_by_mode_type,\
 cost_per_upt_by_mode,\
 cost_per_pmt_by_mode,\
 frr_by_mode,\
-cost_per_vrh_by_mode,\
-cost_per_vrm_by_mode,\
-cost_per_vrh_by_mode,\
 vrm_per_vrh_by_mode,\
 upt_per_vrh_by_mode,\
 upt_per_vrm_by_mode,\
@@ -81,9 +75,6 @@ pmt_per_vrm_by_mode,\
 cost_per_upt_by_service,\
 cost_per_pmt_by_service,\
 frr_by_service,\
-cost_per_vrh_by_service,\
-cost_per_vrm_by_service,\
-cost_per_vrh_by_service,\
 vrm_per_vrh_by_service,\
 upt_per_vrh_by_service,\
 upt_per_vrm_by_service,\
@@ -137,9 +128,9 @@ urlpatterns = [
     path('cost_per_upt_by_mode_type/', cost_per_upt_by_mode_type, name='cost_per_upt_by_mode_type'),
     path('cost_per_pmt_by_mode_type/', cost_per_pmt_by_mode_type, name='cost_per_pmt_by_mode_type'),
     path('frr_by_mode_type/', frr_by_mode_type, name='frr_by_mode_type'),
-    path('cost_per_vrh_by_mode_type/', cost_per_vrh_by_mode_type, name='cost_per_vrh_by_mode_type'),
-    path('cost_per_vrm_by_mode_type/', cost_per_vrm_by_mode_type, name='cost_per_vrm_by_mode_type'),
-    path('cost_per_vrh_by_mode_type/', cost_per_vrh_by_mode_type, name='cost_per_vrh_by_mode_type'),
+    # path('cost_per_vrh_by_mode_type/', cost_per_vrh_by_mode_type, name='cost_per_vrh_by_mode_type'),
+    # path('cost_per_vrm_by_mode_type/', cost_per_vrm_by_mode_type, name='cost_per_vrm_by_mode_type'),
+    # path('cost_per_vrh_by_mode_type/', cost_per_vrh_by_mode_type, name='cost_per_vrh_by_mode_type'),
     path('vrm_per_vrh_by_mode_type/', vrm_per_vrh_by_mode_type, name='vrm_per_vrh_by_mode_type'),
     path('upt_per_vrh_by_mode_type/', upt_per_vrh_by_mode_type, name='upt_per_vrh_by_mode_type'),
     path('upt_per_vrm_by_mode_type/', upt_per_vrm_by_mode_type, name='upt_per_vrm_by_mode_type'),
@@ -148,9 +139,9 @@ urlpatterns = [
     path('cost_per_upt_by_mode/', cost_per_upt_by_mode, name='cost_per_upt_by_mode'),
     path('cost_per_pmt_by_mode/', cost_per_pmt_by_mode, name='cost_per_pmt_by_mode'),
     path('frr_by_mode/', frr_by_mode, name='frr_by_mode'),
-    path('cost_per_vrh_by_mode/', cost_per_vrh_by_mode, name='cost_per_vrh_by_mode'),
-    path('cost_per_vrm_by_mode/', cost_per_vrm_by_mode, name='cost_per_vrm_by_mode'),
-    path('cost_per_vrh_by_mode/', cost_per_vrh_by_mode, name='cost_per_vrh_by_mode'),
+    # path('cost_per_vrh_by_mode/', cost_per_vrh_by_mode, name='cost_per_vrh_by_mode'),
+    # path('cost_per_vrm_by_mode/', cost_per_vrm_by_mode, name='cost_per_vrm_by_mode'),
+    # path('cost_per_vrh_by_mode/', cost_per_vrh_by_mode, name='cost_per_vrh_by_mode'),
     path('vrm_per_vrh_by_mode/', vrm_per_vrh_by_mode, name='vrm_per_vrh_by_mode'),
     path('upt_per_vrh_by_mode/', upt_per_vrh_by_mode, name='upt_per_vrh_by_mode'),
     path('upt_per_vrm_by_mode/', upt_per_vrm_by_mode, name='upt_per_vrm_by_mode'),
@@ -159,9 +150,9 @@ urlpatterns = [
     path('cost_per_upt_by_service/', cost_per_upt_by_service, name='cost_per_upt_by_service'),
     path('cost_per_pmt_by_service/', cost_per_pmt_by_service, name='cost_per_pmt_by_service'),
     path('frr_by_service/', frr_by_service, name='frr_by_service'),
-    path('cost_per_vrh_by_service/', cost_per_vrh_by_service, name='cost_per_vrh_by_service'),
-    path('cost_per_vrm_by_service/', cost_per_vrm_by_service, name='cost_per_vrm_by_service'),
-    path('cost_per_vrh_by_service/', cost_per_vrh_by_service, name='cost_per_vrh_by_service'),
+    # path('cost_per_vrh_by_service/', cost_per_vrh_by_service, name='cost_per_vrh_by_service'),
+    # path('cost_per_vrm_by_service/', cost_per_vrm_by_service, name='cost_per_vrm_by_service'),
+    # path('cost_per_vrh_by_service/', cost_per_vrh_by_service, name='cost_per_vrh_by_service'),
     path('vrm_per_vrh_by_service/', vrm_per_vrh_by_service, name='vrm_per_vrh_by_service'),
     path('upt_per_vrh_by_service/', upt_per_vrh_by_service, name='upt_per_vrh_by_service'),
     path('upt_per_vrm_by_service/', upt_per_vrm_by_service, name='upt_per_vrm_by_service'),
