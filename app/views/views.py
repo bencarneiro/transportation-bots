@@ -1561,19 +1561,255 @@ def vrm_per_vrh_by_mode_type(request):
 
 @csrf_exempt
 def upt_per_vrh_by_mode_type(request):
-    return(JsonResponse({}))
+    data = []
+    filters, q = process_params(request.GET)
+    upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
+    .values("year").annotate(
+        bus=Sum(F('upt'), filter=Q(mode_id__type="Bus")),
+        rail=Sum(F('upt'), filter=Q(mode_id__type="Rail")),
+        microtransit=Sum(F('upt'), filter=Q(mode_id__type="MicroTransit")),
+        ferry=Sum(F('upt'), filter=Q(mode_id__type="Ferry")),
+        other=Sum(F('upt'), filter=Q(mode_id__type="Other"))
+    )\
+    .order_by('year')
+    vrh_ts = VehicleRevenueHours.objects.filter(q)\
+    .values("year").annotate(
+        bus=Sum(F('vrh'), filter=Q(mode_id__type="Bus")),
+        rail=Sum(F('vrh'), filter=Q(mode_id__type="Rail")),
+        microtransit=Sum(F('vrh'), filter=Q(mode_id__type="MicroTransit")),
+        ferry=Sum(F('vrh'), filter=Q(mode_id__type="Ferry")),
+        other=Sum(F('vrh'), filter=Q(mode_id__type="Other"))
+    )\
+    .order_by('year')
+    for x in vrh_ts:
+        if x['bus'] and x["bus"] > 0:
+            bus_vrh = x['bus']
+        else:
+            bus_vrh = 1
+        if x['rail'] and x["rail"] > 0:
+            rail_vrh = x['rail']
+        else:
+            rail_vrh = 1
+        if x['microtransit'] and x["microtransit"] > 0:
+            microtransit_vrh = x['microtransit']
+        else:
+            microtransit_vrh = 1
+        if x['ferry'] and x["ferry"] > 0:
+            ferry_vrh = x['ferry']
+        else:
+            ferry_vrh = 1
+        if x['other'] and x["other"] > 0:
+            other_vrh = x['other']
+        else:
+            other_vrh = 1
+        upt = upt_ts.get(year=x['year'])
+        bus_upt = upt['bus']
+        rail_upt = upt['rail']
+        microtransit_upt = upt['microtransit']
+        ferry_upt = upt['ferry']
+        other_upt = upt['other']
+        bus_pph = round(bus_upt / bus_vrh, 2)
+        rail_pph = round(rail_upt / rail_vrh, 2)
+        microtransit_pph = round(microtransit_upt / microtransit_vrh, 2)
+        ferry_pph = round(ferry_upt / ferry_vrh, 2)
+        other_pph = round(other_upt / other_vrh, 2)
+        data += [{"bus": bus_pph, "rail": rail_pph, "microtransit": microtransit_pph, "ferry": ferry_pph, "other": other_pph}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def upt_per_vrm_by_mode_type(request):
-    return(JsonResponse({}))
+    data = []
+    filters, q = process_params(request.GET)
+    upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
+    .values("year").annotate(
+        bus=Sum(F('upt'), filter=Q(mode_id__type="Bus")),
+        rail=Sum(F('upt'), filter=Q(mode_id__type="Rail")),
+        microtransit=Sum(F('upt'), filter=Q(mode_id__type="MicroTransit")),
+        ferry=Sum(F('upt'), filter=Q(mode_id__type="Ferry")),
+        other=Sum(F('upt'), filter=Q(mode_id__type="Other"))
+    )\
+    .order_by('year')
+    vrm_ts = VehicleRevenueMiles.objects.filter(q)\
+    .values("year").annotate(
+        bus=Sum(F('vrm'), filter=Q(mode_id__type="Bus")),
+        rail=Sum(F('vrm'), filter=Q(mode_id__type="Rail")),
+        microtransit=Sum(F('vrm'), filter=Q(mode_id__type="MicroTransit")),
+        ferry=Sum(F('vrm'), filter=Q(mode_id__type="Ferry")),
+        other=Sum(F('vrm'), filter=Q(mode_id__type="Other"))
+    )\
+    .order_by('year')
+    for x in vrm_ts:
+        if x['bus'] and x["bus"] > 0:
+            bus_vrm = x['bus']
+        else:
+            bus_vrm = 1
+        if x['rail'] and x["rail"] > 0:
+            rail_vrm = x['rail']
+        else:
+            rail_vrm = 1
+        if x['microtransit'] and x["microtransit"] > 0:
+            microtransit_vrm = x['microtransit']
+        else:
+            microtransit_vrm = 1
+        if x['ferry'] and x["ferry"] > 0:
+            ferry_vrm = x['ferry']
+        else:
+            ferry_vrm = 1
+        if x['other'] and x["other"] > 0:
+            other_vrm = x['other']
+        else:
+            other_vrm = 1
+        upt = upt_ts.get(year=x['year'])
+        bus_upt = upt['bus']
+        rail_upt = upt['rail']
+        microtransit_upt = upt['microtransit']
+        ferry_upt = upt['ferry']
+        other_upt = upt['other']
+        bus_ppm = round(bus_upt / bus_vrm, 2)
+        rail_ppm = round(rail_upt / rail_vrm, 2)
+        microtransit_ppm = round(microtransit_upt / microtransit_vrm, 2)
+        ferry_ppm = round(ferry_upt / ferry_vrm, 2)
+        other_ppm = round(other_upt / other_vrm, 2)
+        data += [{"bus": bus_ppm, "rail": rail_ppm, "microtransit": microtransit_ppm, "ferry": ferry_ppm, "other": other_ppm}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_per_vrh_by_mode_type(request):
-    return(JsonResponse({}))
+    data = []
+    filters, q = process_params(request.GET)
+    pmt_ts = PassengerMilesTraveled.objects.filter(q)\
+    .values("year").annotate(
+        bus=Sum(F('pmt'), filter=Q(mode_id__type="Bus")),
+        rail=Sum(F('pmt'), filter=Q(mode_id__type="Rail")),
+        microtransit=Sum(F('pmt'), filter=Q(mode_id__type="MicroTransit")),
+        ferry=Sum(F('pmt'), filter=Q(mode_id__type="Ferry")),
+        other=Sum(F('pmt'), filter=Q(mode_id__type="Other"))
+    )\
+    .order_by('year')
+    vrh_ts = VehicleRevenueHours.objects.filter(q)\
+    .values("year").annotate(
+        bus=Sum(F('vrh'), filter=Q(mode_id__type="Bus")),
+        rail=Sum(F('vrh'), filter=Q(mode_id__type="Rail")),
+        microtransit=Sum(F('vrh'), filter=Q(mode_id__type="MicroTransit")),
+        ferry=Sum(F('vrh'), filter=Q(mode_id__type="Ferry")),
+        other=Sum(F('vrh'), filter=Q(mode_id__type="Other"))
+    )\
+    .order_by('year')
+    for x in vrh_ts:
+        if x['bus'] and x["bus"] > 0:
+            bus_vrh = x['bus']
+        else:
+            bus_vrh = 1
+        if x['rail'] and x["rail"] > 0:
+            rail_vrh = x['rail']
+        else:
+            rail_vrh = 1
+        if x['microtransit'] and x["microtransit"] > 0:
+            microtransit_vrh = x['microtransit']
+        else:
+            microtransit_vrh = 1
+        if x['ferry'] and x["ferry"] > 0:
+            ferry_vrh = x['ferry']
+        else:
+            ferry_vrh = 1
+        if x['other'] and x["other"] > 0:
+            other_vrh = x['other']
+        else:
+            other_vrh = 1
+        pmt = pmt_ts.get(year=x['year'])
+        bus_pmt = pmt['bus']
+        rail_pmt = pmt['rail']
+        microtransit_pmt = pmt['microtransit']
+        ferry_pmt = pmt['ferry']
+        other_pmt = pmt['other']
+        bus_pmph = round(bus_pmt / bus_vrh, 2)
+        rail_pmph = round(rail_pmt / rail_vrh, 2)
+        microtransit_pmph = round(microtransit_pmt / microtransit_vrh, 2)
+        ferry_pmph = round(ferry_pmt / ferry_vrh, 2)
+        other_pmph = round(other_pmt / other_vrh, 2)
+        data += [{"bus": bus_pmph, "rail": rail_pmph, "microtransit": microtransit_pmph, "ferry": ferry_pmph, "other": other_pmph}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_per_vrm_by_mode_type(request):
-    return(JsonResponse({}))
+    data = []
+    filters, q = process_params(request.GET)
+    pmt_ts = PassengerMilesTraveled.objects.filter(q)\
+    .values("year").annotate(
+        bus=Sum(F('pmt'), filter=Q(mode_id__type="Bus")),
+        rail=Sum(F('pmt'), filter=Q(mode_id__type="Rail")),
+        microtransit=Sum(F('pmt'), filter=Q(mode_id__type="MicroTransit")),
+        ferry=Sum(F('pmt'), filter=Q(mode_id__type="Ferry")),
+        other=Sum(F('pmt'), filter=Q(mode_id__type="Other"))
+    )\
+    .order_by('year')
+    vrm_ts = VehicleRevenueMiles.objects.filter(q)\
+    .values("year").annotate(
+        bus=Sum(F('vrm'), filter=Q(mode_id__type="Bus")),
+        rail=Sum(F('vrm'), filter=Q(mode_id__type="Rail")),
+        microtransit=Sum(F('vrm'), filter=Q(mode_id__type="MicroTransit")),
+        ferry=Sum(F('vrm'), filter=Q(mode_id__type="Ferry")),
+        other=Sum(F('vrm'), filter=Q(mode_id__type="Other"))
+    )\
+    .order_by('year')
+    for x in vrm_ts:
+        if x['bus'] and x["bus"] > 0:
+            bus_vrm = x['bus']
+        else:
+            bus_vrm = 1
+        if x['rail'] and x["rail"] > 0:
+            rail_vrm = x['rail']
+        else:
+            rail_vrm = 1
+        if x['microtransit'] and x["microtransit"] > 0:
+            microtransit_vrm = x['microtransit']
+        else:
+            microtransit_vrm = 1
+        if x['ferry'] and x["ferry"] > 0:
+            ferry_vrm = x['ferry']
+        else:
+            ferry_vrm = 1
+        if x['other'] and x["other"] > 0:
+            other_vrm = x['other']
+        else:
+            other_vrm = 1
+        pmt = pmt_ts.get(year=x['year'])
+        bus_pmt = pmt['bus']
+        rail_pmt = pmt['rail']
+        microtransit_pmt = pmt['microtransit']
+        ferry_pmt = pmt['ferry']
+        other_pmt = pmt['other']
+        bus_pmpm = round(bus_pmt / bus_vrm, 2)
+        rail_pmpm = round(rail_pmt / rail_vrm, 2)
+        microtransit_pmpm = round(microtransit_pmt / microtransit_vrm, 2)
+        ferry_pmpm = round(ferry_pmt / ferry_vrm, 2)
+        other_pmpm = round(other_pmt / other_vrm, 2)
+        data += [{"bus": bus_pmpm, "rail": rail_pmpm, "microtransit": microtransit_pmpm, "ferry": ferry_pmpm, "other": other_pmpm}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 
 
