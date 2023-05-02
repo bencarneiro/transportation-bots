@@ -2170,7 +2170,7 @@ def cost_per_pmt_by_mode(request):
         else:
             cc_cpm = 0
 
-        if ridership['mg_pmt'] and ridership['mg_pmt'] > 0 x['mg_opexp'] and x['mg_opexp'] > 0:
+        if ridership['mg_pmt'] and ridership['mg_pmt'] > 0 and x['mg_opexp'] and x['mg_opexp'] > 0:
             mg_pmt = ridership['mg_pmt']
             mg_opexp = x['mg_opexp']
             mg_cpm = round(mg_opexp/mg_pmt, 2)
@@ -2258,7 +2258,236 @@ def cost_per_pmt_by_mode(request):
 
 @csrf_exempt
 def frr_by_mode(request):
-    return(JsonResponse({}))
+    # filters, q = process_params(request.GET)
+    # # ts = TransitExpense.objects.filter(q).values("year", "service_id__name").annotate(expense=Round(Sum(F('expense')*F("year_id__in_todays_dollars")))).order_by('year')
+    # spending_ts = TransitExpense.objects.filter(q)\
+    #     .values("year").annotate(
+    #         do_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", service_id="DO")),
+    #         pt_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", service_id="PT")),
+    #         tx_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", service_id="TX")),
+    #         other_opexp=Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", service_id__in=["TN", "nan"]))
+    #     )\
+    #     .order_by('year')
+    # fares_ts = Fares.objects.filter(q)\
+    #     .values("year").annotate(
+    #         do_fares=Sum(F('fares'), service_id="DO"),
+    #         pt_fares=Sum(F('fares'), service_id="PT"),
+    #         tx_fares=Sum(F('fares'), service_id="TX"),
+    #         other_fares=Sum(F('fares'), service_id__in=["DO", "nan"]),
+    #     )\
+    #     .order_by('year')
+
+
+
+    filters, q = process_params(request.GET)
+    opexp_ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(mb_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="MB"))), \
+                                 cb_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="CB"))), \
+                                 rb_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="RB"))), \
+                                 tb_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="TB"))), \
+                                 pb_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="PB"))), \
+                                 hr_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="HR"))), \
+                                 lr_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="LR"))), \
+                                 cr_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="CR"))), \
+                                 yr_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="YR"))), \
+                                 sr_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="SR"))), \
+                                 cc_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="CC"))), \
+                                 mg_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="MG"))), \
+                                 ip_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="IP"))), \
+                                 ar_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="AR"))), \
+                                 other_rail_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="OR"))), \
+                                 dr_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="DR"))), \
+                                 dt_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="DT"))), \
+                                 vp_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="VP"))), \
+                                 jt_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="JT"))), \
+                                 fb_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="FB"))), \
+                                 tr_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id="TR"))), \
+                                 ot_opexp=Round(Sum(F('expense'), filter=Q(expense_type_id__budget="Operating", mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    fares_ts = Fares.objects.filter(q)\
+        .values("year").annotate(mb_fares=Round(Sum(F('fares'), filter=Q(mode_id="MB"))), \
+                                 cb_fares=Round(Sum(F('fares'), filter=Q(mode_id="CB"))), \
+                                 rb_fares=Round(Sum(F('fares'), filter=Q(mode_id="RB"))), \
+                                 tb_fares=Round(Sum(F('fares'), filter=Q(mode_id="TB"))), \
+                                 pb_fares=Round(Sum(F('fares'), filter=Q(mode_id="PB"))), \
+                                 hr_fares=Round(Sum(F('fares'), filter=Q(mode_id="HR"))), \
+                                 lr_fares=Round(Sum(F('fares'), filter=Q(mode_id="LR"))), \
+                                 cr_fares=Round(Sum(F('fares'), filter=Q(mode_id="CR"))), \
+                                 yr_fares=Round(Sum(F('fares'), filter=Q(mode_id="YR"))), \
+                                 sr_fares=Round(Sum(F('fares'), filter=Q(mode_id="SR"))), \
+                                 cc_fares=Round(Sum(F('fares'), filter=Q(mode_id="CC"))), \
+                                 mg_fares=Round(Sum(F('fares'), filter=Q(mode_id="MG"))), \
+                                 ip_fares=Round(Sum(F('fares'), filter=Q(mode_id="IP"))), \
+                                 ar_fares=Round(Sum(F('fares'), filter=Q(mode_id="AR"))), \
+                                 other_rail_fares=Round(Sum(F('fares'), filter=Q(mode_id="OR"))), \
+                                 dr_fares=Round(Sum(F('fares'), filter=Q(mode_id="DR"))), \
+                                 dt_fares=Round(Sum(F('fares'), filter=Q(mode_id="DT"))), \
+                                 vp_fares=Round(Sum(F('fares'), filter=Q(mode_id="VP"))), \
+                                 jt_fares=Round(Sum(F('fares'), filter=Q(mode_id="JT"))), \
+                                 fb_fares=Round(Sum(F('fares'), filter=Q(mode_id="FB"))), \
+                                 tr_fares=Round(Sum(F('fares'), filter=Q(mode_id="TR"))), \
+                                 ot_fares=Round(Sum(F('fares'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    data = []
+    for x in opexp_ts:
+
+        fares = fares_ts.get(year=x['year'])
+
+        if fares['mb_fares'] and fares['mb_fares'] > 0 and x['mb_opexp'] and x['mb_opexp'] > 0:
+            mb_fares = fares['mb_fares']
+            mb_opexp = x['mb_opexp']
+            mb_frr = round(mb_fares/mb_opexp, 2)
+        else:
+            mb_frr = 0
+
+        if fares['cb_fares'] and fares['cb_fares'] > 0 and x['cb_opexp'] and x['cb_opexp'] > 0:
+            cb_fares = fares['cb_fares']
+            cb_opexp = x['cb_opexp']
+            cb_frr = round(cb_fares/cb_opexp, 2)
+        else:
+            cb_frr = 0
+
+        if fares['rb_fares'] and fares['rb_fares'] > 0 and x['rb_opexp'] and x['rb_opexp'] > 0:
+            rb_fares = fares['rb_fares']
+            rb_opexp = x['rb_opexp']
+            rb_frr = round(rb_fares/rb_opexp, 2)
+        else:
+            rb_frr = 0
+
+        if fares['tb_fares'] and fares['tb_fares'] > 0 and x['tb_opexp'] and x['tb_opexp'] > 0:
+            tb_fares = fares['tb_fares']
+            tb_opexp = x['tb_opexp']
+            tb_frr = round(tb_fares/tb_opexp, 2)
+        else:
+            tb_frr = 0
+
+        if fares['pb_fares'] and fares['pb_fares'] > 0 and x['pb_opexp'] and x['pb_opexp'] > 0:
+            pb_fares = fares['pb_fares']
+            pb_opexp = x['pb_opexp']
+            pb_frr = round(pb_fares/pb_opexp, 2)
+        else:
+            pb_frr = 0
+
+        if fares['hr_fares'] and fares['hr_fares'] > 0 and x['hr_opexp'] and x['hr_opexp'] > 0:
+            hr_fares = fares['hr_fares']
+            hr_opexp = x['hr_opexp']
+            hr_frr = round(hr_fares/hr_opexp, 2)
+        else:
+            hr_frr = 0
+
+        if fares['lr_fares'] and fares['lr_fares'] > 0 and x['lr_opexp'] and x['lr_opexp'] > 0:
+            lr_fares = fares['lr_fares']
+            lr_opexp = x['lr_opexp']
+            lr_frr = round(lr_fares/lr_opexp, 2)
+        else:
+            lr_frr = 0
+
+        if fares['cr_fares'] and fares['cr_fares'] > 0 and x['cr_opexp'] and x['cr_opexp'] > 0:
+            cr_fares = fares['cr_fares']
+            cr_opexp = x['cr_opexp']
+            cr_frr = round(cr_fares/cr_opexp, 2)
+        else:
+            cr_frr = 0
+
+        if fares['yr_fares'] and fares['yr_fares'] > 0 and x['yr_opexp'] and x['yr_opexp'] > 0:
+            yr_fares = fares['yr_fares']
+            yr_opexp = x['yr_opexp']
+            yr_frr = round(yr_fares/yr_opexp, 2)
+        else:
+            yr_frr = 0
+
+        if fares['cc_fares'] and fares['cc_fares'] > 0 and x['cc_opexp'] and x['cc_opexp'] > 0:
+            cc_fares = fares['cc_fares']
+            cc_opexp = x['cc_opexp']
+            cc_frr = round(cc_fares/cc_opexp, 2)
+        else:
+            cc_frr = 0
+
+        if fares['mg_fares'] and fares['mg_fares'] > 0 and x['mg_opexp'] and x['mg_opexp'] > 0:
+            mg_fares = fares['mg_fares']
+            mg_opexp = x['mg_opexp']
+            mg_frr = round(mg_fares/mg_opexp, 2)
+        else:
+            mg_frr = 0
+
+        if fares['ip_fares'] and fares['ip_fares'] > 0 and x['ip_opexp'] and x['ip_opexp'] > 0:
+            ip_fares = fares['ip_fares']
+            ip_opexp = x['ip_opexp']
+            ip_frr = round(ip_fares/ip_opexp, 2)
+        else:
+            ip_frr = 0
+
+        if fares['ar_fares'] and fares['ar_fares'] > 0 and x['ar_opexp'] and x['ar_opexp'] > 0:
+            ar_fares = fares['ar_fares']
+            ar_opexp = x['ar_opexp']
+            ar_frr = round(ar_fares/ar_opexp, 2)
+        else:
+            ar_frr = 0
+
+        if fares['other_rail_fares'] and fares['other_rail_fares'] > 0 and x['other_rail_opexp'] and x['other_rail_opexp'] > 0:
+            other_rail_fares = fares['other_rail_fares']
+            other_rail_opexp = x['other_rail_opexp']
+            other_rail_frr = round(other_rail_fares/other_rail_opexp, 2)
+        else:
+            other_rail_frr = 0
+
+        if fares['dr_fares'] and fares['dr_fares'] > 0 and x['dr_opexp'] and x['dr_opexp'] > 0:
+            dr_fares = fares['dr_fares']
+            dr_opexp = x['dr_opexp']
+            dr_frr = round(dr_fares/dr_opexp, 2)
+        else:
+            dr_frr = 0
+
+        if fares['dt_fares'] and fares['dt_fares'] > 0 and x['dt_opexp'] and x['dt_opexp'] > 0:
+            dt_fares = fares['dt_fares']
+            dt_opexp = x['dt_opexp']
+            dt_frr = round(dt_fares/dt_opexp, 2)
+        else:
+            dt_frr = 0
+
+        if fares['vp_fares'] and fares['vp_fares'] > 0 and x['vp_opexp'] and x['vp_opexp'] > 0:
+            vp_fares = fares['vp_fares']
+            vp_opexp = x['vp_opexp']
+            vp_frr = round(vp_fares/vp_opexp, 2)
+        else:
+            vp_frr = 0
+
+        if fares['jt_fares'] and fares['jt_fares'] > 0 and x['jt_opexp'] and x['jt_opexp'] > 0:
+            jt_fares = fares['jt_fares']
+            jt_opexp = x['jt_opexp']
+            jt_frr = round(jt_fares/jt_opexp, 2)
+        else:
+            jt_frr = 0
+
+        if fares['fb_fares'] and fares['fb_fares'] > 0 and x['fb_opexp'] and x['fb_opexp'] > 0:
+            fb_fares = fares['fb_fares']
+            fb_opexp = x['fb_opexp']
+            fb_frr = round(fb_fares/fb_opexp, 2)
+        else:
+            fb_frr = 0
+
+        if fares['tr_fares'] and fares['tr_fares'] > 0 and x['tr_opexp'] and x['tr_opexp'] > 0:
+            tr_fares = fares['tr_fares']
+            tr_opexp = x['tr_opexp']
+            tr_frr = round(tr_fares/tr_opexp, 2)
+        else:
+            tr_frr = 0
+
+        if fares['ot_fares'] and fares['ot_fares'] > 0 and x['ot_opexp'] and x['ot_opexp'] > 0:
+            ot_fares = fares['ot_fares']
+            ot_opexp = x['ot_opexp']
+            ot_frr = round(ot_fares/ot_opexp, 2)
+        else:
+            ot_frr = 0
+
+        data += [{"year": x['year'], "mb": mb_frr, "cb": cb_frr, "rb": rb_frr, "tb": tb_frr, "pb": pb_frr, "hr": hr_frr, "cr": cr_frr, "lr": lr_frr, "yr": yr_frr, "cc": cc_frr, "mg": mg_frr, "ip": ip_frr, "ar": ar_frr, "other_rail": other_rail_frr, "dr": dr_frr, "dt": dt_frr, "vp": vp_frr, "jt": jt_frr, "fb": fb_frr, "tr": tr_frr, "ot": ot_frr}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 # @csrf_exempt
 # def cost_per_vrh_by_mode(request):
