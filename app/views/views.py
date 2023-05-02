@@ -1311,40 +1311,39 @@ def cost_per_upt_by_mode_type(request):
         ).order_by('year')
     data = []
     for x in spending_ts:
-        bus_opexp = x['bus_opexp']
-        rail_opexp = x['rail_opexp']
-        microtransit_opexp = x['microtransit_opexp']
-        ferry_opexp = x['ferry_opexp']
-        other_opexp = x['other_opexp']
 
         ridership = upt_ts.get(year=x['year'])
 
-        if ridership['bus_upt'] and ridership['bus_upt'] > 0:
+        if ridership['bus_upt'] and ridership['bus_upt'] > 0 and x['bus_opexp'] and x['bus_opexp'] > 0:
             bus_upt = ridership['bus_upt']
+            bus_opexp = x['bus_opexp']
+            bus_cpp = round(bus_opexp/bus_upt, 2)
         else:
-            bus_upt = 1
-        if ridership['rail_upt'] and ridership['rail_upt'] > 0:
+            bus_cpp = 0
+        if ridership['rail_upt'] and ridership['rail_upt'] > 0 and x['rail_opexp'] and x['rail_opexp'] > 0:
             rail_upt = ridership['rail_upt']
+            rail_opexp = x['rail_opexp']
+            rail_cpp = round(rail_opexp/rail_upt, 2)
         else:
-            rail_upt = 1
-        if ridership['microtransit_upt'] and ridership['microtransit_upt'] > 0:
+            rail_cpp = 0
+        if ridership['microtransit_upt'] and ridership['microtransit_upt'] > 0 and x['microtransit_opexp'] and x['microtransit_opexp'] > 0:
             microtransit_upt = ridership['microtransit_upt']
+            microtransit_opexp = x['microtransit_opexp']
+            microtransit_cpp = round(microtransit_opexp/microtransit_upt, 2)
         else:
-            microtransit_upt = 1
-        if ridership['ferry_upt'] and ridership['ferry_upt'] > 0:
+            microtransit_cpp = 0
+        if ridership['ferry_upt'] and ridership['ferry_upt'] > 0 and x['ferry_opexp'] and x['ferry_opexp'] > 0:
+            ferry_opexp = x['ferry_opexp']
             ferry_upt = ridership['ferry_upt']
+            ferry_cpp = round(ferry_opexp/ferry_upt, 2)
         else:
-            ferry_upt = 1
-        if ridership['other_upt'] and ridership['other_upt'] > 0:
+            ferry_cpp = 0
+        if ridership['other_upt'] and ridership['other_upt'] > 0 and x['other_opexp'] and x['other_opexp'] > 0:
             other_upt = ridership['other_upt']
+            other_opexp = x['other_opexp']
+            other_cpp = round(other_opexp/other_upt, 2)
         else:
-            other_upt = 1
-
-        bus_cpp = round(bus_opexp/bus_upt, 2)
-        rail_cpp = round(rail_opexp/rail_upt, 2)
-        microtransit_cpp = round(microtransit_opexp/microtransit_upt, 2)
-        ferry_cpp = round(ferry_opexp/ferry_upt, 2)
-        other_cpp = round(other_opexp/other_upt, 2)
+            other_cpp = 0
 
         data += [{"year": x['year'], "bus": bus_cpp, "rail": rail_cpp, "microtransit": microtransit_cpp, "ferry": ferry_cpp, "other": other_cpp}]
     length = len(data)
@@ -1378,42 +1377,46 @@ def cost_per_pmt_by_mode_type(request):
         ).order_by('year')
     data = []
     for x in spending_ts:
-        bus_opexp = x['bus_opexp']
-        rail_opexp = x['rail_opexp']
-        microtransit_opexp = x['microtransit_opexp']
-        ferry_opexp = x['ferry_opexp']
-        other_opexp = x['other_opexp']
-
+        
         ridership = pmt_ts.get(year=x['year'])
 
-        if ridership['bus_pmt'] and ridership['bus_pmt'] > 0:
+        if ridership['bus_pmt'] and ridership['bus_pmt'] > 0 and x['bus_opexp'] and x['bus_opexp'] > 0:
             bus_pmt = ridership['bus_pmt']
+            bus_opexp = x['bus_opexp']
+            bus_cpp = round(bus_opexp/bus_pmt, 2)
         else:
-            bus_pmt = 1
-        if ridership['rail_pmt'] and ridership['rail_pmt'] > 0:
-            rail_pmt = ridership['rail_pmt']
-        else:
-            rail_pmt = 1
-        if ridership['microtransit_pmt'] and ridership['microtransit_pmt'] > 0:
-            microtransit_pmt = ridership['microtransit_pmt']
-        else:
-            microtransit_pmt = 1
-        if ridership['ferry_pmt'] and ridership['ferry_pmt'] > 0:
-            ferry_pmt = ridership['ferry_pmt']
-        else:
-            ferry_pmt = 1
-        if ridership['other_pmt'] and ridership['other_pmt'] > 0:
-            other_pmt = ridership['other_pmt']
-        else:
-            other_pmt = 1
+            bus_cpp = 0
 
-        bus_cpp = round(bus_opexp/bus_pmt, 2)
-        rail_cpp = round(rail_opexp/rail_pmt, 2)
-        microtransit_cpp = round(microtransit_opexp/microtransit_pmt, 2)
-        ferry_cpp = round(ferry_opexp/ferry_pmt, 2)
-        other_cpp = round(other_opexp/other_pmt, 2)
+        if ridership['rail_pmt'] and ridership['rail_pmt'] > 0 and x['rail_opexp'] and x['rail_opexp'] > 0:
+            rail_pmt = ridership['rail_pmt']
+            rail_opexp = x['rail_opexp']
+            rail_cpp = round(rail_opexp/rail_pmt, 2)
+        else:
+            rail_cpp = 0
+            
+        if ridership['microtransit_pmt'] and ridership['microtransit_pmt'] > 0 and x['microtransit_opexp'] and x['microtransit_opexp'] > 0:
+            microtransit_pmt = ridership['microtransit_pmt']
+            microtransit_opexp = x['microtransit_opexp']
+            microtransit_cpp = round(microtransit_opexp/microtransit_pmt, 2)
+        else:
+            microtransit_cpp = 0
+
+        if ridership['ferry_pmt'] and ridership['ferry_pmt'] > 0 and x['ferry_opexp'] and x['ferry_opexp'] > 0:
+            ferry_pmt = ridership['ferry_pmt']
+            ferry_opexp = x['ferry_opexp']
+            ferry_cpp = round(ferry_opexp/ferry_pmt, 2)
+        else:
+            ferry_cpp = 0
+
+        if ridership['other_pmt'] and ridership['other_pmt'] > 0 and x['other_opexp'] and x['other_opexp'] > 0:
+            other_pmt = ridership['other_pmt']
+            other_opexp = x['other_opexp']
+            other_cpp = round(other_opexp/other_pmt, 2)
+        else:
+            other_cpp = 0
 
         data += [{"year": x['year'], "bus": bus_cpp, "rail": rail_cpp, "microtransit": microtransit_cpp, "ferry": ferry_cpp, "other": other_cpp}]
+        
     length = len(data)
     resp = {
         "filters": filters,
@@ -1445,41 +1448,45 @@ def frr_by_mode_type(request):
         )\
         .order_by('year')
     data = []
-
     for x in spending_ts:
-        if x['bus_opexp'] and x['bus_opexp'] > 0:
-            bus_opexp = x['bus_opexp']
-        else:
-            bus_opexp = 1
-        if x['rail_opexp'] and x['rail_opexp'] > 0:
-            rail_opexp = x['rail_opexp']
-        else: 
-            rail_opexp = 1
-        if x['microtransit_opexp'] and x['microtransit_opexp'] > 0:
-            microtransit_opexp = x['microtransit_opexp']
-        else: 
-            microtransit_opexp = 1
-        if x['ferry_opexp'] and x['ferry_opexp'] > 0:
-            ferry_opexp = x['ferry_opexp']
-        else: 
-            ferry_opexp = 1
-        if x['other_opexp'] and x['other_opexp'] > 0:
-            other_opexp = x['other_opexp']
-        else: 
-            other_opexp = 1
-        
         revenue = fares_ts.get(year=x['year'])
-        bus_fares=revenue['bus_fares']
-        rail_fares=revenue['rail_fares']
-        microtransit_fares=revenue['microtransit_fares']
-        ferry_fares=revenue['ferry_fares']
-        other_fares=revenue['other_fares']
-        bus_frr = round(bus_fares/bus_opexp, 4)
-        rail_frr = round(rail_fares/rail_opexp, 4)
-        microtransit_frr = round(microtransit_fares/microtransit_opexp, 4)
-        ferry_frr = round(ferry_fares/ferry_opexp, 4)
-        other_frr = round(other_fares/other_opexp, 4)
+        if x['bus_opexp'] and x['bus_opexp'] > 0 and revenue['bus_fares'] and revenue['bus_fares'] > 0:
+            bus_opexp = x['bus_opexp']
+            bus_fares=revenue['bus_fares']
+            bus_frr = round(bus_fares/bus_opexp, 4)
+        else:
+            bus_frr = 0
+
+        if x['rail_opexp'] and x['rail_opexp'] > 0 and revenue['rail_fares'] and revenue['rail_fares'] > 0:
+            rail_opexp = x['rail_opexp']
+            rail_fares=revenue['rail_fares']
+            rail_frr = round(rail_fares/rail_opexp, 4)
+        else: 
+            rail_frr = 0
+
+        if x['microtransit_opexp'] and x['microtransit_opexp'] > 0 and revenue['microtransit_fares'] and revenue['microtransit_fares'] > 0:
+            microtransit_opexp = x['microtransit_opexp']
+            microtransit_fares=revenue['microtransit_fares']
+            microtransit_frr = round(microtransit_fares/microtransit_opexp, 4)
+        else: 
+            microtransit_frr = 0
+
+        if x['ferry_opexp'] and x['ferry_opexp'] > 0 and revenue['ferry_fares'] and revenue['ferry_fares'] > 0:
+            ferry_opexp = x['ferry_opexp']
+            ferry_fares=revenue['ferry_fares']
+            ferry_frr = round(ferry_fares/ferry_opexp, 4)
+        else: 
+            ferry_frr = 0
+
+        if x['other_opexp'] and x['other_opexp'] > 0 and revenue['other_fares'] and revenue['other_fares'] > 0:
+            other_opexp = x['other_opexp']
+            other_fares=revenue['other_fares']
+            other_frr = round(other_fares/other_opexp, 4)
+        else: 
+            other_frr = 0
+
         data += [{"year": x['year'], "bus": bus_frr, "rail": rail_frr, "microtransit": microtransit_frr, "ferry": ferry_frr, "other": other_frr}]
+
     length = len(data)
     resp = {
         "filters": filters,
@@ -1519,37 +1526,41 @@ def vrm_per_vrh_by_mode_type(request):
     )\
     .order_by('year')
     for x in vrh_ts:
-        if x['bus'] and x["bus"] > 0:
-            bus_vrh = x['bus']
-        else:
-            bus_vrh = 1
-        if x['rail'] and x["rail"] > 0:
-            rail_vrh = x['rail']
-        else:
-            rail_vrh = 1
-        if x['microtransit'] and x["microtransit"] > 0:
-            microtransit_vrh = x['microtransit']
-        else:
-            microtransit_vrh = 1
-        if x['ferry'] and x["ferry"] > 0:
-            ferry_vrh = x['ferry']
-        else:
-            ferry_vrh = 1
-        if x['other'] and x["other"] > 0:
-            other_vrh = x['other']
-        else:
-            other_vrh = 1
         vrm = vrm_ts.get(year=x['year'])
-        bus_vrm = vrm['bus']
-        rail_vrm = vrm['rail']
-        microtransit_vrm = vrm['microtransit']
-        ferry_vrm = vrm['ferry']
-        other_vrm = vrm['other']
-        bus_mph = round(bus_vrm / bus_vrh, 2)
-        rail_mph = round(rail_vrm / rail_vrh, 2)
-        microtransit_mph = round(microtransit_vrm / microtransit_vrh, 2)
-        ferry_mph = round(ferry_vrm / ferry_vrh, 2)
-        other_mph = round(other_vrm / other_vrh, 2)
+
+        if x['bus'] and x["bus"] > 0 and vrm['bus'] and vrm['bus'] > 0:
+            bus_vrh = x['bus']
+            bus_vrm = vrm['bus']
+            bus_mph = round(bus_vrm / bus_vrh, 2)
+        else:
+            bus_mph = 0
+
+        if x['rail'] and x["rail"] > 0 and vrm['rail'] and vrm['rail'] > 0:
+            rail_vrh = x['rail']
+            rail_vrm = vrm['rail']
+            rail_mph = round(rail_vrm / rail_vrh, 2)
+        else:
+            rail_mph = 0
+
+        if x['microtransit'] and x["microtransit"] > 0 and vrm['microtransit'] and vrm['microtransit'] > 0:
+            microtransit_vrh = x['microtransit']
+            microtransit_vrm = vrm['microtransit']
+            microtransit_mph = round(microtransit_vrm / microtransit_vrh, 2)
+        else:
+            microtransit_mph = 0
+        if x['ferry'] and x["ferry"] > 0 and vrm['ferry'] and vrm['ferry'] > 0:
+            ferry_vrh = x['ferry']
+            ferry_vrm = vrm['ferry']
+            ferry_mph = round(ferry_vrm / ferry_vrh, 2)
+        else:
+            ferry_mph = 0
+        if x['other'] and x["other"] > 0 and vrm['other'] and vrm['other'] > 0:
+            other_vrh = x['other']
+            other_vrm = vrm['other']
+            other_mph = round(other_vrm / other_vrh, 2)
+        else:
+            other_mph = 0
+        
         data += [{"year": x['year'], "bus": bus_mph, "rail": rail_mph, "microtransit": microtransit_mph, "ferry": ferry_mph, "other": other_mph}]
     length = len(data)
     resp = {
@@ -1582,37 +1593,39 @@ def upt_per_vrh_by_mode_type(request):
     )\
     .order_by('year')
     for x in vrh_ts:
-        if x['bus'] and x["bus"] > 0:
-            bus_vrh = x['bus']
-        else:
-            bus_vrh = 1
-        if x['rail'] and x["rail"] > 0:
-            rail_vrh = x['rail']
-        else:
-            rail_vrh = 1
-        if x['microtransit'] and x["microtransit"] > 0:
-            microtransit_vrh = x['microtransit']
-        else:
-            microtransit_vrh = 1
-        if x['ferry'] and x["ferry"] > 0:
-            ferry_vrh = x['ferry']
-        else:
-            ferry_vrh = 1
-        if x['other'] and x["other"] > 0:
-            other_vrh = x['other']
-        else:
-            other_vrh = 1
         upt = upt_ts.get(year=x['year'])
-        bus_upt = upt['bus']
-        rail_upt = upt['rail']
-        microtransit_upt = upt['microtransit']
-        ferry_upt = upt['ferry']
-        other_upt = upt['other']
-        bus_pph = round(bus_upt / bus_vrh, 2)
-        rail_pph = round(rail_upt / rail_vrh, 2)
-        microtransit_pph = round(microtransit_upt / microtransit_vrh, 2)
-        ferry_pph = round(ferry_upt / ferry_vrh, 2)
-        other_pph = round(other_upt / other_vrh, 2)
+
+        if x['bus'] and x["bus"] > 0 and upt['bus'] and upt['bus'] > 0:
+            bus_vrh = x['bus']
+            bus_upt = upt['bus']
+            bus_pph = round(bus_upt / bus_vrh, 2)
+        else:
+            bus_pph = 0
+        if x['rail'] and x["rail"] > 0 and upt['rail'] and upt['rail'] > 0:
+            rail_vrh = x['rail']
+            rail_upt = upt['rail']
+            rail_pph = round(rail_upt / rail_vrh, 2)
+        else:
+            rail_pph = 0
+        if x['microtransit'] and x["microtransit"] > 0 and upt['microtransit'] and upt['microtransit'] > 0:
+            microtransit_vrh = x['microtransit']
+            microtransit_upt = upt['microtransit']
+            microtransit_pph = round(microtransit_upt / microtransit_vrh, 2)
+        else:
+            microtransit_pph = 0
+        if x['ferry'] and x["ferry"] > 0 and upt['ferry'] and upt['ferry'] > 0:
+            ferry_vrh = x['ferry']
+            ferry_upt = upt['ferry']
+            ferry_pph = round(ferry_upt / ferry_vrh, 2)
+        else:
+            ferry_pph = 0
+        if x['other'] and x["other"] > 0 and upt['other'] and upt['other'] > 0:
+            other_vrh = x['other']
+            other_upt = upt['other']
+            other_pph = round(other_upt / other_vrh, 2)
+        else:
+            other_pph = 0
+
         data += [{"year": x['year'], "bus": bus_pph, "rail": rail_pph, "microtransit": microtransit_pph, "ferry": ferry_pph, "other": other_pph}]
     length = len(data)
     resp = {
@@ -1645,37 +1658,38 @@ def upt_per_vrm_by_mode_type(request):
     )\
     .order_by('year')
     for x in vrm_ts:
-        if x['bus'] and x["bus"] > 0:
-            bus_vrm = x['bus']
-        else:
-            bus_vrm = 1
-        if x['rail'] and x["rail"] > 0:
-            rail_vrm = x['rail']
-        else:
-            rail_vrm = 1
-        if x['microtransit'] and x["microtransit"] > 0:
-            microtransit_vrm = x['microtransit']
-        else:
-            microtransit_vrm = 1
-        if x['ferry'] and x["ferry"] > 0:
-            ferry_vrm = x['ferry']
-        else:
-            ferry_vrm = 1
-        if x['other'] and x["other"] > 0:
-            other_vrm = x['other']
-        else:
-            other_vrm = 1
         upt = upt_ts.get(year=x['year'])
-        bus_upt = upt['bus']
-        rail_upt = upt['rail']
-        microtransit_upt = upt['microtransit']
-        ferry_upt = upt['ferry']
-        other_upt = upt['other']
-        bus_ppm = round(bus_upt / bus_vrm, 2)
-        rail_ppm = round(rail_upt / rail_vrm, 2)
-        microtransit_ppm = round(microtransit_upt / microtransit_vrm, 2)
-        ferry_ppm = round(ferry_upt / ferry_vrm, 2)
-        other_ppm = round(other_upt / other_vrm, 2)
+        if x['bus'] and x["bus"] > 0 and upt['bus'] and upt['bus'] > 0:
+            bus_vrm = x['bus']
+            bus_upt = upt['bus']
+            bus_ppm = round(bus_upt / bus_vrm, 2)
+        else:
+            bus_ppm = 0
+        if x['rail'] and x["rail"] > 0 and upt['rail'] and upt['rail'] > 0:
+            rail_vrm = x['rail']
+            rail_upt = upt['rail']
+            rail_ppm = round(rail_upt / rail_vrm, 2)
+        else:
+            rail_ppm = 0
+        if x['microtransit'] and x["microtransit"] > 0 and upt['microtransit'] and upt['microtransit'] > 0:
+            microtransit_vrm = x['microtransit']
+            microtransit_upt = upt['microtransit']
+            microtransit_ppm = round(microtransit_upt / microtransit_vrm, 2)
+        else:
+            microtransit_ppm = 0
+        if x['ferry'] and x["ferry"] > 0 and upt['ferry'] and upt['ferry'] > 0:
+            ferry_vrm = x['ferry']
+            ferry_upt = upt['ferry']
+            ferry_ppm = round(ferry_upt / ferry_vrm, 2)
+        else:
+            ferry_ppm = 0
+        if x['other'] and x["other"] > 0 and upt['other'] and upt['other'] > 0:
+            other_vrm = x['other']
+            other_upt = upt['other']
+            other_ppm = round(other_upt / other_vrm, 2)
+        else:
+            other_ppm = 0
+            
         data += [{"year": x['year'], "bus": bus_ppm, "rail": rail_ppm, "microtransit": microtransit_ppm, "ferry": ferry_ppm, "other": other_ppm}]
     length = len(data)
     resp = {
@@ -1708,37 +1722,38 @@ def pmt_per_vrh_by_mode_type(request):
     )\
     .order_by('year')
     for x in vrh_ts:
-        if x['bus'] and x["bus"] > 0:
-            bus_vrh = x['bus']
-        else:
-            bus_vrh = 1
-        if x['rail'] and x["rail"] > 0:
-            rail_vrh = x['rail']
-        else:
-            rail_vrh = 1
-        if x['microtransit'] and x["microtransit"] > 0:
-            microtransit_vrh = x['microtransit']
-        else:
-            microtransit_vrh = 1
-        if x['ferry'] and x["ferry"] > 0:
-            ferry_vrh = x['ferry']
-        else:
-            ferry_vrh = 1
-        if x['other'] and x["other"] > 0:
-            other_vrh = x['other']
-        else:
-            other_vrh = 1
         pmt = pmt_ts.get(year=x['year'])
-        bus_pmt = pmt['bus']
-        rail_pmt = pmt['rail']
-        microtransit_pmt = pmt['microtransit']
-        ferry_pmt = pmt['ferry']
-        other_pmt = pmt['other']
-        bus_pmph = round(bus_pmt / bus_vrh, 2)
-        rail_pmph = round(rail_pmt / rail_vrh, 2)
-        microtransit_pmph = round(microtransit_pmt / microtransit_vrh, 2)
-        ferry_pmph = round(ferry_pmt / ferry_vrh, 2)
-        other_pmph = round(other_pmt / other_vrh, 2)
+        if x['bus'] and x["bus"] > 0 and pmt['bus'] and pmt['bus'] > 0:
+            bus_vrh = x['bus']
+            bus_pmt = pmt['bus']
+            bus_pmph = round(bus_pmt / bus_vrh, 2)
+        else:
+            bus_pmph = 0
+        if x['rail'] and x["rail"] > 0 and pmt['rail'] and pmt['rail'] > 0:
+            rail_vrh = x['rail']
+            rail_pmt = pmt['rail']
+            rail_pmph = round(rail_pmt / rail_vrh, 2)
+        else:
+            rail_pmph = 0
+        if x['microtransit'] and x["microtransit"] > 0 and pmt['microtransit'] and pmt['microtransit'] > 0:
+            microtransit_vrh = x['microtransit']
+            microtransit_pmt = pmt['microtransit']
+            microtransit_pmph = round(microtransit_pmt / microtransit_vrh, 2)
+        else:
+            microtransit_pmph =0
+        if x['ferry'] and x["ferry"] > 0 and pmt['ferry'] and pmt['ferry'] > 0:
+            ferry_vrh = x['ferry']
+            ferry_pmt = pmt['ferry']
+            ferry_pmph = round(ferry_pmt / ferry_vrh, 2)
+        else:
+            ferry_pmph = 0
+        if x['other'] and x["other"] > 0 and pmt['other'] and pmt['other'] > 0:
+            other_vrh = x['other']
+            other_pmt = pmt['other']
+            other_pmph = round(other_pmt / other_vrh, 2)
+        else:
+            other_pmph = 0
+        
         data += [{"year": x['year'], "bus": bus_pmph, "rail": rail_pmph, "microtransit": microtransit_pmph, "ferry": ferry_pmph, "other": other_pmph}]
     length = len(data)
     resp = {
@@ -1771,38 +1786,40 @@ def pmt_per_vrm_by_mode_type(request):
     )\
     .order_by('year')
     for x in vrm_ts:
-        if x['bus'] and x["bus"] > 0:
-            bus_vrm = x['bus']
-        else:
-            bus_vrm = 1
-        if x['rail'] and x["rail"] > 0:
-            rail_vrm = x['rail']
-        else:
-            rail_vrm = 1
-        if x['microtransit'] and x["microtransit"] > 0:
-            microtransit_vrm = x['microtransit']
-        else:
-            microtransit_vrm = 1
-        if x['ferry'] and x["ferry"] > 0:
-            ferry_vrm = x['ferry']
-        else:
-            ferry_vrm = 1
-        if x['other'] and x["other"] > 0:
-            other_vrm = x['other']
-        else:
-            other_vrm = 1
         pmt = pmt_ts.get(year=x['year'])
-        bus_pmt = pmt['bus']
-        rail_pmt = pmt['rail']
-        microtransit_pmt = pmt['microtransit']
-        ferry_pmt = pmt['ferry']
-        other_pmt = pmt['other']
-        bus_pmpm = round(bus_pmt / bus_vrm, 2)
-        rail_pmpm = round(rail_pmt / rail_vrm, 2)
-        microtransit_pmpm = round(microtransit_pmt / microtransit_vrm, 2)
-        ferry_pmpm = round(ferry_pmt / ferry_vrm, 2)
-        other_pmpm = round(other_pmt / other_vrm, 2)
+        if x['bus'] and x["bus"] > 0 and pmt['bus'] and pmt['bus'] > 0:
+            bus_vrm = x['bus']
+            bus_pmt = pmt['bus']
+            bus_pmpm = round(bus_pmt / bus_vrm, 2)
+        else:
+            bus_pmpm = 0
+        if x['rail'] and x["rail"] > 0 and pmt['rail'] and pmt['rail'] > 0:
+            rail_vrm = x['rail']
+            rail_pmt = pmt['rail']
+            rail_pmpm = round(rail_pmt / rail_vrm, 2)
+        else:
+            rail_pmpm = 0
+        if x['microtransit'] and x["microtransit"] > 0 and pmt['microtransit'] and pmt['microtransit'] > 0:
+            microtransit_vrm = x['microtransit']
+            microtransit_pmt = pmt['microtransit']
+            microtransit_pmpm = round(microtransit_pmt / microtransit_vrm, 2)
+        else:
+            microtransit_pmpm = 0
+        if x['ferry'] and x["ferry"] > 0 and pmt['ferry'] and pmt['ferry'] > 0:
+            ferry_vrm = x['ferry']
+            ferry_pmt = pmt['ferry']
+            ferry_pmpm = round(ferry_pmt / ferry_vrm, 2)
+        else:
+            ferry_pmpm = 0
+        if x['other'] and x["other"] > 0 and pmt['other'] and pmt['other'] > 0:
+            other_vrm = x['other']
+            other_pmt = pmt['other']
+            other_pmpm = round(other_pmt / other_vrm, 2)
+        else:
+            other_pmpm = 0
+            
         data += [{"year": x['year'], "bus": bus_pmpm, "rail": rail_pmpm, "microtransit": microtransit_pmpm, "ferry": ferry_pmpm, "other": other_pmpm}]
+    
     length = len(data)
     resp = {
         "filters": filters,
@@ -1871,147 +1888,147 @@ def cost_per_upt_by_mode(request):
 
         ridership = upt_ts.get(year=x['year'])
 
-        if ridership['mb_upt'] and ridership['mb_upt'] > 0:
+        if ridership['mb_upt'] and ridership['mb_upt'] > 0 and x['mb_opexp'] and x['mb_opexp'] > 0:
             mb_upt = ridership['mb_upt']
             mb_opexp = x['mb_opexp']
             mb_cpp = round(mb_opexp/mb_upt, 2)
         else:
             mb_cpp = 0
 
-        if ridership['cb_upt'] and ridership['cb_upt'] > 0:
+        if ridership['cb_upt'] and ridership['cb_upt'] > 0 and x['cb_opexp'] and x['cb_opexp'] > 0:
             cb_upt = ridership['cb_upt']
             cb_opexp = x['cb_opexp']
             cb_cpp = round(cb_opexp/cb_upt, 2)
         else:
             cb_cpp = 0
 
-        if ridership['rb_upt'] and ridership['rb_upt'] > 0:
+        if ridership['rb_upt'] and ridership['rb_upt'] > 0 and x['rb_opexp'] and x['rb_opexp'] > 0:
             rb_upt = ridership['rb_upt']
             rb_opexp = x['rb_opexp']
             rb_cpp = round(rb_opexp/rb_upt, 2)
         else:
             rb_cpp = 0
 
-        if ridership['tb_upt'] and ridership['tb_upt'] > 0:
+        if ridership['tb_upt'] and ridership['tb_upt'] > 0 and x['tb_opexp'] and x['tb_opexp'] > 0:
             tb_upt = ridership['tb_upt']
             tb_opexp = x['tb_opexp']
             tb_cpp = round(tb_opexp/tb_upt, 2)
         else:
             tb_cpp = 0
 
-        if ridership['pb_upt'] and ridership['pb_upt'] > 0:
+        if ridership['pb_upt'] and ridership['pb_upt'] > 0 and x['pb_opexp'] and x['pb_opexp'] > 0:
             pb_upt = ridership['pb_upt']
             pb_opexp = x['pb_opexp']
             pb_cpp = round(pb_opexp/pb_upt, 2)
         else:
             pb_cpp = 0
 
-        if ridership['hr_upt'] and ridership['hr_upt'] > 0:
+        if ridership['hr_upt'] and ridership['hr_upt'] > 0 and x['hr_opexp'] and x['hr_opexp'] > 0:
             hr_upt = ridership['hr_upt']
             hr_opexp = x['hr_opexp']
             hr_cpp = round(hr_opexp/hr_upt, 2)
         else:
             hr_cpp = 0
 
-        if ridership['lr_upt'] and ridership['lr_upt'] > 0:
+        if ridership['lr_upt'] and ridership['lr_upt'] > 0 and x['lr_opexp'] and x['lr_opexp'] > 0:
             lr_upt = ridership['lr_upt']
             lr_opexp = x['lr_opexp']
             lr_cpp = round(lr_opexp/lr_upt, 2)
         else:
             lr_cpp = 0
 
-        if ridership['cr_upt'] and ridership['cr_upt'] > 0:
+        if ridership['cr_upt'] and ridership['cr_upt'] > 0 and x['cr_opexp'] and x['cr_opexp'] > 0:
             cr_upt = ridership['cr_upt']
             cr_opexp = x['cr_opexp']
             cr_cpp = round(cr_opexp/cr_upt, 2)
         else:
             cr_cpp = 0
 
-        if ridership['yr_upt'] and ridership['yr_upt'] > 0:
+        if ridership['yr_upt'] and ridership['yr_upt'] > 0 and x['yr_opexp'] and x['yr_opexp'] > 0:
             yr_upt = ridership['yr_upt']
             yr_opexp = x['yr_opexp']
             yr_cpp = round(yr_opexp/yr_upt, 2)
         else:
             yr_cpp = 0
 
-        if ridership['cc_upt'] and ridership['cc_upt'] > 0:
+        if ridership['cc_upt'] and ridership['cc_upt'] > 0 and x['cc_opexp'] and x['cc_opexp'] > 0:
             cc_upt = ridership['cc_upt']
             cc_opexp = x['cc_opexp']
             cc_cpp = round(cc_opexp/cc_upt, 2)
         else:
             cc_cpp = 0
 
-        if ridership['mg_upt'] and ridership['mg_upt'] > 0:
+        if ridership['mg_upt'] and ridership['mg_upt'] > 0 and x['mg_opexp'] and x['mg_opexp'] > 0:
             mg_upt = ridership['mg_upt']
             mg_opexp = x['mg_opexp']
             mg_cpp = round(mg_opexp/mg_upt, 2)
         else:
             mg_cpp = 0
 
-        if ridership['ip_upt'] and ridership['ip_upt'] > 0:
+        if ridership['ip_upt'] and ridership['ip_upt'] > 0 and x['ip_opexp'] and x['ip_opexp'] > 0:
             ip_upt = ridership['ip_upt']
             ip_opexp = x['ip_opexp']
             ip_cpp = round(ip_opexp/ip_upt, 2)
         else:
             ip_cpp = 0
 
-        if ridership['ar_upt'] and ridership['ar_upt'] > 0:
+        if ridership['ar_upt'] and ridership['ar_upt'] > 0 and x['ar_opexp'] and x['ar_opexp'] > 0:
             ar_upt = ridership['ar_upt']
             ar_opexp = x['ar_opexp']
             ar_cpp = round(ar_opexp/ar_upt, 2)
         else:
             ar_cpp = 0
 
-        if ridership['other_rail_upt'] and ridership['other_rail_upt'] > 0:
+        if ridership['other_rail_upt'] and ridership['other_rail_upt'] > 0 and x['other_rail_opexp'] and x['other_rail_opexp'] > 0:
             other_rail_upt = ridership['other_rail_upt']
             other_rail_opexp = x['other_rail_opexp']
             other_rail_cpp = round(other_rail_opexp/other_rail_upt, 2)
         else:
             other_rail_cpp = 0
 
-        if ridership['dr_upt'] and ridership['dr_upt'] > 0:
+        if ridership['dr_upt'] and ridership['dr_upt'] > 0 and x['dr_opexp'] and x['dr_opexp'] > 0:
             dr_upt = ridership['dr_upt']
             dr_opexp = x['dr_opexp']
             dr_cpp = round(dr_opexp/dr_upt, 2)
         else:
             dr_cpp = 0
 
-        if ridership['dt_upt'] and ridership['dt_upt'] > 0:
+        if ridership['dt_upt'] and ridership['dt_upt'] > 0 and x['dt_opexp'] and x['dt_opexp'] > 0:
             dt_upt = ridership['dt_upt']
             dt_opexp = x['dt_opexp']
             dt_cpp = round(dt_opexp/dt_upt, 2)
         else:
             dt_cpp = 0
 
-        if ridership['vp_upt'] and ridership['vp_upt'] > 0:
+        if ridership['vp_upt'] and ridership['vp_upt'] > 0 and x['vp_opexp'] and x['vp_opexp'] > 0:
             vp_upt = ridership['vp_upt']
             vp_opexp = x['vp_opexp']
             vp_cpp = round(vp_opexp/vp_upt, 2)
         else:
             vp_cpp = 0
 
-        if ridership['jt_upt'] and ridership['jt_upt'] > 0:
+        if ridership['jt_upt'] and ridership['jt_upt'] > 0 and x['jt_opexp'] and x['jt_opexp'] > 0:
             jt_upt = ridership['jt_upt']
             jt_opexp = x['jt_opexp']
             jt_cpp = round(jt_opexp/jt_upt, 2)
         else:
             jt_cpp = 0
 
-        if ridership['fb_upt'] and ridership['fb_upt'] > 0:
+        if ridership['fb_upt'] and ridership['fb_upt'] > 0 and x['fb_opexp'] and x['fb_opexp'] > 0:
             fb_upt = ridership['fb_upt']
             fb_opexp = x['fb_opexp']
             fb_cpp = round(fb_opexp/fb_upt, 2)
         else:
             fb_cpp = 0
 
-        if ridership['tr_upt'] and ridership['tr_upt'] > 0:
+        if ridership['tr_upt'] and ridership['tr_upt'] > 0 and x['tr_opexp'] and x['tr_opexp'] > 0:
             tr_upt = ridership['tr_upt']
             tr_opexp = x['tr_opexp']
             tr_cpp = round(tr_opexp/tr_upt, 2)
         else:
             tr_cpp = 0
 
-        if ridership['ot_upt'] and ridership['ot_upt'] > 0:
+        if ridership['ot_upt'] and ridership['ot_upt'] > 0 and x['ot_opexp'] and x['ot_opexp'] > 0:
             ot_upt = ridership['ot_upt']
             ot_opexp = x['ot_opexp']
             ot_cpp = round(ot_opexp/ot_upt, 2)
@@ -2083,147 +2100,147 @@ def cost_per_pmt_by_mode(request):
 
         ridership = pmt_ts.get(year=x['year'])
 
-        if ridership['mb_pmt'] and ridership['mb_pmt'] > 0:
+        if ridership['mb_pmt'] and ridership['mb_pmt'] > 0 and x['mb_opexp'] and x['mb_opexp'] > 0:
             mb_pmt = ridership['mb_pmt']
             mb_opexp = x['mb_opexp']
             mb_cpm = round(mb_opexp/mb_pmt, 2)
         else:
             mb_cpm = 0
 
-        if ridership['cb_pmt'] and ridership['cb_pmt'] > 0:
+        if ridership['cb_pmt'] and ridership['cb_pmt'] > 0 and x['cb_opexp'] and x['cb_opexp'] > 0:
             cb_pmt = ridership['cb_pmt']
             cb_opexp = x['cb_opexp']
             cb_cpm = round(cb_opexp/cb_pmt, 2)
         else:
             cb_cpm = 0
 
-        if ridership['rb_pmt'] and ridership['rb_pmt'] > 0:
+        if ridership['rb_pmt'] and ridership['rb_pmt'] > 0 and x['rb_opexp'] and x['rb_opexp'] > 0:
             rb_pmt = ridership['rb_pmt']
             rb_opexp = x['rb_opexp']
             rb_cpm = round(rb_opexp/rb_pmt, 2)
         else:
             rb_cpm = 0
 
-        if ridership['tb_pmt'] and ridership['tb_pmt'] > 0:
+        if ridership['tb_pmt'] and ridership['tb_pmt'] > 0 and x['tb_opexp'] and x['tb_opexp'] > 0:
             tb_pmt = ridership['tb_pmt']
             tb_opexp = x['tb_opexp']
             tb_cpm = round(tb_opexp/tb_pmt, 2)
         else:
             tb_cpm = 0
 
-        if ridership['pb_pmt'] and ridership['pb_pmt'] > 0:
+        if ridership['pb_pmt'] and ridership['pb_pmt'] > 0 and x['pb_opexp'] and x['pb_opexp'] > 0:
             pb_pmt = ridership['pb_pmt']
             pb_opexp = x['pb_opexp']
             pb_cpm = round(pb_opexp/pb_pmt, 2)
         else:
             pb_cpm = 0
 
-        if ridership['hr_pmt'] and ridership['hr_pmt'] > 0:
+        if ridership['hr_pmt'] and ridership['hr_pmt'] > 0 and x['hr_opexp'] and x['hr_opexp'] > 0:
             hr_pmt = ridership['hr_pmt']
             hr_opexp = x['hr_opexp']
             hr_cpm = round(hr_opexp/hr_pmt, 2)
         else:
             hr_cpm = 0
 
-        if ridership['lr_pmt'] and ridership['lr_pmt'] > 0:
+        if ridership['lr_pmt'] and ridership['lr_pmt'] > 0 and x['lr_opexp'] and x['lr_opexp'] > 0:
             lr_pmt = ridership['lr_pmt']
             lr_opexp = x['lr_opexp']
             lr_cpm = round(lr_opexp/lr_pmt, 2)
         else:
             lr_cpm = 0
 
-        if ridership['cr_pmt'] and ridership['cr_pmt'] > 0:
+        if ridership['cr_pmt'] and ridership['cr_pmt'] > 0 and x['cr_opexp'] and x['cr_opexp'] > 0:
             cr_pmt = ridership['cr_pmt']
             cr_opexp = x['cr_opexp']
             cr_cpm = round(cr_opexp/cr_pmt, 2)
         else:
             cr_cpm = 0
 
-        if ridership['yr_pmt'] and ridership['yr_pmt'] > 0:
+        if ridership['yr_pmt'] and ridership['yr_pmt'] > 0 and x['yr_opexp'] and x['yr_opexp'] > 0:
             yr_pmt = ridership['yr_pmt']
             yr_opexp = x['yr_opexp']
             yr_cpm = round(yr_opexp/yr_pmt, 2)
         else:
             yr_cpm = 0
 
-        if ridership['cc_pmt'] and ridership['cc_pmt'] > 0:
+        if ridership['cc_pmt'] and ridership['cc_pmt'] > 0 and x['cc_opexp'] and x['cc_opexp'] > 0:
             cc_pmt = ridership['cc_pmt']
             cc_opexp = x['cc_opexp']
             cc_cpm = round(cc_opexp/cc_pmt, 2)
         else:
             cc_cpm = 0
 
-        if ridership['mg_pmt'] and ridership['mg_pmt'] > 0:
+        if ridership['mg_pmt'] and ridership['mg_pmt'] > 0 x['mg_opexp'] and x['mg_opexp'] > 0:
             mg_pmt = ridership['mg_pmt']
             mg_opexp = x['mg_opexp']
             mg_cpm = round(mg_opexp/mg_pmt, 2)
         else:
             mg_cpm = 0
 
-        if ridership['ip_pmt'] and ridership['ip_pmt'] > 0:
+        if ridership['ip_pmt'] and ridership['ip_pmt'] > 0 and x['ip_opexp'] and x['ip_opexp'] > 0:
             ip_pmt = ridership['ip_pmt']
             ip_opexp = x['ip_opexp']
             ip_cpm = round(ip_opexp/ip_pmt, 2)
         else:
             ip_cpm = 0
 
-        if ridership['ar_pmt'] and ridership['ar_pmt'] > 0:
+        if ridership['ar_pmt'] and ridership['ar_pmt'] > 0 and x['ar_opexp'] and x['ar_opexp'] > 0:
             ar_pmt = ridership['ar_pmt']
             ar_opexp = x['ar_opexp']
             ar_cpm = round(ar_opexp/ar_pmt, 2)
         else:
             ar_cpm = 0
 
-        if ridership['other_rail_pmt'] and ridership['other_rail_pmt'] > 0:
+        if ridership['other_rail_pmt'] and ridership['other_rail_pmt'] > 0 and x['other_rail_opexp'] and x['other_rail_opexp'] > 0:
             other_rail_pmt = ridership['other_rail_pmt']
             other_rail_opexp = x['other_rail_opexp']
             other_rail_cpm = round(other_rail_opexp/other_rail_pmt, 2)
         else:
             other_rail_cpm = 0
 
-        if ridership['dr_pmt'] and ridership['dr_pmt'] > 0:
+        if ridership['dr_pmt'] and ridership['dr_pmt'] > 0 and x['dr_opexp'] and x['dr_opexp'] > 0:
             dr_pmt = ridership['dr_pmt']
             dr_opexp = x['dr_opexp']
             dr_cpm = round(dr_opexp/dr_pmt, 2)
         else:
             dr_cpm = 0
 
-        if ridership['dt_pmt'] and ridership['dt_pmt'] > 0:
+        if ridership['dt_pmt'] and ridership['dt_pmt'] > 0 and x['dt_opexp'] and x['dt_opexp'] > 0:
             dt_pmt = ridership['dt_pmt']
             dt_opexp = x['dt_opexp']
             dt_cpm = round(dt_opexp/dt_pmt, 2)
         else:
             dt_cpm = 0
 
-        if ridership['vp_pmt'] and ridership['vp_pmt'] > 0:
+        if ridership['vp_pmt'] and ridership['vp_pmt'] > 0 and x['vp_opexp'] and x['vp_opexp'] > 0:
             vp_pmt = ridership['vp_pmt']
             vp_opexp = x['vp_opexp']
             vp_cpm = round(vp_opexp/vp_pmt, 2)
         else:
             vp_cpm = 0
 
-        if ridership['jt_pmt'] and ridership['jt_pmt'] > 0:
+        if ridership['jt_pmt'] and ridership['jt_pmt'] > 0 and x['jt_opexp'] and x['jt_opexp'] > 0:
             jt_pmt = ridership['jt_pmt']
             jt_opexp = x['jt_opexp']
             jt_cpm = round(jt_opexp/jt_pmt, 2)
         else:
             jt_cpm = 0
 
-        if ridership['fb_pmt'] and ridership['fb_pmt'] > 0:
+        if ridership['fb_pmt'] and ridership['fb_pmt'] > 0 and x['fb_opexp'] and x['fb_opexp'] > 0:
             fb_pmt = ridership['fb_pmt']
             fb_opexp = x['fb_opexp']
             fb_cpm = round(fb_opexp/fb_pmt, 2)
         else:
             fb_cpm = 0
 
-        if ridership['tr_pmt'] and ridership['tr_pmt'] > 0:
+        if ridership['tr_pmt'] and ridership['tr_pmt'] > 0 and x['tr_opexp'] and x['tr_opexp'] > 0:
             tr_pmt = ridership['tr_pmt']
             tr_opexp = x['tr_opexp']
             tr_cpm = round(tr_opexp/tr_pmt, 2)
         else:
             tr_cpm = 0
 
-        if ridership['ot_pmt'] and ridership['ot_pmt'] > 0:
+        if ridership['ot_pmt'] and ridership['ot_pmt'] > 0 and x['ot_opexp'] and x['ot_opexp'] > 0:
             ot_pmt = ridership['ot_pmt']
             ot_opexp = x['ot_opexp']
             ot_cpm = round(ot_opexp/ot_pmt, 2)
@@ -2297,34 +2314,33 @@ def cost_per_upt_by_service(request):
     data = []
 
     for x in spending_ts:
-        do_opexp = x['do_opexp']
-        pt_opexp = x['pt_opexp']
-        tx_opexp = x['tx_opexp']
-        other_opexp = x['other_opexp']
 
         ridership = upt_ts.get(year=x['year'])
 
-        if ridership['do_upt'] and ridership['do_upt'] > 0:
+        if ridership['do_upt'] and ridership['do_upt'] > 0 and x['do_opexp'] and x['do_opexp'] > 0:
             do_upt = ridership['do_upt']
+            do_opexp = x['do_opexp']
+            do_cpp = round(do_opexp/do_upt, 2)
         else:
-            do_upt = 1
-        if ridership['pt_upt'] and ridership['pt_upt'] > 0:
+            do_cpp = 0
+        if ridership['pt_upt'] and ridership['pt_upt'] > 0 and x['pt_opexp'] and x['pt_opexp'] > 0:
             pt_upt = ridership['pt_upt']
+            pt_opexp = x['pt_opexp']
+            pt_cpp = round(pt_opexp/pt_upt, 2)
         else:
-            pt_upt = 1
-        if ridership['tx_upt'] and ridership['tx_upt'] > 0:
+            pt_cpp = 0
+        if ridership['tx_upt'] and ridership['tx_upt'] > 0 and x['tx_opexp'] and x['tx_opexp'] > 0:
             tx_upt = ridership['tx_upt']
+            tx_opexp = x['tx_opexp']
+            tx_cpp = round(tx_opexp/tx_upt, 2)
         else:
-            tx_upt = 1
-        if ridership['other_upt'] and ridership['other_upt'] > 0:
+            tx_cpp = 0
+        if ridership['other_upt'] and ridership['other_upt'] > 0 and x['other_opexp'] and x['other_opexp'] > 0:
             other_upt = ridership['other_upt']
+            other_opexp = x['other_opexp']
+            other_cpp = round(other_opexp/other_upt, 2)
         else:
-            other_upt = 1
-
-        do_cpp = round(do_opexp/do_upt, 2)
-        pt_cpp = round(pt_opexp/pt_upt, 2)
-        tx_cpp = round(tx_opexp/tx_upt, 2)
-        other_cpp = round(other_opexp/other_upt, 2)
+            other_cpp = 0
 
         data += [{"year": x['year'], "do": do_cpp, "pt": pt_cpp, "tx": tx_cpp, "other": other_cpp}]
     length = len(data)
@@ -2357,34 +2373,33 @@ def cost_per_pmt_by_service(request):
     data = []
 
     for x in spending_ts:
-        do_opexp = x['do_opexp']
-        pt_opexp = x['pt_opexp']
-        tx_opexp = x['tx_opexp']
-        other_opexp = x['other_opexp']
 
         ridership = pmt_ts.get(year=x['year'])
 
-        if ridership['do_pmt'] and ridership['do_pmt'] > 0:
+        if ridership['do_pmt'] and ridership['do_pmt'] > 0 and x['do_opexp'] and x['do_opexp'] > 0:
             do_pmt = ridership['do_pmt']
+            do_opexp = x['do_opexp']
+            do_cpp = round(do_opexp/do_pmt, 2)
         else:
-            do_pmt = 1
-        if ridership['pt_pmt'] and ridership['pt_pmt'] > 0:
+            do_cpp = 0
+        if ridership['pt_pmt'] and ridership['pt_pmt'] > 0 and x['pt_opexp'] and x['pt_opexp'] > 0:
             pt_pmt = ridership['pt_pmt']
+            pt_opexp = x['pt_opexp']
+            pt_cpp = round(pt_opexp/pt_pmt, 2)
         else:
-            pt_pmt = 1
-        if ridership['tx_pmt'] and ridership['tx_pmt'] > 0:
+            pt_cpp = 0
+        if ridership['tx_pmt'] and ridership['tx_pmt'] > 0 and x['tx_opexp'] and x['tx_opexp'] > 0:
             tx_pmt = ridership['tx_pmt']
+            tx_opexp = x['tx_opexp']
+            tx_cpp = round(tx_opexp/tx_pmt, 2)
         else:
-            tx_pmt = 1
-        if ridership['other_pmt'] and ridership['other_pmt'] > 0:
+            tx_cpp = 0
+        if ridership['other_pmt'] and ridership['other_pmt'] > 0 and x['other_opexp'] and x['other_opexp'] > 0:
             other_pmt = ridership['other_pmt']
+            other_opexp = x['other_opexp']
+            other_cpp = round(other_opexp/other_pmt, 2)
         else:
-            other_pmt = 1
-
-        do_cpp = round(do_opexp/do_pmt, 2)
-        pt_cpp = round(pt_opexp/pt_pmt, 2)
-        tx_cpp = round(tx_opexp/tx_pmt, 2)
-        other_cpp = round(other_opexp/other_pmt, 2)
+            other_cpp = 0
 
         data += [{"year": x['year'], "do": do_cpp, "pt": pt_cpp, "tx": tx_cpp, "other": other_cpp}]
     length = len(data)
@@ -2418,32 +2433,33 @@ def frr_by_service(request):
     data = []
 
     for x in spending_ts:
-        if x['do_opexp'] and x['do_opexp'] > 0:
-            do_opexp = x['do_opexp']
-        else:
-            do_opexp = 1
-        if x['pt_opexp'] and x['pt_opexp'] > 0:
-            pt_opexp = x['pt_opexp']
-        else: 
-            pt_opexp = 1
-        if x['tx_opexp'] and x['tx_opexp'] > 0:
-            tx_opexp = x['tx_opexp']
-        else: 
-            tx_opexp = 1
-        if x['other_opexp'] and x['other_opexp'] > 0:
-            other_opexp = x['other_opexp']
-        else: 
-            other_opexp = 1
-        
         revenue = fares_ts.get(year=x['year'])
-        do_fares=revenue['do_fares']
-        pt_fares=revenue['pt_fares']
-        tx_fares=revenue['tx_fares']
-        other_fares=revenue['other_fares']
-        do_frr = round(do_fares/do_opexp, 4)
-        pt_frr = round(pt_fares/pt_opexp, 4)
-        tx_frr = round(tx_fares/tx_opexp, 4)
-        other_frr = round(other_fares/other_opexp, 4)
+
+        if x['do_opexp'] and x['do_opexp'] > 0 and revenue['do_fares'] and revenue['do_fares'] > 0:
+            do_opexp = x['do_opexp']
+            do_fares=revenue['do_fares']
+            do_frr = round(do_fares/do_opexp, 4)
+        else:
+            do_frr = 0
+        if x['pt_opexp'] and x['pt_opexp'] > 0 and revenue['pt_fares'] and revenue['pt_fares'] > 0:
+            pt_opexp = x['pt_opexp']
+            pt_fares=revenue['pt_fares']
+            pt_frr = round(pt_fares/pt_opexp, 4)
+        else: 
+            pt_frr = 0
+        if x['tx_opexp'] and x['tx_opexp'] > 0 and revenue['tx_fares'] and revenue['tx_fares'] > 0:
+            tx_opexp = x['tx_opexp']
+            tx_fares=revenue['tx_fares']
+            tx_frr = round(tx_fares/tx_opexp, 4)
+        else: 
+            tx_frr = 0
+        if x['other_opexp'] and x['other_opexp'] > 0 and revenue['other_fares'] and revenue['other_fares'] > 0:
+            other_opexp = x['other_opexp']
+            other_fares=revenue['other_fares']
+            other_frr = round(other_fares/other_opexp, 4)
+        else: 
+            other_frr = 0
+    
         data += [{"year": x['year'], "do": do_frr, "pt": pt_frr, "tx": tx_frr, "other": other_frr}]
     length = len(data)
     resp = {
@@ -2482,32 +2498,32 @@ def vrm_per_vrh_by_service(request):
     )\
     .order_by('year')
     for x in vrh_ts:
-        if x['do'] and x["do"] > 0:
-            do_vrh = x['do']
-        else:
-            do_vrh = 1
-        if x['pt'] and x["pt"] > 0:
-            pt_vrh = x['pt']
-        else:
-            pt_vrh = 1
-        if x['tx'] and x["tx"] > 0:
-            tx_vrh = x['tx']
-        else:
-            tx_vrh = 1
-        if x['other'] and x["other"] > 0:
-            other_vrh = x['other']
-        else:
-            other_vrh = 1
         vrm = vrm_ts.get(year=x['year'])
-        do_vrm = vrm['do']
-        pt_vrm = vrm['pt']
-        tx_vrm = vrm['tx']
-        other_vrm = vrm['other']
-        do_mph = round(do_vrm / do_vrh, 2)
-        pt_mph = round(pt_vrm / pt_vrh, 2)
-        tx_mph = round(tx_vrm / tx_vrh, 2)
-        # other_mph = 0
-        other_mph = round(other_vrm / other_vrh, 2)
+        if x['do'] and x["do"] > 0 and vrm['do'] and vrm['do'] > 0:
+            do_vrh = x['do']
+            do_vrm = vrm['do']
+            do_mph = round(do_vrm / do_vrh, 2)
+        else:
+            do_mph = 0
+        if x['pt'] and x["pt"] > 0 and vrm['pt'] and vrm['pt'] > 0:
+            pt_vrh = x['pt']
+            pt_vrm = vrm['pt']
+            pt_mph = round(pt_vrm / pt_vrh, 2)
+        else:
+            pt_mph = 0
+        if x['tx'] and x["tx"] > 0 and vrm['tx'] and vrm['tx'] > 0:
+            tx_vrh = x['tx']
+            tx_vrm = vrm['tx']
+            tx_mph = round(tx_vrm / tx_vrh, 2)
+        else:
+            tx_mph = 0
+        if x['other'] and x["other"] > 0 and vrm['other'] and vrm['other'] > 0:
+            other_vrh = x['other']
+            other_vrm = vrm['other']
+            other_mph = round(other_vrm / other_vrh, 2)
+        else:
+            other_mph = 0
+        
         data += [{"year": x['year'], "do": do_mph, "pt": pt_mph, "tx": tx_mph, "other": other_mph}]
     length = len(data)
     resp = {
@@ -2538,31 +2554,37 @@ def upt_per_vrh_by_service(request):
     )\
     .order_by('year')
     for x in vrh_ts:
-        if x['do'] and x["do"] > 0:
-            do_vrh = x['do']
-        else:
-            do_vrh = 1
-        if x['pt'] and x["pt"] > 0:
-            pt_vrh = x['pt']
-        else:
-            pt_vrh = 1
-        if x['tx'] and x["tx"] > 0:
-            tx_vrh = x['tx']
-        else:
-            tx_vrh = 1
-        if x['other'] and x["other"] > 0:
-            other_vrh = x['other']
-        else:
-            other_vrh = 1
         upt = upt_ts.get(year=x['year'])
-        do_upt = upt['do']
-        pt_upt = upt['pt']
-        tx_upt = upt['tx']
-        other_upt = upt['other']
-        do_pph = round(do_upt / do_vrh, 2)
-        pt_pph = round(pt_upt / pt_vrh, 2)
-        tx_pph = round(tx_upt / tx_vrh, 2)
-        other_pph = round(other_upt / other_vrh, 2)
+
+        if x['do'] and x["do"] > 0 and upt['do'] and upt['do'] > 0 :
+            do_vrh = x['do']
+            do_upt = upt['do']
+            do_pph = round(do_upt / do_vrh, 2)
+        else:
+            do_pph = 0
+
+        if x['pt'] and x["pt"] > 0 and upt['pt'] and upt['pt'] > 0:
+            pt_vrh = x['pt']
+            pt_upt = upt['pt']
+            pt_pph = round(pt_upt / pt_vrh, 2)
+        else:
+            pt_pph = 0
+
+        if x['tx'] and x["tx"] > 0 and upt['tx'] and upt['tx'] > 0:
+            tx_vrh = x['tx']
+            tx_upt = upt['tx']
+            tx_pph = round(tx_upt / tx_vrh, 2)
+        else:
+            tx_pph = 0
+
+        if x['other'] and x["other"] > 0 and upt['other'] and upt['other'] > 0:
+            other_vrh = x['other']
+            other_upt = upt['other']
+            other_pph = round(other_upt / other_vrh, 2)
+        else:
+            other_pph = 0
+    
+        
         data += [{"year": x['year'], "do": do_pph, "pt": pt_pph, "tx": tx_pph, "other": other_pph}]
     length = len(data)
     resp = {
@@ -2593,31 +2615,32 @@ def upt_per_vrm_by_service(request):
     )\
     .order_by('year')
     for x in vrm_ts:
-        if x['do'] and x["do"] > 0:
-            do_vrm = x['do']
-        else:
-            do_vrm = 1
-        if x['pt'] and x["pt"] > 0:
-            pt_vrm = x['pt']
-        else:
-            pt_vrm = 1
-        if x['tx'] and x["tx"] > 0:
-            tx_vrm = x['tx']
-        else:
-            tx_vrm = 1
-        if x['other'] and x["other"] > 0:
-            other_vrm = x['other']
-        else:
-            other_vrm = 1
         upt = upt_ts.get(year=x['year'])
-        do_upt = upt['do']
-        pt_upt = upt['pt']
-        tx_upt = upt['tx']
-        other_upt = upt['other']
-        do_ppm = round(do_upt / do_vrm, 2)
-        pt_ppm = round(pt_upt / pt_vrm, 2)
-        tx_ppm = round(tx_upt / tx_vrm, 2)
-        other_ppm = round(other_upt / other_vrm, 2)
+        if x['do'] and x["do"] > 0 and upt['do'] and upt['do'] > 0:
+            do_vrm = x['do']
+            do_upt = upt['do']
+            do_ppm = round(do_upt / do_vrm, 2)
+        else:
+            do_ppm = 0
+        if x['pt'] and x["pt"] > 0 and upt['pt'] and  upt['pt'] > 0:
+            pt_vrm = x['pt']
+            pt_upt = upt['pt']
+            pt_ppm = round(pt_upt / pt_vrm, 2)
+        else:
+            pt_ppm = 0
+        if x['tx'] and x["tx"] > 0 and upt['tx'] and upt['tx'] > 0:
+            tx_vrm = x['tx']
+            tx_upt = upt['tx']
+            tx_ppm = round(tx_upt / tx_vrm, 2)
+        else:
+            tx_ppm = 0
+        if x['other'] and x["other"] > 0 and upt['other'] and upt['other'] > 0:
+            other_vrm = x['other']
+            other_upt = upt['other']
+            other_ppm = round(other_upt / other_vrm, 2)
+        else:
+            other_ppm = 0
+        
         data += [{"year": x['year'], "do": do_ppm, "pt": pt_ppm, "tx": tx_ppm, "other": other_ppm}]
     length = len(data)
     resp = {
@@ -2647,33 +2670,36 @@ def pmt_per_vrh_by_service(request):
         other=Sum(F('vrh'), filter=Q(service_id__in=['TN', "nan"]))
     )\
     .order_by('year')
+
     for x in vrh_ts:
-        if x['do'] and x["do"] > 0:
-            do_vrh = x['do']
-        else:
-            do_vrh = 1
-        if x['pt'] and x["pt"] > 0:
-            pt_vrh = x['pt']
-        else:
-            pt_vrh = 1
-        if x['tx'] and x["tx"] > 0:
-            tx_vrh = x['tx']
-        else:
-            tx_vrh = 1
-        if x['other'] and x["other"] > 0:
-            other_vrh = x['other']
-        else:
-            other_vrh = 1
+
         pmt = pmt_ts.get(year=x['year'])
-        do_pmt = pmt['do']
-        pt_pmt = pmt['pt']
-        tx_pmt = pmt['tx']
-        other_pmt = pmt['other']
-        do_pmph = round(do_pmt / do_vrh, 2)
-        pt_pmph = round(pt_pmt / pt_vrh, 2)
-        tx_pmph = round(tx_pmt / tx_vrh, 2)
-        # other_pmph = 0
-        other_pmph = round(other_pmt / other_vrh, 2)
+
+        if x['do'] and x["do"] > 0 and pmt['do'] and pmt['do'] > 0:
+            do_vrh = x['do']
+            do_pmt = pmt['do']
+            do_pmph = round(do_pmt / do_vrh, 2)
+        else:
+            do_pmph = 0
+        if x['pt'] and x["pt"] > 0 and pmt['pt'] and pmt['pt'] > 0:
+            pt_vrh = x['pt']
+            pt_pmt = pmt['pt']
+            pt_pmph = round(pt_pmt / pt_vrh, 2)
+        else:
+            pt_pmph = 0
+        if x['tx'] and x["tx"] > 0 and pmt['tx'] and pmt['tx'] > 0:
+            tx_vrh = x['tx']
+            tx_pmt = pmt['tx']
+            tx_pmph = round(tx_pmt / tx_vrh, 2)
+        else:
+            tx_pmph = 0
+        if x['other'] and x["other"] > 0 and pmt['other'] and pmt['other'] > 0:
+            other_vrh = x['other']
+            other_pmt = pmt['other']
+            other_pmph = round(other_pmt / other_vrh, 2)
+        else:
+            other_pmph = 0
+        
         data += [{"year": x['year'], "do": do_pmph, "pt": pt_pmph, "tx": tx_pmph, "other": other_pmph}]
     length = len(data)
     resp = {
@@ -2695,7 +2721,7 @@ def pmt_per_vrm_by_service(request):
         other=Sum(F('pmt'), filter=Q(service_id__in=['TN', "nan"]))
     )\
     .order_by('year')
-    vrm_ts = VehicleRevenueHours.objects.filter(q)\
+    vrm_ts = VehicleRevenueMiles.objects.filter(q)\
     .values("year").annotate(
         do=Sum(F('vrm'), filter=Q(service_id="DO")),
         pt=Sum(F('vrm'), filter=Q(service_id="PT")),
@@ -2704,32 +2730,32 @@ def pmt_per_vrm_by_service(request):
     )\
     .order_by('year')
     for x in vrm_ts:
-        if x['do'] and x["do"] > 0:
-            do_vrm = x['do']
-        else:
-            do_vrm = 1
-        if x['pt'] and x["pt"] > 0:
-            pt_vrm = x['pt']
-        else:
-            pt_vrm = 1
-        if x['tx'] and x["tx"] > 0:
-            tx_vrm = x['tx']
-        else:
-            tx_vrm = 1
-        if x['other'] and x["other"] > 0:
-            other_vrm = x['other']
-        else:
-            other_vrm = 1
         pmt = pmt_ts.get(year=x['year'])
-        do_pmt = pmt['do']
-        pt_pmt = pmt['pt']
-        tx_pmt = pmt['tx']
-        other_pmt = pmt['other']
-        do_pmpm = round(do_pmt / do_vrm, 2)
-        pt_pmpm = round(pt_pmt / pt_vrm, 2)
-        tx_pmpm = round(tx_pmt / tx_vrm, 2)
-        # other_pmpm = 0
-        other_pmpm = round(other_pmt / other_vrm, 2)
+        if x['do'] and x["do"] > 0 and pmt['do'] and pmt['do'] > 0:
+            do_vrm = x['do']
+            do_pmt = pmt['do']
+            do_pmpm = round(do_pmt / do_vrm, 2)
+        else:
+            do_pmpm = 0
+        if x['pt'] and x["pt"] > 0 and pmt['pt'] and pmt['pt'] > 0:
+            pt_vrm = x['pt']
+            pt_pmt = pmt['pt']
+            pt_pmpm = round(pt_pmt / pt_vrm, 2)
+        else:
+            pt_pmpm = 0
+        if x['tx'] and x["tx"] > 0 and pmt['tx'] and pmt['tx'] > 0:
+            tx_vrm = x['tx']
+            tx_pmt = pmt['tx']
+            tx_pmpm = round(tx_pmt / tx_vrm, 2)
+        else:
+            tx_pmpm = 0
+        if x['other'] and x["other"] > 0 and pmt['other'] and pmt['other'] > 0:
+            other_vrm = x['other']
+            other_pmt = pmt['other']
+            other_pmpm = round(other_pmt / other_vrm, 2)
+        else:
+            other_pmpm = 0
+        
         data += [{"year": x['year'], "do": do_pmpm, "pt": pt_pmpm, "tx": tx_pmpm, "other": other_pmpm}]
     length = len(data)
     resp = {
