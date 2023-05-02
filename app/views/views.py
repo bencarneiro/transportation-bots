@@ -1817,7 +1817,198 @@ def pmt_per_vrm_by_mode_type(request):
 
 @csrf_exempt
 def cost_per_upt_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    opexp_ts = TransitExpense.objects.filter(q)\
+        .values("year").annotate(mb_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="MB"))), \
+                                 cb_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="CB"))), \
+                                 rb_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="RB"))), \
+                                 tb_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="TB"))), \
+                                 pb_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="PB"))), \
+                                 hr_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="HR"))), \
+                                 lr_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="LR"))), \
+                                 cr_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="CR"))), \
+                                 yr_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="YR"))), \
+                                 sr_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="SR"))), \
+                                 cc_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="CC"))), \
+                                 mg_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="MG"))), \
+                                 ip_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="IP"))), \
+                                 ar_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="AR"))), \
+                                 other_rail_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="OR"))), \
+                                 dr_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="DR"))), \
+                                 dt_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="DT"))), \
+                                 vp_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="VP"))), \
+                                 jt_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="JT"))), \
+                                 fb_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="FB"))), \
+                                 tr_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id="TR"))), \
+                                 ot_opexp=Round(Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(mb_upt=Round(Sum(F('upt'), filter=Q(mode_id="MB"))), \
+                                 cb_upt=Round(Sum(F('upt'), filter=Q(mode_id="CB"))), \
+                                 rb_upt=Round(Sum(F('upt'), filter=Q(mode_id="RB"))), \
+                                 tb_upt=Round(Sum(F('upt'), filter=Q(mode_id="TB"))), \
+                                 pb_upt=Round(Sum(F('upt'), filter=Q(mode_id="PB"))), \
+                                 hr_upt=Round(Sum(F('upt'), filter=Q(mode_id="HR"))), \
+                                 lr_upt=Round(Sum(F('upt'), filter=Q(mode_id="LR"))), \
+                                 cr_upt=Round(Sum(F('upt'), filter=Q(mode_id="CR"))), \
+                                 yr_upt=Round(Sum(F('upt'), filter=Q(mode_id="YR"))), \
+                                 sr_upt=Round(Sum(F('upt'), filter=Q(mode_id="SR"))), \
+                                 cc_upt=Round(Sum(F('upt'), filter=Q(mode_id="CC"))), \
+                                 mg_upt=Round(Sum(F('upt'), filter=Q(mode_id="MG"))), \
+                                 ip_upt=Round(Sum(F('upt'), filter=Q(mode_id="IP"))), \
+                                 ar_upt=Round(Sum(F('upt'), filter=Q(mode_id="AR"))), \
+                                 other_rail_upt=Round(Sum(F('upt'), filter=Q(mode_id="OR"))), \
+                                 dr_upt=Round(Sum(F('upt'), filter=Q(mode_id="DR"))), \
+                                 dt_upt=Round(Sum(F('upt'), filter=Q(mode_id="DT"))), \
+                                 vp_upt=Round(Sum(F('upt'), filter=Q(mode_id="VP"))), \
+                                 jt_upt=Round(Sum(F('upt'), filter=Q(mode_id="JT"))), \
+                                 fb_upt=Round(Sum(F('upt'), filter=Q(mode_id="FB"))), \
+                                 tr_upt=Round(Sum(F('upt'), filter=Q(mode_id="TR"))), \
+                                 ot_upt=Round(Sum(F('upt'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    data = []
+    for x in opexp_ts:
+        mb_opexp = x['mb_opexp']
+        cb_opexp = x['cb_opexp']
+        rb_opexp = x['rb_opexp']
+        tb_opexp = x['tb_opexp']
+        pb_opexp = x['pb_opexp']
+        hr_opexp = x['hr_opexp']
+        lr_opexp = x['lr_opexp']
+        cr_opexp = x['cr_opexp']
+        yr_opexp = x['sr_opexp']
+        cc_opexp = x['cc_opexp']
+        mg_opexp = x['mg_opexp']
+        ip_opexp = x['ip_opexp']
+        ar_opexp = x['ar_opexp']
+        other_rail_opexp = x['other_rail_opexp']
+        dr_opexp = x['dr_opexp']
+        dt_opexp = x['dt_opexp']
+        vp_opexp = x['vp_opexp']
+        jt_opexp = x['jt_opexp']
+        fb_opexp = x['fb_opexp']
+        tr_opexp = x['tr_opexp']
+        ot_opexp = x['ot_opexp']
+
+        ridership = upt_ts.get(year=x['year'])
+
+        if ridership['mb_upt'] and ridership['mb_upt'] > 0:
+            mb_upt = ridership['mb_upt']
+        else:
+            mb_upt = 1
+        if ridership['cb_upt'] and ridership['cb_upt'] > 0:
+            cb_upt = ridership['cb_upt']
+        else:
+            cb_upt = 1
+        if ridership['rb_upt'] and ridership['rb_upt'] > 0:
+            rb_upt = ridership['rb_upt']
+        else:
+            rb_upt = 1
+        if ridership['tb_upt'] and ridership['tb_upt'] > 0:
+            tb_upt = ridership['tb_upt']
+        else:
+            tb_upt = 1
+        if ridership['pb_upt'] and ridership['pb_upt'] > 0:
+            pb_upt = ridership['pb_upt']
+        else:
+            pb_upt = 1
+        if ridership['hr_upt'] and ridership['hr_upt'] > 0:
+            hr_upt = ridership['hr_upt']
+        else:
+            hr_upt = 1
+        if ridership['lr_upt'] and ridership['lr_upt'] > 0:
+            lr_upt = ridership['lr_upt']
+        else:
+            lr_upt = 1
+        if ridership['cr_upt'] and ridership['cr_upt'] > 0:
+            cr_upt = ridership['cr_upt']
+        else:
+            cr_upt = 1
+        if ridership['yr_upt'] and ridership['yr_upt'] > 0:
+            yr_upt = ridership['yr_upt']
+        else:
+            yr_upt = 1
+        if ridership['cc_upt'] and ridership['cc_upt'] > 0:
+            cc_upt = ridership['cc_upt']
+        else:
+            cc_upt = 1
+        if ridership['mg_upt'] and ridership['mg_upt'] > 0:
+            mg_upt = ridership['mg_upt']
+        else:
+            mg_upt = 1
+        if ridership['ip_upt'] and ridership['ip_upt'] > 0:
+            ip_upt = ridership['ip_upt']
+        else:
+            ip_upt = 1
+        if ridership['ar_upt'] and ridership['ar_upt'] > 0:
+            ar_upt = ridership['ar_upt']
+        else:
+            ar_upt = 1
+        if ridership['other_rail_upt'] and ridership['other_rail_upt'] > 0:
+            other_rail_upt = ridership['other_rail_upt']
+        else:
+            other_rail_upt = 1
+        if ridership['dr_upt'] and ridership['dr_upt'] > 0:
+            dr_upt = ridership['dr_upt']
+        else:
+            dr_upt = 1
+        if ridership['dt_upt'] and ridership['dt_upt'] > 0:
+            dt_upt = ridership['dt_upt']
+        else:
+            dt_upt = 1
+        if ridership['vp_upt'] and ridership['vp_upt'] > 0:
+            vp_upt = ridership['vp_upt']
+        else:
+            vp_upt = 1
+        if ridership['jt_upt'] and ridership['jt_upt'] > 0:
+            jt_upt = ridership['jt_upt']
+        else:
+            jt_upt = 1
+        if ridership['fb_upt'] and ridership['fb_upt'] > 0:
+            fb_upt = ridership['fb_upt']
+        else:
+            fb_upt = 1
+        if ridership['tr_upt'] and ridership['tr_upt'] > 0:
+            tr_upt = ridership['tr_upt']
+        else:
+            tr_upt = 1
+        if ridership['ot_upt'] and ridership['ot_upt'] > 0:
+            ot_upt = ridership['ot_upt']
+        else:
+            ot_upt = 1
+
+
+
+        mb_cpp = round(mb_opexp/mb_upt, 2)
+        rb_cpp = round(rb_opexp/rb_upt, 2)
+        cb_cpp = round(cb_opexp/cb_upt, 2)
+        tb_cpp = round(tb_opexp/tb_upt, 2)
+        pb_cpp = round(pb_opexp/pb_upt, 2)
+        hr_cpp = round(hr_opexp/hr_upt, 2)
+        lr_cpp = round(lr_opexp/lr_upt, 2)
+        cr_cpp = round(cr_opexp/cr_upt, 2)
+        yr_cpp = round(yr_opexp/yr_upt, 2)
+        cc_cpp = round(cc_opexp/cc_upt, 2)
+        mg_cpp = round(mg_opexp/mg_upt, 2)
+        ip_cpp = round(ip_opexp/ip_upt, 2)
+        ar_cpp = round(ar_opexp/ar_upt, 2)
+        other_rail_cpp = round(other_rail_opexp/other_rail_upt, 2)
+        dr_cpp = round(dr_opexp/dr_upt, 2)
+        dt_cpp = round(dt_opexp/dt_upt, 2)
+        vp_cpp = round(vp_opexp/vp_upt, 2)
+        jt_cpp = round(jt_opexp/jt_upt, 2)
+        fb_cpp = round(fb_opexp/fb_upt, 2)
+        tr_cpp = round(tr_opexp/tr_upt, 2)
+        ot_cpp = round(ot_opexp/ot_upt, 2)
+
+        data += [{"year": x['year'], "mb": mb_cpp, "cb": cb_cpp, "rb": rb_cpp, "tb": tb_cpp, "pb": pb_cpp, "hr": hr_cpp, "cr": cr_cpp, "lr": lr_cpp, "yr": yr_cpp, "cc": cc_cpp, "mg": mg_cpp, "ip": ip_cpp, "ar": ar_cpp, "other_rail": other_rail_cpp, "dr": dr_cpp, "dt": dt_cpp, "vp": vp_cpp, "jt": jt_cpp, "fb": fb_cpp, "tr": tr_cpp, "ot": ot_cpp}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def cost_per_pmt_by_mode(request):

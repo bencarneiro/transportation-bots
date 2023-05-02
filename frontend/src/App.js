@@ -106,7 +106,7 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>The Transit Explorer</h1>
+        <h1>Search USA Public Transit Data</h1>
         <br/>
         {/* <h2>Search by City</h2> */}
         <div  >
