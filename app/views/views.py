@@ -2691,20 +2691,851 @@ def vrm_per_vrh_by_mode(request):
 
 @csrf_exempt
 def upt_per_vrh_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(mb_upt=Round(Sum(F('upt'), filter=Q(mode_id="MB"))), \
+                                 cb_upt=Round(Sum(F('upt'), filter=Q(mode_id="CB"))), \
+                                 rb_upt=Round(Sum(F('upt'), filter=Q(mode_id="RB"))), \
+                                 tb_upt=Round(Sum(F('upt'), filter=Q(mode_id="TB"))), \
+                                 pb_upt=Round(Sum(F('upt'), filter=Q(mode_id="PB"))), \
+                                 hr_upt=Round(Sum(F('upt'), filter=Q(mode_id="HR"))), \
+                                 lr_upt=Round(Sum(F('upt'), filter=Q(mode_id="LR"))), \
+                                 cr_upt=Round(Sum(F('upt'), filter=Q(mode_id="CR"))), \
+                                 yr_upt=Round(Sum(F('upt'), filter=Q(mode_id="YR"))), \
+                                 sr_upt=Round(Sum(F('upt'), filter=Q(mode_id="SR"))), \
+                                 cc_upt=Round(Sum(F('upt'), filter=Q(mode_id="CC"))), \
+                                 mg_upt=Round(Sum(F('upt'), filter=Q(mode_id="MG"))), \
+                                 ip_upt=Round(Sum(F('upt'), filter=Q(mode_id="IP"))), \
+                                 ar_upt=Round(Sum(F('upt'), filter=Q(mode_id="AR"))), \
+                                 other_rail_upt=Round(Sum(F('upt'), filter=Q(mode_id="OR"))), \
+                                 dr_upt=Round(Sum(F('upt'), filter=Q(mode_id="DR"))), \
+                                 dt_upt=Round(Sum(F('upt'), filter=Q(mode_id="DT"))), \
+                                 vp_upt=Round(Sum(F('upt'), filter=Q(mode_id="VP"))), \
+                                 jt_upt=Round(Sum(F('upt'), filter=Q(mode_id="JT"))), \
+                                 fb_upt=Round(Sum(F('upt'), filter=Q(mode_id="FB"))), \
+                                 tr_upt=Round(Sum(F('upt'), filter=Q(mode_id="TR"))), \
+                                 ot_upt=Round(Sum(F('upt'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    vrh_ts = VehicleRevenueHours.objects.filter(q)\
+        .values("year").annotate(mb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="MB"))), \
+                                 cb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="CB"))), \
+                                 rb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="RB"))), \
+                                 tb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="TB"))), \
+                                 pb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="PB"))), \
+                                 hr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="HR"))), \
+                                 lr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="LR"))), \
+                                 cr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="CR"))), \
+                                 yr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="YR"))), \
+                                 sr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="SR"))), \
+                                 cc_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="CC"))), \
+                                 mg_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="MG"))), \
+                                 ip_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="IP"))), \
+                                 ar_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="AR"))), \
+                                 other_rail_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="OR"))), \
+                                 dr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="DR"))), \
+                                 dt_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="DT"))), \
+                                 vp_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="VP"))), \
+                                 jt_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="JT"))), \
+                                 fb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="FB"))), \
+                                 tr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="TR"))), \
+                                 ot_vrh=Round(Sum(F('vrh'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    data = []
+    for x in vrh_ts:
+
+        upt = upt_ts.get(year=x['year'])
+
+        if upt['mb_upt'] and upt['mb_upt'] > 0 and x['mb_vrh'] and x['mb_vrh'] > 0:
+            mb_upt = upt['mb_upt']
+            mb_vrh = x['mb_vrh']
+            mb_pph = round(mb_upt/mb_vrh, 2)
+        else:
+            mb_pph = 0
+
+        if upt['cb_upt'] and upt['cb_upt'] > 0 and x['cb_vrh'] and x['cb_vrh'] > 0:
+            cb_upt = upt['cb_upt']
+            cb_vrh = x['cb_vrh']
+            cb_pph = round(cb_upt/cb_vrh, 2)
+        else:
+            cb_pph = 0
+
+        if upt['rb_upt'] and upt['rb_upt'] > 0 and x['rb_vrh'] and x['rb_vrh'] > 0:
+            rb_upt = upt['rb_upt']
+            rb_vrh = x['rb_vrh']
+            rb_pph = round(rb_upt/rb_vrh, 2)
+        else:
+            rb_pph = 0
+
+        if upt['tb_upt'] and upt['tb_upt'] > 0 and x['tb_vrh'] and x['tb_vrh'] > 0:
+            tb_upt = upt['tb_upt']
+            tb_vrh = x['tb_vrh']
+            tb_pph = round(tb_upt/tb_vrh, 2)
+        else:
+            tb_pph = 0
+
+        if upt['pb_upt'] and upt['pb_upt'] > 0 and x['pb_vrh'] and x['pb_vrh'] > 0:
+            pb_upt = upt['pb_upt']
+            pb_vrh = x['pb_vrh']
+            pb_pph = round(pb_upt/pb_vrh, 2)
+        else:
+            pb_pph = 0
+
+        if upt['hr_upt'] and upt['hr_upt'] > 0 and x['hr_vrh'] and x['hr_vrh'] > 0:
+            hr_upt = upt['hr_upt']
+            hr_vrh = x['hr_vrh']
+            hr_pph = round(hr_upt/hr_vrh, 2)
+        else:
+            hr_pph = 0
+
+        if upt['lr_upt'] and upt['lr_upt'] > 0 and x['lr_vrh'] and x['lr_vrh'] > 0:
+            lr_upt = upt['lr_upt']
+            lr_vrh = x['lr_vrh']
+            lr_pph = round(lr_upt/lr_vrh, 2)
+        else:
+            lr_pph = 0
+
+        if upt['cr_upt'] and upt['cr_upt'] > 0 and x['cr_vrh'] and x['cr_vrh'] > 0:
+            cr_upt = upt['cr_upt']
+            cr_vrh = x['cr_vrh']
+            cr_pph = round(cr_upt/cr_vrh, 2)
+        else:
+            cr_pph = 0
+
+        if upt['yr_upt'] and upt['yr_upt'] > 0 and x['yr_vrh'] and x['yr_vrh'] > 0:
+            yr_upt = upt['yr_upt']
+            yr_vrh = x['yr_vrh']
+            yr_pph = round(yr_upt/yr_vrh, 2)
+        else:
+            yr_pph = 0
+
+        if upt['cc_upt'] and upt['cc_upt'] > 0 and x['cc_vrh'] and x['cc_vrh'] > 0:
+            cc_upt = upt['cc_upt']
+            cc_vrh = x['cc_vrh']
+            cc_pph = round(cc_upt/cc_vrh, 2)
+        else:
+            cc_pph = 0
+
+        if upt['mg_upt'] and upt['mg_upt'] > 0 and x['mg_vrh'] and x['mg_vrh'] > 0:
+            mg_upt = upt['mg_upt']
+            mg_vrh = x['mg_vrh']
+            mg_pph = round(mg_upt/mg_vrh, 2)
+        else:
+            mg_pph = 0
+
+        if upt['ip_upt'] and upt['ip_upt'] > 0 and x['ip_vrh'] and x['ip_vrh'] > 0:
+            ip_upt = upt['ip_upt']
+            ip_vrh = x['ip_vrh']
+            ip_pph = round(ip_upt/ip_vrh, 2)
+        else:
+            ip_pph = 0
+
+        if upt['ar_upt'] and upt['ar_upt'] > 0 and x['ar_vrh'] and x['ar_vrh'] > 0:
+            ar_upt = upt['ar_upt']
+            ar_vrh = x['ar_vrh']
+            ar_pph = round(ar_upt/ar_vrh, 2)
+        else:
+            ar_pph = 0
+
+        if upt['other_rail_upt'] and upt['other_rail_upt'] > 0 and x['other_rail_vrh'] and x['other_rail_vrh'] > 0:
+            other_rail_upt = upt['other_rail_upt']
+            other_rail_vrh = x['other_rail_vrh']
+            other_rail_pph = round(other_rail_upt/other_rail_vrh, 2)
+        else:
+            other_rail_pph = 0
+
+        if upt['dr_upt'] and upt['dr_upt'] > 0 and x['dr_vrh'] and x['dr_vrh'] > 0:
+            dr_upt = upt['dr_upt']
+            dr_vrh = x['dr_vrh']
+            dr_pph = round(dr_upt/dr_vrh, 2)
+        else:
+            dr_pph = 0
+
+        if upt['dt_upt'] and upt['dt_upt'] > 0 and x['dt_vrh'] and x['dt_vrh'] > 0:
+            dt_upt = upt['dt_upt']
+            dt_vrh = x['dt_vrh']
+            dt_pph = round(dt_upt/dt_vrh, 2)
+        else:
+            dt_pph = 0
+
+        if upt['vp_upt'] and upt['vp_upt'] > 0 and x['vp_vrh'] and x['vp_vrh'] > 0:
+            vp_upt = upt['vp_upt']
+            vp_vrh = x['vp_vrh']
+            vp_pph = round(vp_upt/vp_vrh, 2)
+        else:
+            vp_pph = 0
+
+        if upt['jt_upt'] and upt['jt_upt'] > 0 and x['jt_vrh'] and x['jt_vrh'] > 0:
+            jt_upt = upt['jt_upt']
+            jt_vrh = x['jt_vrh']
+            jt_pph = round(jt_upt/jt_vrh, 2)
+        else:
+            jt_pph = 0
+
+        if upt['fb_upt'] and upt['fb_upt'] > 0 and x['fb_vrh'] and x['fb_vrh'] > 0:
+            fb_upt = upt['fb_upt']
+            fb_vrh = x['fb_vrh']
+            fb_pph = round(fb_upt/fb_vrh, 2)
+        else:
+            fb_pph = 0
+
+        if upt['tr_upt'] and upt['tr_upt'] > 0 and x['tr_vrh'] and x['tr_vrh'] > 0:
+            tr_upt = upt['tr_upt']
+            tr_vrh = x['tr_vrh']
+            tr_pph = round(tr_upt/tr_vrh, 2)
+        else:
+            tr_pph = 0
+
+        if upt['ot_upt'] and upt['ot_upt'] > 0 and x['ot_vrh'] and x['ot_vrh'] > 0:
+            ot_upt = upt['ot_upt']
+            ot_vrh = x['ot_vrh']
+            ot_pph = round(ot_upt/ot_vrh, 2)
+        else:
+            ot_pph = 0
+
+        data += [{"year": x['year'], "mb": mb_pph, "cb": cb_pph, "rb": rb_pph, "tb": tb_pph, "pb": pb_pph, "hr": hr_pph, "cr": cr_pph, "lr": lr_pph, "yr": yr_pph, "cc": cc_pph, "mg": mg_pph, "ip": ip_pph, "ar": ar_pph, "other_rail": other_rail_pph, "dr": dr_pph, "dt": dt_pph, "vp": vp_pph, "jt": jt_pph, "fb": fb_pph, "tr": tr_pph, "ot": ot_pph}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def upt_per_vrm_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
+        .values("year").annotate(mb_upt=Round(Sum(F('upt'), filter=Q(mode_id="MB"))), \
+                                 cb_upt=Round(Sum(F('upt'), filter=Q(mode_id="CB"))), \
+                                 rb_upt=Round(Sum(F('upt'), filter=Q(mode_id="RB"))), \
+                                 tb_upt=Round(Sum(F('upt'), filter=Q(mode_id="TB"))), \
+                                 pb_upt=Round(Sum(F('upt'), filter=Q(mode_id="PB"))), \
+                                 hr_upt=Round(Sum(F('upt'), filter=Q(mode_id="HR"))), \
+                                 lr_upt=Round(Sum(F('upt'), filter=Q(mode_id="LR"))), \
+                                 cr_upt=Round(Sum(F('upt'), filter=Q(mode_id="CR"))), \
+                                 yr_upt=Round(Sum(F('upt'), filter=Q(mode_id="YR"))), \
+                                 sr_upt=Round(Sum(F('upt'), filter=Q(mode_id="SR"))), \
+                                 cc_upt=Round(Sum(F('upt'), filter=Q(mode_id="CC"))), \
+                                 mg_upt=Round(Sum(F('upt'), filter=Q(mode_id="MG"))), \
+                                 ip_upt=Round(Sum(F('upt'), filter=Q(mode_id="IP"))), \
+                                 ar_upt=Round(Sum(F('upt'), filter=Q(mode_id="AR"))), \
+                                 other_rail_upt=Round(Sum(F('upt'), filter=Q(mode_id="OR"))), \
+                                 dr_upt=Round(Sum(F('upt'), filter=Q(mode_id="DR"))), \
+                                 dt_upt=Round(Sum(F('upt'), filter=Q(mode_id="DT"))), \
+                                 vp_upt=Round(Sum(F('upt'), filter=Q(mode_id="VP"))), \
+                                 jt_upt=Round(Sum(F('upt'), filter=Q(mode_id="JT"))), \
+                                 fb_upt=Round(Sum(F('upt'), filter=Q(mode_id="FB"))), \
+                                 tr_upt=Round(Sum(F('upt'), filter=Q(mode_id="TR"))), \
+                                 ot_upt=Round(Sum(F('upt'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    vrm_ts = VehicleRevenueMiles.objects.filter(q)\
+        .values("year").annotate(mb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="MB"))), \
+                                 cb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="CB"))), \
+                                 rb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="RB"))), \
+                                 tb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="TB"))), \
+                                 pb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="PB"))), \
+                                 hr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="HR"))), \
+                                 lr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="LR"))), \
+                                 cr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="CR"))), \
+                                 yr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="YR"))), \
+                                 sr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="SR"))), \
+                                 cc_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="CC"))), \
+                                 mg_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="MG"))), \
+                                 ip_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="IP"))), \
+                                 ar_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="AR"))), \
+                                 other_rail_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="OR"))), \
+                                 dr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="DR"))), \
+                                 dt_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="DT"))), \
+                                 vp_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="VP"))), \
+                                 jt_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="JT"))), \
+                                 fb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="FB"))), \
+                                 tr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="TR"))), \
+                                 ot_vrm=Round(Sum(F('vrm'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    data = []
+    for x in vrm_ts:
+
+        upt = upt_ts.get(year=x['year'])
+
+        if upt['mb_upt'] and upt['mb_upt'] > 0 and x['mb_vrm'] and x['mb_vrm'] > 0:
+            mb_upt = upt['mb_upt']
+            mb_vrm = x['mb_vrm']
+            mb_ppm = round(mb_upt/mb_vrm, 2)
+        else:
+            mb_ppm = 0
+
+        if upt['cb_upt'] and upt['cb_upt'] > 0 and x['cb_vrm'] and x['cb_vrm'] > 0:
+            cb_upt = upt['cb_upt']
+            cb_vrm = x['cb_vrm']
+            cb_ppm = round(cb_upt/cb_vrm, 2)
+        else:
+            cb_ppm = 0
+
+        if upt['rb_upt'] and upt['rb_upt'] > 0 and x['rb_vrm'] and x['rb_vrm'] > 0:
+            rb_upt = upt['rb_upt']
+            rb_vrm = x['rb_vrm']
+            rb_ppm = round(rb_upt/rb_vrm, 2)
+        else:
+            rb_ppm = 0
+
+        if upt['tb_upt'] and upt['tb_upt'] > 0 and x['tb_vrm'] and x['tb_vrm'] > 0:
+            tb_upt = upt['tb_upt']
+            tb_vrm = x['tb_vrm']
+            tb_ppm = round(tb_upt/tb_vrm, 2)
+        else:
+            tb_ppm = 0
+
+        if upt['pb_upt'] and upt['pb_upt'] > 0 and x['pb_vrm'] and x['pb_vrm'] > 0:
+            pb_upt = upt['pb_upt']
+            pb_vrm = x['pb_vrm']
+            pb_ppm = round(pb_upt/pb_vrm, 2)
+        else:
+            pb_ppm = 0
+
+        if upt['hr_upt'] and upt['hr_upt'] > 0 and x['hr_vrm'] and x['hr_vrm'] > 0:
+            hr_upt = upt['hr_upt']
+            hr_vrm = x['hr_vrm']
+            hr_ppm = round(hr_upt/hr_vrm, 2)
+        else:
+            hr_ppm = 0
+
+        if upt['lr_upt'] and upt['lr_upt'] > 0 and x['lr_vrm'] and x['lr_vrm'] > 0:
+            lr_upt = upt['lr_upt']
+            lr_vrm = x['lr_vrm']
+            lr_ppm = round(lr_upt/lr_vrm, 2)
+        else:
+            lr_ppm = 0
+
+        if upt['cr_upt'] and upt['cr_upt'] > 0 and x['cr_vrm'] and x['cr_vrm'] > 0:
+            cr_upt = upt['cr_upt']
+            cr_vrm = x['cr_vrm']
+            cr_ppm = round(cr_upt/cr_vrm, 2)
+        else:
+            cr_ppm = 0
+
+        if upt['yr_upt'] and upt['yr_upt'] > 0 and x['yr_vrm'] and x['yr_vrm'] > 0:
+            yr_upt = upt['yr_upt']
+            yr_vrm = x['yr_vrm']
+            yr_ppm = round(yr_upt/yr_vrm, 2)
+        else:
+            yr_ppm = 0
+
+        if upt['cc_upt'] and upt['cc_upt'] > 0 and x['cc_vrm'] and x['cc_vrm'] > 0:
+            cc_upt = upt['cc_upt']
+            cc_vrm = x['cc_vrm']
+            cc_ppm = round(cc_upt/cc_vrm, 2)
+        else:
+            cc_ppm = 0
+
+        if upt['mg_upt'] and upt['mg_upt'] > 0 and x['mg_vrm'] and x['mg_vrm'] > 0:
+            mg_upt = upt['mg_upt']
+            mg_vrm = x['mg_vrm']
+            mg_ppm = round(mg_upt/mg_vrm, 2)
+        else:
+            mg_ppm = 0
+
+        if upt['ip_upt'] and upt['ip_upt'] > 0 and x['ip_vrm'] and x['ip_vrm'] > 0:
+            ip_upt = upt['ip_upt']
+            ip_vrm = x['ip_vrm']
+            ip_ppm = round(ip_upt/ip_vrm, 2)
+        else:
+            ip_ppm = 0
+
+        if upt['ar_upt'] and upt['ar_upt'] > 0 and x['ar_vrm'] and x['ar_vrm'] > 0:
+            ar_upt = upt['ar_upt']
+            ar_vrm = x['ar_vrm']
+            ar_ppm = round(ar_upt/ar_vrm, 2)
+        else:
+            ar_ppm = 0
+
+        if upt['other_rail_upt'] and upt['other_rail_upt'] > 0 and x['other_rail_vrm'] and x['other_rail_vrm'] > 0:
+            other_rail_upt = upt['other_rail_upt']
+            other_rail_vrm = x['other_rail_vrm']
+            other_rail_ppm = round(other_rail_upt/other_rail_vrm, 2)
+        else:
+            other_rail_ppm = 0
+
+        if upt['dr_upt'] and upt['dr_upt'] > 0 and x['dr_vrm'] and x['dr_vrm'] > 0:
+            dr_upt = upt['dr_upt']
+            dr_vrm = x['dr_vrm']
+            dr_ppm = round(dr_upt/dr_vrm, 2)
+        else:
+            dr_ppm = 0
+
+        if upt['dt_upt'] and upt['dt_upt'] > 0 and x['dt_vrm'] and x['dt_vrm'] > 0:
+            dt_upt = upt['dt_upt']
+            dt_vrm = x['dt_vrm']
+            dt_ppm = round(dt_upt/dt_vrm, 2)
+        else:
+            dt_ppm = 0
+
+        if upt['vp_upt'] and upt['vp_upt'] > 0 and x['vp_vrm'] and x['vp_vrm'] > 0:
+            vp_upt = upt['vp_upt']
+            vp_vrm = x['vp_vrm']
+            vp_ppm = round(vp_upt/vp_vrm, 2)
+        else:
+            vp_ppm = 0
+
+        if upt['jt_upt'] and upt['jt_upt'] > 0 and x['jt_vrm'] and x['jt_vrm'] > 0:
+            jt_upt = upt['jt_upt']
+            jt_vrm = x['jt_vrm']
+            jt_ppm = round(jt_upt/jt_vrm, 2)
+        else:
+            jt_ppm = 0
+
+        if upt['fb_upt'] and upt['fb_upt'] > 0 and x['fb_vrm'] and x['fb_vrm'] > 0:
+            fb_upt = upt['fb_upt']
+            fb_vrm = x['fb_vrm']
+            fb_ppm = round(fb_upt/fb_vrm, 2)
+        else:
+            fb_ppm = 0
+
+        if upt['tr_upt'] and upt['tr_upt'] > 0 and x['tr_vrm'] and x['tr_vrm'] > 0:
+            tr_upt = upt['tr_upt']
+            tr_vrm = x['tr_vrm']
+            tr_ppm = round(tr_upt/tr_vrm, 2)
+        else:
+            tr_ppm = 0
+
+        if upt['ot_upt'] and upt['ot_upt'] > 0 and x['ot_vrm'] and x['ot_vrm'] > 0:
+            ot_upt = upt['ot_upt']
+            ot_vrm = x['ot_vrm']
+            ot_ppm = round(ot_upt/ot_vrm, 2)
+        else:
+            ot_ppm = 0
+
+        data += [{"year": x['year'], "mb": mb_ppm, "cb": cb_ppm, "rb": rb_ppm, "tb": tb_ppm, "pb": pb_ppm, "hr": hr_ppm, "cr": cr_ppm, "lr": lr_ppm, "yr": yr_ppm, "cc": cc_ppm, "mg": mg_ppm, "ip": ip_ppm, "ar": ar_ppm, "other_rail": other_rail_ppm, "dr": dr_ppm, "dt": dt_ppm, "vp": vp_ppm, "jt": jt_ppm, "fb": fb_ppm, "tr": tr_ppm, "ot": ot_ppm}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_per_vrh_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    pmt_ts = PassengerMilesTraveled.objects.filter(q)\
+        .values("year").annotate(mb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="MB"))), \
+                                 cb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="CB"))), \
+                                 rb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="RB"))), \
+                                 tb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="TB"))), \
+                                 pb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="PB"))), \
+                                 hr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="HR"))), \
+                                 lr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="LR"))), \
+                                 cr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="CR"))), \
+                                 yr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="YR"))), \
+                                 sr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="SR"))), \
+                                 cc_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="CC"))), \
+                                 mg_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="MG"))), \
+                                 ip_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="IP"))), \
+                                 ar_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="AR"))), \
+                                 other_rail_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="OR"))), \
+                                 dr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="DR"))), \
+                                 dt_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="DT"))), \
+                                 vp_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="VP"))), \
+                                 jt_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="JT"))), \
+                                 fb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="FB"))), \
+                                 tr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="TR"))), \
+                                 ot_pmt=Round(Sum(F('pmt'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    vrh_ts = VehicleRevenueHours.objects.filter(q)\
+        .values("year").annotate(mb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="MB"))), \
+                                 cb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="CB"))), \
+                                 rb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="RB"))), \
+                                 tb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="TB"))), \
+                                 pb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="PB"))), \
+                                 hr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="HR"))), \
+                                 lr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="LR"))), \
+                                 cr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="CR"))), \
+                                 yr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="YR"))), \
+                                 sr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="SR"))), \
+                                 cc_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="CC"))), \
+                                 mg_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="MG"))), \
+                                 ip_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="IP"))), \
+                                 ar_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="AR"))), \
+                                 other_rail_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="OR"))), \
+                                 dr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="DR"))), \
+                                 dt_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="DT"))), \
+                                 vp_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="VP"))), \
+                                 jt_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="JT"))), \
+                                 fb_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="FB"))), \
+                                 tr_vrh=Round(Sum(F('vrh'), filter=Q(mode_id="TR"))), \
+                                 ot_vrh=Round(Sum(F('vrh'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    data = []
+    for x in vrh_ts:
+
+        pmt = pmt_ts.get(year=x['year'])
+
+        if pmt['mb_pmt'] and pmt['mb_pmt'] > 0 and x['mb_vrh'] and x['mb_vrh'] > 0:
+            mb_pmt = pmt['mb_pmt']
+            mb_vrh = x['mb_vrh']
+            mb_pmph = round(mb_pmt/mb_vrh, 2)
+        else:
+            mb_pmph = 0
+
+        if pmt['cb_pmt'] and pmt['cb_pmt'] > 0 and x['cb_vrh'] and x['cb_vrh'] > 0:
+            cb_pmt = pmt['cb_pmt']
+            cb_vrh = x['cb_vrh']
+            cb_pmph = round(cb_pmt/cb_vrh, 2)
+        else:
+            cb_pmph = 0
+
+        if pmt['rb_pmt'] and pmt['rb_pmt'] > 0 and x['rb_vrh'] and x['rb_vrh'] > 0:
+            rb_pmt = pmt['rb_pmt']
+            rb_vrh = x['rb_vrh']
+            rb_pmph = round(rb_pmt/rb_vrh, 2)
+        else:
+            rb_pmph = 0
+
+        if pmt['tb_pmt'] and pmt['tb_pmt'] > 0 and x['tb_vrh'] and x['tb_vrh'] > 0:
+            tb_pmt = pmt['tb_pmt']
+            tb_vrh = x['tb_vrh']
+            tb_pmph = round(tb_pmt/tb_vrh, 2)
+        else:
+            tb_pmph = 0
+
+        if pmt['pb_pmt'] and pmt['pb_pmt'] > 0 and x['pb_vrh'] and x['pb_vrh'] > 0:
+            pb_pmt = pmt['pb_pmt']
+            pb_vrh = x['pb_vrh']
+            pb_pmph = round(pb_pmt/pb_vrh, 2)
+        else:
+            pb_pmph = 0
+
+        if pmt['hr_pmt'] and pmt['hr_pmt'] > 0 and x['hr_vrh'] and x['hr_vrh'] > 0:
+            hr_pmt = pmt['hr_pmt']
+            hr_vrh = x['hr_vrh']
+            hr_pmph = round(hr_pmt/hr_vrh, 2)
+        else:
+            hr_pmph = 0
+
+        if pmt['lr_pmt'] and pmt['lr_pmt'] > 0 and x['lr_vrh'] and x['lr_vrh'] > 0:
+            lr_pmt = pmt['lr_pmt']
+            lr_vrh = x['lr_vrh']
+            lr_pmph = round(lr_pmt/lr_vrh, 2)
+        else:
+            lr_pmph = 0
+
+        if pmt['cr_pmt'] and pmt['cr_pmt'] > 0 and x['cr_vrh'] and x['cr_vrh'] > 0:
+            cr_pmt = pmt['cr_pmt']
+            cr_vrh = x['cr_vrh']
+            cr_pmph = round(cr_pmt/cr_vrh, 2)
+        else:
+            cr_pmph = 0
+
+        if pmt['yr_pmt'] and pmt['yr_pmt'] > 0 and x['yr_vrh'] and x['yr_vrh'] > 0:
+            yr_pmt = pmt['yr_pmt']
+            yr_vrh = x['yr_vrh']
+            yr_pmph = round(yr_pmt/yr_vrh, 2)
+        else:
+            yr_pmph = 0
+
+        if pmt['cc_pmt'] and pmt['cc_pmt'] > 0 and x['cc_vrh'] and x['cc_vrh'] > 0:
+            cc_pmt = pmt['cc_pmt']
+            cc_vrh = x['cc_vrh']
+            cc_pmph = round(cc_pmt/cc_vrh, 2)
+        else:
+            cc_pmph = 0
+
+        if pmt['mg_pmt'] and pmt['mg_pmt'] > 0 and x['mg_vrh'] and x['mg_vrh'] > 0:
+            mg_pmt = pmt['mg_pmt']
+            mg_vrh = x['mg_vrh']
+            mg_pmph = round(mg_pmt/mg_vrh, 2)
+        else:
+            mg_pmph = 0
+
+        if pmt['ip_pmt'] and pmt['ip_pmt'] > 0 and x['ip_vrh'] and x['ip_vrh'] > 0:
+            ip_pmt = pmt['ip_pmt']
+            ip_vrh = x['ip_vrh']
+            ip_pmph = round(ip_pmt/ip_vrh, 2)
+        else:
+            ip_pmph = 0
+
+        if pmt['ar_pmt'] and pmt['ar_pmt'] > 0 and x['ar_vrh'] and x['ar_vrh'] > 0:
+            ar_pmt = pmt['ar_pmt']
+            ar_vrh = x['ar_vrh']
+            ar_pmph = round(ar_pmt/ar_vrh, 2)
+        else:
+            ar_pmph = 0
+
+        if pmt['other_rail_pmt'] and pmt['other_rail_pmt'] > 0 and x['other_rail_vrh'] and x['other_rail_vrh'] > 0:
+            other_rail_pmt = pmt['other_rail_pmt']
+            other_rail_vrh = x['other_rail_vrh']
+            other_rail_pmph = round(other_rail_pmt/other_rail_vrh, 2)
+        else:
+            other_rail_pmph = 0
+
+        if pmt['dr_pmt'] and pmt['dr_pmt'] > 0 and x['dr_vrh'] and x['dr_vrh'] > 0:
+            dr_pmt = pmt['dr_pmt']
+            dr_vrh = x['dr_vrh']
+            dr_pmph = round(dr_pmt/dr_vrh, 2)
+        else:
+            dr_pmph = 0
+
+        if pmt['dt_pmt'] and pmt['dt_pmt'] > 0 and x['dt_vrh'] and x['dt_vrh'] > 0:
+            dt_pmt = pmt['dt_pmt']
+            dt_vrh = x['dt_vrh']
+            dt_pmph = round(dt_pmt/dt_vrh, 2)
+        else:
+            dt_pmph = 0
+
+        if pmt['vp_pmt'] and pmt['vp_pmt'] > 0 and x['vp_vrh'] and x['vp_vrh'] > 0:
+            vp_pmt = pmt['vp_pmt']
+            vp_vrh = x['vp_vrh']
+            vp_pmph = round(vp_pmt/vp_vrh, 2)
+        else:
+            vp_pmph = 0
+
+        if pmt['jt_pmt'] and pmt['jt_pmt'] > 0 and x['jt_vrh'] and x['jt_vrh'] > 0:
+            jt_pmt = pmt['jt_pmt']
+            jt_vrh = x['jt_vrh']
+            jt_pmph = round(jt_pmt/jt_vrh, 2)
+        else:
+            jt_pmph = 0
+
+        if pmt['fb_pmt'] and pmt['fb_pmt'] > 0 and x['fb_vrh'] and x['fb_vrh'] > 0:
+            fb_pmt = pmt['fb_pmt']
+            fb_vrh = x['fb_vrh']
+            fb_pmph = round(fb_pmt/fb_vrh, 2)
+        else:
+            fb_pmph = 0
+
+        if pmt['tr_pmt'] and pmt['tr_pmt'] > 0 and x['tr_vrh'] and x['tr_vrh'] > 0:
+            tr_pmt = pmt['tr_pmt']
+            tr_vrh = x['tr_vrh']
+            tr_pmph = round(tr_pmt/tr_vrh, 2)
+        else:
+            tr_pmph = 0
+
+        if pmt['ot_pmt'] and pmt['ot_pmt'] > 0 and x['ot_vrh'] and x['ot_vrh'] > 0:
+            ot_pmt = pmt['ot_pmt']
+            ot_vrh = x['ot_vrh']
+            ot_pmph = round(ot_pmt/ot_vrh, 2)
+        else:
+            ot_pmph = 0
+
+        data += [{"year": x['year'], "mb": mb_pmph, "cb": cb_pmph, "rb": rb_pmph, "tb": tb_pmph, "pb": pb_pmph, "hr": hr_pmph, "cr": cr_pmph, "lr": lr_pmph, "yr": yr_pmph, "cc": cc_pmph, "mg": mg_pmph, "ip": ip_pmph, "ar": ar_pmph, "other_rail": other_rail_pmph, "dr": dr_pmph, "dt": dt_pmph, "vp": vp_pmph, "jt": jt_pmph, "fb": fb_pmph, "tr": tr_pmph, "ot": ot_pmph}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 @csrf_exempt
 def pmt_per_vrm_by_mode(request):
-    return(JsonResponse({}))
+    filters, q = process_params(request.GET)
+    pmt_ts = PassengerMilesTraveled.objects.filter(q)\
+        .values("year").annotate(mb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="MB"))), \
+                                 cb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="CB"))), \
+                                 rb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="RB"))), \
+                                 tb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="TB"))), \
+                                 pb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="PB"))), \
+                                 hr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="HR"))), \
+                                 lr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="LR"))), \
+                                 cr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="CR"))), \
+                                 yr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="YR"))), \
+                                 sr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="SR"))), \
+                                 cc_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="CC"))), \
+                                 mg_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="MG"))), \
+                                 ip_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="IP"))), \
+                                 ar_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="AR"))), \
+                                 other_rail_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="OR"))), \
+                                 dr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="DR"))), \
+                                 dt_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="DT"))), \
+                                 vp_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="VP"))), \
+                                 jt_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="JT"))), \
+                                 fb_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="FB"))), \
+                                 tr_pmt=Round(Sum(F('pmt'), filter=Q(mode_id="TR"))), \
+                                 ot_pmt=Round(Sum(F('pmt'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    vrm_ts = VehicleRevenueMiles.objects.filter(q)\
+        .values("year").annotate(mb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="MB"))), \
+                                 cb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="CB"))), \
+                                 rb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="RB"))), \
+                                 tb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="TB"))), \
+                                 pb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="PB"))), \
+                                 hr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="HR"))), \
+                                 lr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="LR"))), \
+                                 cr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="CR"))), \
+                                 yr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="YR"))), \
+                                 sr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="SR"))), \
+                                 cc_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="CC"))), \
+                                 mg_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="MG"))), \
+                                 ip_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="IP"))), \
+                                 ar_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="AR"))), \
+                                 other_rail_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="OR"))), \
+                                 dr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="DR"))), \
+                                 dt_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="DT"))), \
+                                 vp_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="VP"))), \
+                                 jt_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="JT"))), \
+                                 fb_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="FB"))), \
+                                 tr_vrm=Round(Sum(F('vrm'), filter=Q(mode_id="TR"))), \
+                                 ot_vrm=Round(Sum(F('vrm'), filter=Q(mode_id__in=["OT", "nan"])))).\
+        order_by('year')
+    data = []
+    for x in vrm_ts:
 
+        pmt = pmt_ts.get(year=x['year'])
+
+        if pmt['mb_pmt'] and pmt['mb_pmt'] > 0 and x['mb_vrm'] and x['mb_vrm'] > 0:
+            mb_pmt = pmt['mb_pmt']
+            mb_vrm = x['mb_vrm']
+            mb_pmpm = round(mb_pmt/mb_vrm, 2)
+        else:
+            mb_pmpm = 0
+
+        if pmt['cb_pmt'] and pmt['cb_pmt'] > 0 and x['cb_vrm'] and x['cb_vrm'] > 0:
+            cb_pmt = pmt['cb_pmt']
+            cb_vrm = x['cb_vrm']
+            cb_pmpm = round(cb_pmt/cb_vrm, 2)
+        else:
+            cb_pmpm = 0
+
+        if pmt['rb_pmt'] and pmt['rb_pmt'] > 0 and x['rb_vrm'] and x['rb_vrm'] > 0:
+            rb_pmt = pmt['rb_pmt']
+            rb_vrm = x['rb_vrm']
+            rb_pmpm = round(rb_pmt/rb_vrm, 2)
+        else:
+            rb_pmpm = 0
+
+        if pmt['tb_pmt'] and pmt['tb_pmt'] > 0 and x['tb_vrm'] and x['tb_vrm'] > 0:
+            tb_pmt = pmt['tb_pmt']
+            tb_vrm = x['tb_vrm']
+            tb_pmpm = round(tb_pmt/tb_vrm, 2)
+        else:
+            tb_pmpm = 0
+
+        if pmt['pb_pmt'] and pmt['pb_pmt'] > 0 and x['pb_vrm'] and x['pb_vrm'] > 0:
+            pb_pmt = pmt['pb_pmt']
+            pb_vrm = x['pb_vrm']
+            pb_pmpm = round(pb_pmt/pb_vrm, 2)
+        else:
+            pb_pmpm = 0
+
+        if pmt['hr_pmt'] and pmt['hr_pmt'] > 0 and x['hr_vrm'] and x['hr_vrm'] > 0:
+            hr_pmt = pmt['hr_pmt']
+            hr_vrm = x['hr_vrm']
+            hr_pmpm = round(hr_pmt/hr_vrm, 2)
+        else:
+            hr_pmpm = 0
+
+        if pmt['lr_pmt'] and pmt['lr_pmt'] > 0 and x['lr_vrm'] and x['lr_vrm'] > 0:
+            lr_pmt = pmt['lr_pmt']
+            lr_vrm = x['lr_vrm']
+            lr_pmpm = round(lr_pmt/lr_vrm, 2)
+        else:
+            lr_pmpm = 0
+
+        if pmt['cr_pmt'] and pmt['cr_pmt'] > 0 and x['cr_vrm'] and x['cr_vrm'] > 0:
+            cr_pmt = pmt['cr_pmt']
+            cr_vrm = x['cr_vrm']
+            cr_pmpm = round(cr_pmt/cr_vrm, 2)
+        else:
+            cr_pmpm = 0
+
+        if pmt['yr_pmt'] and pmt['yr_pmt'] > 0 and x['yr_vrm'] and x['yr_vrm'] > 0:
+            yr_pmt = pmt['yr_pmt']
+            yr_vrm = x['yr_vrm']
+            yr_pmpm = round(yr_pmt/yr_vrm, 2)
+        else:
+            yr_pmpm = 0
+
+        if pmt['cc_pmt'] and pmt['cc_pmt'] > 0 and x['cc_vrm'] and x['cc_vrm'] > 0:
+            cc_pmt = pmt['cc_pmt']
+            cc_vrm = x['cc_vrm']
+            cc_pmpm = round(cc_pmt/cc_vrm, 2)
+        else:
+            cc_pmpm = 0
+
+        if pmt['mg_pmt'] and pmt['mg_pmt'] > 0 and x['mg_vrm'] and x['mg_vrm'] > 0:
+            mg_pmt = pmt['mg_pmt']
+            mg_vrm = x['mg_vrm']
+            mg_pmpm = round(mg_pmt/mg_vrm, 2)
+        else:
+            mg_pmpm = 0
+
+        if pmt['ip_pmt'] and pmt['ip_pmt'] > 0 and x['ip_vrm'] and x['ip_vrm'] > 0:
+            ip_pmt = pmt['ip_pmt']
+            ip_vrm = x['ip_vrm']
+            ip_pmpm = round(ip_pmt/ip_vrm, 2)
+        else:
+            ip_pmpm = 0
+
+        if pmt['ar_pmt'] and pmt['ar_pmt'] > 0 and x['ar_vrm'] and x['ar_vrm'] > 0:
+            ar_pmt = pmt['ar_pmt']
+            ar_vrm = x['ar_vrm']
+            ar_pmpm = round(ar_pmt/ar_vrm, 2)
+        else:
+            ar_pmpm = 0
+
+        if pmt['other_rail_pmt'] and pmt['other_rail_pmt'] > 0 and x['other_rail_vrm'] and x['other_rail_vrm'] > 0:
+            other_rail_pmt = pmt['other_rail_pmt']
+            other_rail_vrm = x['other_rail_vrm']
+            other_rail_pmpm = round(other_rail_pmt/other_rail_vrm, 2)
+        else:
+            other_rail_pmpm = 0
+
+        if pmt['dr_pmt'] and pmt['dr_pmt'] > 0 and x['dr_vrm'] and x['dr_vrm'] > 0:
+            dr_pmt = pmt['dr_pmt']
+            dr_vrm = x['dr_vrm']
+            dr_pmpm = round(dr_pmt/dr_vrm, 2)
+        else:
+            dr_pmpm = 0
+
+        if pmt['dt_pmt'] and pmt['dt_pmt'] > 0 and x['dt_vrm'] and x['dt_vrm'] > 0:
+            dt_pmt = pmt['dt_pmt']
+            dt_vrm = x['dt_vrm']
+            dt_pmpm = round(dt_pmt/dt_vrm, 2)
+        else:
+            dt_pmpm = 0
+
+        if pmt['vp_pmt'] and pmt['vp_pmt'] > 0 and x['vp_vrm'] and x['vp_vrm'] > 0:
+            vp_pmt = pmt['vp_pmt']
+            vp_vrm = x['vp_vrm']
+            vp_pmpm = round(vp_pmt/vp_vrm, 2)
+        else:
+            vp_pmpm = 0
+
+        if pmt['jt_pmt'] and pmt['jt_pmt'] > 0 and x['jt_vrm'] and x['jt_vrm'] > 0:
+            jt_pmt = pmt['jt_pmt']
+            jt_vrm = x['jt_vrm']
+            jt_pmpm = round(jt_pmt/jt_vrm, 2)
+        else:
+            jt_pmpm = 0
+
+        if pmt['fb_pmt'] and pmt['fb_pmt'] > 0 and x['fb_vrm'] and x['fb_vrm'] > 0:
+            fb_pmt = pmt['fb_pmt']
+            fb_vrm = x['fb_vrm']
+            fb_pmpm = round(fb_pmt/fb_vrm, 2)
+        else:
+            fb_pmpm = 0
+
+        if pmt['tr_pmt'] and pmt['tr_pmt'] > 0 and x['tr_vrm'] and x['tr_vrm'] > 0:
+            tr_pmt = pmt['tr_pmt']
+            tr_vrm = x['tr_vrm']
+            tr_pmpm = round(tr_pmt/tr_vrm, 2)
+        else:
+            tr_pmpm = 0
+
+        if pmt['ot_pmt'] and pmt['ot_pmt'] > 0 and x['ot_vrm'] and x['ot_vrm'] > 0:
+            ot_pmt = pmt['ot_pmt']
+            ot_vrm = x['ot_vrm']
+            ot_pmpm = round(ot_pmt/ot_vrm, 2)
+        else:
+            ot_pmpm = 0
+
+        data += [{"year": x['year'], "mb": mb_pmpm, "cb": cb_pmpm, "rb": rb_pmpm, "tb": tb_pmpm, "pb": pb_pmpm, "hr": hr_pmpm, "cr": cr_pmpm, "lr": lr_pmpm, "yr": yr_pmpm, "cc": cc_pmpm, "mg": mg_pmpm, "ip": ip_pmpm, "ar": ar_pmpm, "other_rail": other_rail_pmpm, "dr": dr_pmpm, "dt": dt_pmpm, "vp": vp_pmpm, "jt": jt_pmpm, "fb": fb_pmpm, "tr": tr_pmpm, "ot": ot_pmpm}]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 
 
