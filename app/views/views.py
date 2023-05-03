@@ -460,6 +460,22 @@ def opexp_by_service(request):
 # SERVICE DASHBOARD API ENDPOINTS
 
 @csrf_exempt
+def fares(request):
+    filters, q = process_params(request.GET)
+    ts = Fares.objects.filter(q).values("year").annotate(upt=Round(Sum("fares"))).order_by('year')
+    data = []
+    for x in ts:
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # return(JsonResponse({}))
+
+@csrf_exempt
 def upt(request):
     filters, q = process_params(request.GET)
     ts = UnlinkedPassengerTrips.objects.filter(q).values("year").annotate(upt=Round(Sum("upt"))).order_by('year')
