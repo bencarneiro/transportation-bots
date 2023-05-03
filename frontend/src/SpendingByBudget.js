@@ -9,6 +9,8 @@ import {
   ResponsiveContainer,
   Scatter,
   ScatterChart,
+  Line, 
+  LineChart,
   BarChart,
   Bar,
   Tooltip,
@@ -41,7 +43,7 @@ const SpendingByBudget = ({ chartData }) => (
 
     
     <ResponsiveContainer width = '90%' height = {300} >
-    <BarChart width={730} height={250} data={chartData}>
+    <LineChart width={730} height={250} data={chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
@@ -52,23 +54,16 @@ const SpendingByBudget = ({ chartData }) => (
               compactDisplay: "short",
             }).format(value)
           }/>
-    <YAxis
-          tickFormatter={(value) =>
-            new Intl.NumberFormat("en-US", {
-              notation: "compact",
-              compactDisplay: "short",
-            }).format(value)
-          }/>
-  
+
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Bar dataKey="opexp" name="Operating Expenditures" fill="Blue" />
+    <Line dataKey="opexp" name="Operating Expenditures" stroke="black" fill="black" />
 
-    <Bar dataKey="capexp" name="Capital Expenditures" fill="Green" />
+    <Line dataKey="capexp" name="Capital Expenditures" stroke="red" fill="Red" />
     {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
     {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
     {/* <Bar dataKey="year" fill="#82ca9d" /> */}
-  </BarChart>
+  </LineChart>
   </ResponsiveContainer>
 )
 

@@ -41,7 +41,7 @@ const Drm = ({ chartData }) => (
 
     
     <ResponsiveContainer width = '90%' height = {300} >
-    <BarChart width={730} height={250} data={chartData}>
+    <LineChart width={730} height={250} data={chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
@@ -62,9 +62,9 @@ const Drm = ({ chartData }) => (
   
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Bar dataKey="drm" name="Directional Route Miles" fill="Black" stroke="Black" />
+    <Line dataKey="drm" name="Directional Route Miles" fill="Black" stroke="Black" />
 
-  </BarChart>
+  </LineChart>
   </ResponsiveContainer>
 )
 

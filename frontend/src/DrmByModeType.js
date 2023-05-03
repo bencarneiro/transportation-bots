@@ -91,7 +91,7 @@ const DrmByModeType = ({ chartData }) => (
 
       <Line dataKey="rail" name="Rail" fill="Red" stroke="Red" />
       <Line dataKey="microtransit" name="MicroTransit" fill="Green" stroke="Green" />
-      <Line dataKey="ferry" name="Ferry" fill="Orange" stroke="Orange" />
+      <Line dataKey="ferry" name="Ferry" fill="blue" stroke="blue" />
       <Line dataKey="other" name="Other" fill="Grey" stroke="Grey" />
       {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
       {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}

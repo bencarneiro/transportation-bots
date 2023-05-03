@@ -41,7 +41,7 @@ const Vrh = ({ chartData }) => (
 
     
     <ResponsiveContainer width = '90%' height = {300} >
-    <BarChart width={730} height={250} data={chartData}>
+    <LineChart width={730} height={250} data={chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
@@ -62,9 +62,9 @@ const Vrh = ({ chartData }) => (
   
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Bar dataKey="vrh" name="Vehicle Hours of Service" fill="Black" stroke="Black" />
+    <Line dataKey="vrh" name="Vehicle Hours of Service" fill="Black" stroke="Black" />
 
-  </BarChart>
+  </LineChart>
   </ResponsiveContainer>
 )
 

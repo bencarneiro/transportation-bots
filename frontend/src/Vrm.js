@@ -41,7 +41,7 @@ const Vrm = ({ chartData }) => (
 
     
     <ResponsiveContainer width = '90%' height = {300} >
-    <BarChart width={730} height={250} data={chartData}>
+    <LineChart width={730} height={250} data={chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
@@ -52,19 +52,12 @@ const Vrm = ({ chartData }) => (
               compactDisplay: "short",
             }).format(value)
           }/>
-    {/* <YAxis dataKey={"capexp"}
-          tickFormatter={(value) =>
-            new Intl.NumberFormat("en-US", {
-              notation: "compact",
-              compactDisplay: "short",
-            }).format(value)
-          }/> */}
-  
+
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Bar dataKey="vrm" name="Vehicle Miles of Service" fill="Black" stroke="Black" />
+    <Line dataKey="vrm" name="Vehicle Miles of Service" fill="Black" stroke="Black" />
 
-  </BarChart>
+  </LineChart>
   </ResponsiveContainer>
 )
 

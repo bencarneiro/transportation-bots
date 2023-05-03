@@ -7,8 +7,8 @@ import {
   CartesianGrid,
   Legend,
   ResponsiveContainer,
-  Scatter,
-  ScatterChart,
+  Line,
+  LineChart,
   BarChart,
   Bar,
   Tooltip,
@@ -53,7 +53,7 @@ const CapexpByCategory = ({ chartData }) => (
 
     
     <ResponsiveContainer width = '90%' height = {300} >
-    <BarChart width={730} height={250} data={chartData}>
+    <LineChart width={730} height={250} data={chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
@@ -74,15 +74,15 @@ const CapexpByCategory = ({ chartData }) => (
   
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Bar dataKey="rolling_stock" name="Rolling Stock" fill="Black" />
+    <Line dataKey="rolling_stock" name="Rolling Stock" stroke="black" fill="black" />
 
-    <Bar dataKey="facilities" name="Facilities" fill="Red" />
-    <Bar dataKey="other_capital" name="Other Capital" fill="Green" />
+    <Line dataKey="facilities" name="Facilities" stroke="red" fill="red" />
+    <Line dataKey="other_capital" name="Other Capital" stroke="blue" fill="blue" />
     {/* <Bar dataKey="general_administration" name="General Administration" fill="Grey" /> */}
     {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
     {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
     {/* <Bar dataKey="year" fill="#82ca9d" /> */}
-  </BarChart>
+  </LineChart>
   </ResponsiveContainer>
 )
 

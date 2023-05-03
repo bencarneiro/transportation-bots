@@ -7,8 +7,8 @@ import {
   CartesianGrid,
   Legend,
   ResponsiveContainer,
-  Scatter,
-  ScatterChart,
+  Line,
+  LineChart,
   BarChart,
   Bar,
   Tooltip,
@@ -57,7 +57,7 @@ const OpexpByCategory = ({ chartData }) => (
 
     
     <ResponsiveContainer width = '90%' height = {300} >
-    <BarChart width={730} height={250} data={chartData}>
+    <LineChart width={730} height={250} data={chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
@@ -78,15 +78,12 @@ const OpexpByCategory = ({ chartData }) => (
   
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Bar dataKey="vehicle_operations" name="Vehicle Operations" fill="Black" />
+    <Line dataKey="vehicle_operations" name="Vehicle Operations" stroke="black" fill="Black" />
 
-    <Bar dataKey="vehicle_maintenance" name="Vehicle Maintenance" fill="Red" />
-    <Bar dataKey="non_vehicle_maintenance" name="Non-Vehicle Maintenance" fill="Green" />
-    <Bar dataKey="general_administration" name="General Administration" fill="Grey" />
-    {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
-    {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
-    {/* <Bar dataKey="year" fill="#82ca9d" /> */}
-  </BarChart>
+    <Line dataKey="vehicle_maintenance" name="Vehicle Maintenance" stroke="red" fill="Red" />
+    <Line dataKey="non_vehicle_maintenance" name="Non-Vehicle Maintenance" stroke="green" fill="Green" />
+    <Line dataKey="general_administration" name="General Administration" stroke="blue" fill="blue" />
+  </LineChart>
   </ResponsiveContainer>
 )
 
