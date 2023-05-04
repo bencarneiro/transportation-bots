@@ -20,7 +20,7 @@ export default function UzaField(props) {
 
 
     const [uzaList, setUzaList] = React.useState(null)
-    const [filters, setFilters] = React.useState(null)
+    const [filters, setFilters] = React.useState(([{uza_name: 'Austin, TX', uza: 37}]))
     // const [uzaIds, setUzaIds] = React.useState
 
     React.useEffect(() => {
@@ -30,6 +30,7 @@ export default function UzaField(props) {
     }, []);
 
     React.useEffect((event) => {
+        console.log(filters)
         props.setUzaIds(filters)
     }, [filters])
 
@@ -48,9 +49,10 @@ export default function UzaField(props) {
                 getOptionLabel={(option) => option.uza_name}
                 // defaultValue={[uzaList[13]]}
                 filterSelectedOptions
+                defaultValue={[{uza_name: 'Albany-Schenectady, NY', uza: 67}]}
                 onChange={(event, newValue) => {
                     setFilters(newValue)
-                    // console.log(filters)
+                    console.log("NEW VALUE")
                     console.log(newValue)
                 } 
                 }
