@@ -3576,10 +3576,10 @@ def cost_per_upt_by_service(request):
         .order_by('year')
     upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
         .values("year").annotate(
-            do_upt=Round(Sum("upt"), filter=Q(service_id="DO")),
-            pt_upt=Round(Sum("upt"), filter=Q(service_id="PT")),
-            tx_upt=Round(Sum("upt"), filter=Q(service_id="TX")),
-            other_upt=Round(Sum("upt"), filter=Q(service_id__in=["TN", "nan"])),
+            do_upt=Sum(F("upt"), filter=Q(service_id="DO")),
+            pt_upt=Sum(F("upt"), filter=Q(service_id="PT")),
+            tx_upt=Sum(F("upt"), filter=Q(service_id="TX")),
+            other_upt=Sum(F("upt"), filter=Q(service_id__in=["TN", "nan"])),
         ).order_by('year')
     data = []
 
@@ -3635,10 +3635,10 @@ def cost_per_pmt_by_service(request):
         .order_by('year')
     pmt_ts = PassengerMilesTraveled.objects.filter(q)\
         .values("year").annotate(
-            do_pmt=Round(Sum("pmt"), filter=Q(service_id="DO")),
-            pt_pmt=Round(Sum("pmt"), filter=Q(service_id="PT")),
-            tx_pmt=Round(Sum("pmt"), filter=Q(service_id="TX")),
-            other_pmt=Round(Sum("pmt"), filter=Q(service_id__in=["TN", "nan"])),
+            do_pmt=Sum(F("pmt"), filter=Q(service_id="DO")),
+            pt_pmt=Sum(F("pmt"), filter=Q(service_id="PT")),
+            tx_pmt=Sum(F("pmt"), filter=Q(service_id="TX")),
+            other_pmt=Sum(F("pmt"), filter=Q(service_id__in=["TN", "nan"])),
         ).order_by('year')
     data = []
 
