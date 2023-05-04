@@ -92,51 +92,39 @@ function AllService(props) {
       <br/><br/>
     <h1>Passenger Trips</h1>
         <Upt chartData={upt}/>
-        <h2>Passenger Trips by Mode Category</h2>
         <UptByModeType chartData={uptByModeType}/>
-        <h2>Pasenger Trips by Service</h2>
         <UptByService chartData={uptByService}/>
 
         <br/><br/>
         <h1>Passenger Miles</h1>
         <Pmt chartData={pmt}/>
-        <h2>Passenger Miles by Mode Type</h2>
         <UptByModeType chartData={pmtByModeType}/>
-        <h2>Pasenger Miles by Service</h2>
         <UptByService chartData={pmtByService}/>
         <br/><br/>
 
         <h1>Vehicle Miles</h1>
         <Vrm chartData={vrm}/>
-        <h2>Vehicle Miles by Mode Type</h2>
         <UptByModeType chartData={vrmByModeType}/>
-        <h2>Vehicle Miles by Service</h2>
         <UptByService chartData={vrmByService}/>
         <br/><br/>
 
 
         <h1>Vehicle Hours</h1>
         <Vrh chartData={vrh}/>
-        <h2>Vehicle Service Hours by Mode Type</h2>
         <UptByModeType chartData={vrhByModeType}/>
-        <h2>Vehicle Hours by Service</h2>
         <UptByService chartData={vrhByService}/>
         <br/><br/>
 
         <h1>Vehicles Operated in Maximum Service</h1>
         <Voms chartData={voms}/>
-        <h2>VOMS by Mode Type</h2>
         <UptByModeType chartData={vomsByModeType}/>
-        <h2>VOMS by Service</h2>
         <UptByService chartData={vomsByService}/>
 
 
         <br/><br/>
         <h1>Directional Route Miles</h1>
         <Drm chartData={drm}/>
-        <h2>Route Miles by Mode Type</h2>
         <UptByModeType chartData={drmByModeType}/>
-        <h2>Route Miles by Service</h2>
         <UptByService chartData={drmByService}/>
         
         

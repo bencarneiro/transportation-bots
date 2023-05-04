@@ -62,7 +62,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   }
 };
 
-const PmtByModeType = ({ chartData }) => (
+const PerformanceByModeType = ({ chartData }) => (
 
 
   <ResponsiveContainer width='90%' height={300} >
@@ -89,7 +89,7 @@ const PmtByModeType = ({ chartData }) => (
       <Legend />
       <Line dataKey="bus" name="Bus" fill="Black" stroke="Black" />
 
-      <Line dataKey="rail" name="Rail" fill="Red" stroke="Red" />
+      <Line dataKey="rail" name="Rail" fill="Red" stroke="Red"  />
       <Line dataKey="microtransit" name="MicroTransit" fill="Green" stroke="Green" />
       <Line dataKey="ferry" name="Ferry" fill="blue" stroke="blue" />
       <Line dataKey="other" name="Other" fill="Grey" stroke="Grey" />
@@ -100,13 +100,13 @@ const PmtByModeType = ({ chartData }) => (
   </ResponsiveContainer>
 )
 
-PmtByModeType.propTypes = {
+PerformanceByModeType.propTypes = {
   chartData: PropTypes.arrayOf(
     PropTypes.shape({
       year: PropTypes.number,
-      pmt: PropTypes.number
+      value: PropTypes.number
     })
   ).isRequired
 }
 
-export default PmtByModeType
+export default PerformanceByModeType

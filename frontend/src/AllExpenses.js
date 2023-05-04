@@ -47,10 +47,10 @@ function AllExpenses(props) {
         <h2>Expense by Budget</h2>
         <SpendingByBudget chartData={spendingByBudget} />
         <br/>
-        <h2>Operating Expense by Type</h2>
+        <h2>Operating Expense by Category</h2>
         <OpexpByCategory chartData={opexpByCategory} />
         <br/>
-        <h2>Capital Expense by Type</h2>
+        <h2>Capital Expense by Category</h2>
         <CapexpByCategory chartData={capexpByCategory} />
         <br/>
         <h2>Operating Expense By Mode Type</h2>

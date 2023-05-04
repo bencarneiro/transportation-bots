@@ -22,9 +22,9 @@ const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip">
-        <p className="label">{`Year: ${payload[1]}`}</p>
+        <p className="label">{`${payload[1]}`}</p>
         <p className="mode">{`Mode: ${label}`}</p>
-        <p className='expense'>{`Year: ${payload[0]}`}</p>
+        <p className='expense'>{`${payload[0]}`}</p>
           {/* <p className="label">{`${active} : ${payload[0]} ${payload[1].value}}`}</p> */}
           <p className="intro">{(label)}</p>
           <p className="desc">Anything you want can be displayed here.</p>

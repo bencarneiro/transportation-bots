@@ -20,47 +20,42 @@ import {
 
 const moment = require('moment')
 
-const CustomTooltip = ({ active, payload, label }) => {
-  // console.log(payload)
-  if (active && payload && payload.length) {
-    return (
-      <div className="custom-tooltip" style={{ backgroundColor: "white", fontSize: "16px", margin: "10px" }}>
-        <p className="label">{`Year: ${payload[0].payload.year}`}</p>
-        {payload[0].payload.bus > 0 && (
-          <p className="label">{`Bus: ${new Intl.NumberFormat("en-US", {
-            notation: "compact",
-            compactDisplay: "short",
-          }).format(payload[0].payload.bus)}`}</p>
-        )}
 
-        {payload[0].payload.rail > 0 && (
-          <p className="label">{`Rail: ${new Intl.NumberFormat("en-US", {
-            notation: "compact",
-            compactDisplay: "short",
-          }).format(payload[0].payload.rail)}`}</p>
-        )}
-        {payload[0].payload.microtransit > 0 && (
-          <p className="label">{`MicroTransit: ${new Intl.NumberFormat("en-US", {
-            notation: "compact",
-            compactDisplay: "short",
-          }).format(payload[0].payload.microtransit)}`}</p>
-        )}
-        {payload[0].payload.ferry > 0 && (
-          <p className="label">{`Ferry: ${new Intl.NumberFormat("en-US", {
-            notation: "compact",
-            compactDisplay: "short",
-          }).format(payload[0].payload.ferry)}`}</p>
-        )}
-        {payload[0].payload.other > 0 && (
-          <p className="label">{`Other: ${new Intl.NumberFormat("en-US", {
-            notation: "compact",
-            compactDisplay: "short",
-          }).format(payload[0].payload.other)}`}</p>
-        )}
-      </div>
-    );
-  }
-};
+const CustomTooltip = ({ active, payload, label }) => {
+    // console.log(payload)
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip" style={{ backgroundColor: "white", fontSize: "16px", margin: "10px" }}>
+          <h3 className="label">{`${payload[0].payload.year}`}</h3>
+          {payload[0].payload.directly_operated > 0 && (
+            <p className="label">{`Directly Operated: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.directly_operated)}`}</p>
+          )}
+  
+          {payload[0].payload.purchased_transportation > 0 && (
+            <p className="label">{`Purchased Transportation: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.purchased_transportation)}`}</p>
+          )}
+          {payload[0].payload.taxi > 0 && (
+            <p className="label">{`Taxi: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.taxi)}`}</p>
+          )}
+          {payload[0].payload.other > 0 && (
+            <p className="label">{`Other: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.other)}`}</p>
+          )}
+        </div>
+      );
+    }
+  };
 
 const UptByService = ({ chartData }) => (
 

@@ -25,44 +25,38 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip" style={{ backgroundColor: "white", fontSize: "16px", margin: "10px" }}>
-        <h3 className="label">{`${payload[0].payload.year}`}</h3>
-        {payload[0].payload.bus > 0 && (
-          <p className="label">{`Bus: ${new Intl.NumberFormat("en-US", {
+        <p className="label">{`Year: ${payload[0].payload.year}`}</p>
+        {payload[0].payload.do > 0 && (
+          <p className="label">{`Directly Operated: ${new Intl.NumberFormat("en-US", {
             notation: "compact",
             compactDisplay: "short",
-          }).format(payload[0].payload.bus)}`}</p>
+          }).format(payload[0].payload.do)}`}</p>
         )}
 
-        {payload[0].payload.rail > 0 && (
-          <p className="label">{`Rail: ${new Intl.NumberFormat("en-US", {
+        {payload[0].payload.pt > 0 && (
+          <p className="label">{`Purchased Transportation: ${new Intl.NumberFormat("en-US", {
             notation: "compact",
             compactDisplay: "short",
-          }).format(payload[0].payload.rail)}`}</p>
+          }).format(payload[0].payload.pt)}`}</p>
         )}
-        {payload[0].payload.microtransit > 0 && (
-          <p className="label">{`MicroTransit: ${new Intl.NumberFormat("en-US", {
+        {payload[0].payload.tx > 0 && (
+          <p className="label">{`Taxi: ${new Intl.NumberFormat("en-US", {
             notation: "compact",
             compactDisplay: "short",
-          }).format(payload[0].payload.microtransit)}`}</p>
+          }).format(payload[0].payload.tx)}`}</p>
         )}
-        {payload[0].payload.ferry > 0 && (
-          <p className="label">{`Ferry: ${new Intl.NumberFormat("en-US", {
-            notation: "compact",
-            compactDisplay: "short",
-          }).format(payload[0].payload.ferry)}`}</p>
-        )}
-        {payload[0].payload.other > 0 && (
+        {payload[0].payload.ot > 0 && (
           <p className="label">{`Other: ${new Intl.NumberFormat("en-US", {
             notation: "compact",
             compactDisplay: "short",
-          }).format(payload[0].payload.other)}`}</p>
+          }).format(payload[0].payload.ot)}`}</p>
         )}
       </div>
     );
   }
 };
 
-const PmtByModeType = ({ chartData }) => (
+const PerformanceByService = ({ chartData }) => (
 
 
   <ResponsiveContainer width='90%' height={300} >
@@ -87,12 +81,11 @@ const PmtByModeType = ({ chartData }) => (
 
       <Tooltip content={<CustomTooltip />} />
       <Legend />
-      <Line dataKey="bus" name="Bus" fill="Black" stroke="Black" />
+      <Line dataKey="do" name="Directly Operated" fill="Black" stroke="Black" />
 
-      <Line dataKey="rail" name="Rail" fill="Red" stroke="Red" />
-      <Line dataKey="microtransit" name="MicroTransit" fill="Green" stroke="Green" />
-      <Line dataKey="ferry" name="Ferry" fill="blue" stroke="blue" />
-      <Line dataKey="other" name="Other" fill="Grey" stroke="Grey" />
+      <Line dataKey="pt" name="Purchased Transportation" fill="Red" stroke="Red" />
+      <Line dataKey="tx" name="Taxi" fill="Green" stroke="Green" />
+      <Line dataKey="ot" name="Other" fill="Grey" stroke="Grey" />
       {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
       {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
       {/* <Bar dataKey="year" fill="#82ca9d" /> */}
@@ -100,13 +93,13 @@ const PmtByModeType = ({ chartData }) => (
   </ResponsiveContainer>
 )
 
-PmtByModeType.propTypes = {
+PerformanceByService.propTypes = {
   chartData: PropTypes.arrayOf(
     PropTypes.shape({
       year: PropTypes.number,
-      pmt: PropTypes.number
+      upt: PropTypes.number
     })
   ).isRequired
 }
 
-export default PmtByModeType
+export default PerformanceByService
