@@ -14,6 +14,7 @@ import VrhByModeType from './VrhByModeType';
 import VrmByModeType from './VrmByModeType';
 import VomsByModeType from './VomsByModeType';
 import DrmByModeType from "./DrmByModeType"
+import UptByService from './UptByService';
 
 
 function AllService(props) {
@@ -34,7 +35,12 @@ function AllService(props) {
     const [vrmByModeType, setVrmByModeType] = React.useState(null)
     const [vomsByModeType, setVomsByModeType] = React.useState(null)
     const [drmByModeType, setDrmByModeType] = React.useState(null)
-  
+    const [uptByService, setUptByService] = React.useState(null)
+    const [pmtByService, setPmtByService] = React.useState(null)
+    const [vrmByService, setVrmByService] = React.useState(null)
+    const [vrhByService, setVrhByService] = React.useState(null)
+    const [vomsByService, setVomsByService] = React.useState(null)
+    const [drmByService, setDrmByService] = React.useState(null)
 
 
     React.useEffect(() => {
@@ -62,6 +68,18 @@ function AllService(props) {
         .then(response => setVomsByModeType(response.data.data))
         axios.get(`http://localhost:8000/drm_by_mode_type/?t=t${props.params}`)
         .then(response => setDrmByModeType(response.data.data))
+        axios.get(`http://localhost:8000/upt_by_service/?t=t${props.params}`)
+        .then(response => setUptByService(response.data.data))
+        axios.get(`http://localhost:8000/pmt_by_service/?t=t${props.params}`)
+        .then(response => setPmtByService(response.data.data))
+        axios.get(`http://localhost:8000/vrh_by_service/?t=t${props.params}`)
+        .then(response => setVrhByService(response.data.data))
+        axios.get(`http://localhost:8000/vrm_by_service/?t=t${props.params}`)
+        .then(response => setVrmByService(response.data.data))
+        axios.get(`http://localhost:8000/voms_by_service/?t=t${props.params}`)
+        .then(response => setVomsByService(response.data.data))
+        axios.get(`http://localhost:8000/drm_by_service/?t=t${props.params}`)
+        .then(response => setDrmByService(response.data.data))
   
       // axios.get('http://localhost:8000/get_uzas/')
       //   .then(response => setUzaList(response.data));
@@ -71,35 +89,68 @@ function AllService(props) {
 
   return (
     <div className="service">
-       <h2>Passenger Trips</h2>
+      <br/><br/>
+    <h1>Passenger Trips</h1>
         <Upt chartData={upt}/>
-        <br/>
-        <h2>Passenger Miles</h2>
-        <Pmt chartData={pmt}/>
-        <br/>
-        <h2>Vehicles Operated in Maximum Service</h2>
-        <Voms chartData={voms}/>
-        <br/>
-        <h2>Directional Route Miles</h2>
-        <Drm chartData={drm}/>
-        <br/>
-        <h2>Vehicle Miles</h2>
-        <Vrm chartData={vrm}/>
-        <br/>
-        <h2>Vehicle Hours</h2>
-        <Vrh chartData={vrh}/>
-        <h2>Passengers by Mode Type</h2>
+        <h2>Passenger Trips by Mode Category</h2>
         <UptByModeType chartData={uptByModeType}/>
+        <h2>Pasenger Trips by Service</h2>
+        <UptByService chartData={uptByService}/>
+
+        <br/><br/>
+        <h1>Passenger Miles</h1>
+        <Pmt chartData={pmt}/>
         <h2>Passenger Miles by Mode Type</h2>
-        <PmtByModeType chartData={pmtByModeType}/>
-        <h2>Vehicles in Max Service by Mode Type</h2>
-        <VomsByModeType chartData={vomsByModeType}/>
-        <h2>Route Miles by Mode Type</h2>
-        <DrmByModeType chartData={drmByModeType}/>
+        <UptByModeType chartData={pmtByModeType}/>
+        <h2>Pasenger Miles by Service</h2>
+        <UptByService chartData={pmtByService}/>
+        <br/><br/>
+
+        <h1>Vehicle Miles</h1>
+        <Vrm chartData={vrm}/>
+        <h2>Vehicle Miles by Mode Type</h2>
+        <UptByModeType chartData={vrmByModeType}/>
+        <h2>Vehicle Miles by Service</h2>
+        <UptByService chartData={vrmByService}/>
+        <br/><br/>
+
+
+        <h1>Vehicle Hours</h1>
+        <Vrh chartData={vrh}/>
         <h2>Vehicle Service Hours by Mode Type</h2>
-        <VrhByModeType chartData={vrhByModeType}/>
-        <h2>Vehicle Service Miles by Mode Type</h2>
-        <VrmByModeType chartData={vrmByModeType}/>
+        <UptByModeType chartData={vrhByModeType}/>
+        <h2>Vehicle Hours by Service</h2>
+        <UptByService chartData={vrhByService}/>
+        <br/><br/>
+
+        <h1>Vehicles Operated in Maximum Service</h1>
+        <Voms chartData={voms}/>
+        <h2>VOMS by Mode Type</h2>
+        <UptByModeType chartData={vomsByModeType}/>
+        <h2>VOMS by Service</h2>
+        <UptByService chartData={vomsByService}/>
+
+
+        <br/><br/>
+        <h1>Directional Route Miles</h1>
+        <Drm chartData={drm}/>
+        <h2>Route Miles by Mode Type</h2>
+        <UptByModeType chartData={drmByModeType}/>
+        <h2>Route Miles by Service</h2>
+        <UptByService chartData={drmByService}/>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <br/>
     </div>
   );
