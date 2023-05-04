@@ -48,6 +48,7 @@ function AllPerformance(props) {
 
 
   React.useEffect(() => {
+    if (props.params) {
       axios.get(`http://localhost:8000/cost_per_upt/?t=t${props.params}`)
       .then(response => setCostPerUpt(response.data.data))
       axios.get(`http://localhost:8000/cost_per_pmt/?t=t${props.params}`)
@@ -108,7 +109,7 @@ function AllPerformance(props) {
       .then(response => setPmtPerVrhByService(response.data.data))
       axios.get(`http://localhost:8000/pmt_per_vrm_by_service/?t=t${props.params}`)
       .then(response => setPmtPerVrmByService(response.data.data))
-
+    }
   }, [props.params]);
 
 

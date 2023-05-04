@@ -44,6 +44,8 @@ function AllService(props) {
 
 
     React.useEffect(() => {
+
+    if (props.params) {
         axios.get(`http://localhost:8000/upt/?t=t${props.params}`)
         .then(response => setUpt(response.data.data));
         axios.get(`http://localhost:8000/pmt/?t=t${props.params}`)
@@ -80,6 +82,7 @@ function AllService(props) {
         .then(response => setVomsByService(response.data.data))
         axios.get(`http://localhost:8000/drm_by_service/?t=t${props.params}`)
         .then(response => setDrmByService(response.data.data))
+    }
   
       // axios.get('http://localhost:8000/get_uzas/')
       //   .then(response => setUzaList(response.data));

@@ -1317,14 +1317,16 @@ def cost_per_upt_by_mode_type(request):
             other_opexp=Sum(F('expense')*F("year_id__in_todays_dollars"), filter=Q(expense_type_id__budget="Operating", mode_id__type="Other"))
         )\
         .order_by('year')
+    print(spending_ts.query)
     upt_ts = UnlinkedPassengerTrips.objects.filter(q)\
         .values("year").annotate(
-            bus_upt=Round(Sum("upt"), filter=Q(mode_id__type="Bus")),
-            rail_upt=Round(Sum("upt"), filter=Q(mode_id__type="Rail")),
-            microtransit_upt=Round(Sum("upt"), filter=Q(mode_id__type="MicroTransit")),
-            ferry_upt=Round(Sum("upt"), filter=Q(mode_id__type="Ferry")),
-            other_upt=Round(Sum("upt"), filter=Q(mode_id__type="Other")),
+            bus_upt=Sum(F("upt"), filter=Q(mode_id__type="Bus")),
+            rail_upt=Sum(F("upt"), filter=Q(mode_id__type="Rail")),
+            microtransit_upt=Sum(F("upt"), filter=Q(mode_id__type="MicroTransit")),
+            ferry_upt=Sum(F("upt"), filter=Q(mode_id__type="Ferry")),
+            other_upt=Sum(F("upt"), filter=Q(mode_id__type="Other"))
         ).order_by('year')
+    print(upt_ts.query)
     data = []
     for x in spending_ts:
 
@@ -1333,12 +1335,16 @@ def cost_per_upt_by_mode_type(request):
         if ridership['bus_upt'] and ridership['bus_upt'] > 0 and x['bus_opexp'] and x['bus_opexp'] > 0:
             bus_upt = ridership['bus_upt']
             bus_opexp = x['bus_opexp']
+            print("bus")
+            print(bus_upt)
             bus_cpp = round(bus_opexp/bus_upt, 2)
         else:
             bus_cpp = 0
         if ridership['rail_upt'] and ridership['rail_upt'] > 0 and x['rail_opexp'] and x['rail_opexp'] > 0:
             rail_upt = ridership['rail_upt']
             rail_opexp = x['rail_opexp']
+            print("rail")
+            print(rail_upt)
             rail_cpp = round(rail_opexp/rail_upt, 2)
         else:
             rail_cpp = 0
@@ -1385,11 +1391,11 @@ def cost_per_pmt_by_mode_type(request):
         .order_by('year')
     pmt_ts = PassengerMilesTraveled.objects.filter(q)\
         .values("year").annotate(
-            bus_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="Bus")),
-            rail_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="Rail")),
-            microtransit_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="MicroTransit")),
-            ferry_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="Ferry")),
-            other_pmt=Round(Sum("pmt"), filter=Q(mode_id__type="Other")),
+            bus_pmt=Sum(F("pmt"), filter=Q(mode_id__type="Bus")),
+            rail_pmt=Sum(F("pmt"), filter=Q(mode_id__type="Rail")),
+            microtransit_pmt=Sum(F("pmt"), filter=Q(mode_id__type="MicroTransit")),
+            ferry_pmt=Sum(F("pmt"), filter=Q(mode_id__type="Ferry")),
+            other_pmt=Sum(F("pmt"), filter=Q(mode_id__type="Other"))
         ).order_by('year')
     data = []
     for x in spending_ts:
@@ -1456,11 +1462,11 @@ def frr_by_mode_type(request):
         .order_by('year')
     fares_ts = Fares.objects.filter(q)\
         .values("year").annotate(
-            bus_fares=Sum(F('fares'), mode_id__type="Bus"),
-            rail_fares=Sum(F('fares'), mode_id__type="Rail"),
-            microtransit_fares=Sum(F('fares'), mode_id__type="MicroTransit"),
-            ferry_fares=Sum(F('fares'), mode_id__type="Ferry"),
-            other_fares=Sum(F('fares'), mode_id__type="Other"),
+            bus_fares=Sum(F('fares'), filter=Q(mode_id__type="Bus")),
+            rail_fares=Sum(F('fares'), filter=Q(mode_id__type="Rail")),
+            microtransit_fares=Sum(F('fares'), filter=Q(mode_id__type="MicroTransit")),
+            ferry_fares=Sum(F('fares'), filter=Q(mode_id__type="Ferry")),
+            other_fares=Sum(F('fares'), filter=Q(mode_id__type="Other")),
         )\
         .order_by('year')
     data = []

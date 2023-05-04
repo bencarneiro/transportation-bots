@@ -25,6 +25,7 @@ function AllExpenses(props) {
 
 
   React.useEffect(() => {
+    if (props.params) {
     axios.get(`http://localhost:8000/spending_by_budget/?t=t${props.params}`)
       .then(response => setSpendingByBudget(response.data.data));
     axios.get(`http://localhost:8000/spending_by_category/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
@@ -37,6 +38,7 @@ function AllExpenses(props) {
       .then(response => setCapexpByModeType(response.data.data));
       axios.get(`http://localhost:8000/opexp_by_service/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
       .then(response => setOpexpByService(response.data.data));}
+    }
   , [props.params])
 
 

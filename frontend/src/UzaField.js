@@ -49,7 +49,7 @@ export default function UzaField(props) {
                 getOptionLabel={(option) => option.uza_name}
                 // defaultValue={[uzaList[13]]}
                 filterSelectedOptions
-                defaultValue={[{uza_name: 'Albany-Schenectady, NY', uza: 67}]}
+                defaultValue={[{uza_name: 'Austin, TX', uza: 37}]}
                 onChange={(event, newValue) => {
                     setFilters(newValue)
                     console.log("NEW VALUE")

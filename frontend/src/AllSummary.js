@@ -13,8 +13,11 @@ function AllSummary(props) {
 
 
   React.useEffect(() => {
-    axios.get(`http://localhost:8000/spending_by_budget/?t=t${props.params}`)
+    if (props.params) {
+      axios.get(`http://localhost:8000/spending_by_budget/?t=t${props.params}`)
       .then(response => setSpendingByBudget(response.data.data));}
+    }
+
   , [props.params])
 
 
