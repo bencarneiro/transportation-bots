@@ -41,7 +41,7 @@ function Summary(props) {
                 <ToggleButton value="bus">Bus</ToggleButton>
                 <ToggleButton value="rail">Rail</ToggleButton>
                 <ToggleButton value="microtransit">Micro-Transit</ToggleButton>
-                <ToggleButton value="ferry">Ferry</ToggleButton>
+                {/* <ToggleButton value="ferry">Ferry</ToggleButton> */}
                 <ToggleButton value="other">Other Modes</ToggleButton>
                 </ToggleButtonGroup>
         {alignment == "all" && (
@@ -56,9 +56,9 @@ function Summary(props) {
         {alignment == "microtransit" && (
             <MicrotransitSummary params={props.params} />
         )}
-        {alignment == "ferry" && (
+        {/* {alignment == "ferry" && (
             <FerrySummary params={props.params} />
-        )}
+        )} */}
         {alignment == "other" && (
             <OtherSummary params={props.params} />
         )}

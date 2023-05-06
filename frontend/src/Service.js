@@ -48,7 +48,7 @@ function Service(props) {
                 <ToggleButton value="bus">Bus</ToggleButton>
                 <ToggleButton value="rail">Rail</ToggleButton>
                 <ToggleButton value="microtransit">Micro-Transit</ToggleButton>
-                <ToggleButton value="ferry">Ferry</ToggleButton>
+                {/* <ToggleButton value="ferry">Ferry</ToggleButton> */}
                 <ToggleButton value="other">Other Modes</ToggleButton>
                 </ToggleButtonGroup>
         {alignment == "all" && (
@@ -63,9 +63,9 @@ function Service(props) {
         {alignment == "microtransit" && (
             <MicrotransitService params={props.params}/>
         )}
-        {alignment == "ferry" && (
+        {/* {alignment == "ferry" && (
             <FerryService params={props.params}/>
-        )}
+        )} */}
         {alignment == "other" && (
             <OtherService params={props.params}/>
         )}

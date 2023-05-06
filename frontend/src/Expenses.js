@@ -48,7 +48,7 @@ function Expenses(props) {
                 <ToggleButton value="bus">Bus</ToggleButton>
                 <ToggleButton value="rail">Rail</ToggleButton>
                 <ToggleButton value="microtransit">Micro-Transit</ToggleButton>
-                <ToggleButton value="ferry">Ferry</ToggleButton>
+                {/* <ToggleButton value="ferry">Ferry</ToggleButton> */}
                 <ToggleButton value="other">Other Modes</ToggleButton>
                 </ToggleButtonGroup>
         {alignment == "all" && (
@@ -63,9 +63,9 @@ function Expenses(props) {
         {alignment == "microtransit" && (
             <MicrotransitExpenses params={props.params}/>
         )}
-        {alignment == "ferry" && (
+        {/* {alignment == "ferry" && (
             <FerryExpenses params={props.params}/>
-        )}
+        )} */}
         {alignment == "other" && (
             <OtherExpenses params={props.params}/>
         )}

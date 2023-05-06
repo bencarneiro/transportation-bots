@@ -1071,8 +1071,9 @@ def cost_per_upt(request):
         cost = x['opexp']
         riders = upt_ts.get(year=x['year'])['upt']
         if riders == 0:
-            riders=1
-        cost_per_upt = round(cost/riders, 2)
+            cost_per_upt = 0
+        else:
+            cost_per_upt = round(cost/riders, 2)
         data += [{"year": x['year'], "cost_per_upt": cost_per_upt}]
     length = len(data)
     resp = {

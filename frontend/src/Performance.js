@@ -48,7 +48,7 @@ function Performance(props) {
                 <ToggleButton value="bus">Bus</ToggleButton>
                 <ToggleButton value="rail">Rail</ToggleButton>
                 <ToggleButton value="microtransit">Micro-Transit</ToggleButton>
-                <ToggleButton value="ferry">Ferry</ToggleButton>
+                {/* <ToggleButton value="ferry">Ferry</ToggleButton> */}
                 <ToggleButton value="other">Other Modes</ToggleButton>
                 </ToggleButtonGroup>
         {alignment == "all" && (
@@ -63,9 +63,9 @@ function Performance(props) {
         {alignment == "microtransit" && (
             <MicrotransitPerformance params={props.params}/>
         )}
-        {alignment == "ferry" && (
+        {/* {alignment == "ferry" && (
             <FerryPerformance params={props.params}/>
-        )}
+        )} */}
         {alignment == "other" && (
             <OtherPerformance params={props.params}/>
         )}
