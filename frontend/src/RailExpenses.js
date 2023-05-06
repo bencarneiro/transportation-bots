@@ -49,10 +49,10 @@ function BusExpenses(props) {
         <h2>Capital Expense by Category</h2>
         <CapexpByCategory chartData={capexpByCategory} />
         <br/>
-        <h2>Operating Expense By Mode Type</h2>
+        <h2>Operating Expense By Mode</h2>
         <RailOpexpByMode chartData={opexpByMode} />
         <br/>
-        <h2>Capital Expense By Mode Type</h2>
+        <h2>Capital Expense By Mode</h2>
         <RailOpexpByMode chartData={capexpByMode} />
         <br/>
         <h2>Operating Expense By Service</h2>

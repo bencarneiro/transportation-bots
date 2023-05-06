@@ -1,15 +1,79 @@
-import './App.css'
-import React, { useState } from 'react';
+import './App.css';
 
-function MicrotransitSummary(props) {
+
+import axios from "axios"
+import React, { useState } from 'react';
+import SpendingByBudget from './SpendingByBudget';
+import UptByModeType from "./UptByModeType"
+import PmtByModeType from "./PmtByModeType"
+import PerformanceByModeType from "./PerformanceByModeType"
+import PerformanceByMode from "./PerformanceByMode"
+import OpexpByMode from "./OpexpByMode"
+import BusUptByMode from "./BusUptByMode"
+import MicrotransitPerformanceByMode from "./MicrotransitPerformanceByMode"
+import MicrotransitOpexpByMode from "./MicrotransitOpexpByMode"
+
+
+function BusSummary(props) {
+
+
+
+  // const [spendingByBudget, setSpendingByBudget] = React.useState(null)
+  
+  const [uptByMode, setUptByMode] = React.useState(null)
+  const [pmtByMode, setPmtByMode] = React.useState(null)
+  //  const [opexpByService, setOpexpByService] = React.useState(null)
+  const [opexpByMode, setOpexpByMode] = React.useState(null)
+  const [capexpByMode, setCapexpByMode] = React.useState(null)
+  const [costPerUptByMode, setCostPerUptByMode] = React.useState(null)
+  const [costPerPmtByMode, setCostPerPmtByMode] = React.useState(null)
+
+  React.useEffect(() => {
+    if (props.params) {
+      // axios.get(`http://localhost:8000/spending_by_budget/?mode=DR,DT,VP,JT${props.params}`)
+      // .then(response => setSpendingByBudget(response.data.data))
+      axios.get(`http://localhost:8000/upt_by_mode/?mode=DR,DT,VP,JT${props.params}`)
+        .then(response => setUptByMode(response.data.data))
+        axios.get(`http://localhost:8000/pmt_by_mode/?mode=DR,DT,VP,JT${props.params}`)
+          .then(response => setPmtByMode(response.data.data))
+      axios.get(`http://localhost:8000/cost_per_upt_by_mode/?mode=DR,DT,VP,JT${props.params}`)
+        .then(response => setCostPerUptByMode(response.data.data))
+      axios.get(`http://localhost:8000/cost_per_pmt_by_mode/?mode=DR,DT,VP,JT${props.params}`)
+        .then(response => setCostPerPmtByMode(response.data.data))
+        axios.get(`http://localhost:8000/spending_by_mode/?mode=DR,DT,VP,JT${props.params}&expense_type=VO,VM,NVM,GA`)
+          .then(response => setOpexpByMode(response.data.data));
+        axios.get(`http://localhost:8000/spending_by_mode/?mode=DR,DT,VP,JT${props.params}&expense_type=RS,FC,OC`)
+          .then(response => setCapexpByMode(response.data.data));
+
+      // axios.get(`http://localhost:8000/opexp_by_service/?mode=DR,DT,VP,JT${props.params}&expense_type=VO,VM,NVM,GA`)
+      // .then(response => setOpexpByService(response.data.data));
+      
+    }}
+
+  , [props.params])
 
 
 
   return (
-    <div className="service">
-        <h1>This Page Under Development</h1>
+    <div className="expenses">
+        <></>
+        <h2>Ridership</h2>
+        <MicrotransitPerformanceByMode chartData={uptByMode}/>
+        <h2>Passenger Miles</h2>
+        <MicrotransitPerformanceByMode chartData={pmtByMode}/>
+        <h2>Operating Expense</h2>
+        <MicrotransitOpexpByMode chartData={opexpByMode} />
+        <br/>
+        <h2>Capital Expense</h2>
+        <MicrotransitOpexpByMode chartData={capexpByMode} />
+        <br/>
+        <h2>Cost Per Passenger</h2>
+        <MicrotransitPerformanceByMode chartData={costPerUptByMode}/>
+        <h2>Cost Per Passenger Mile Traveled</h2>
+        <MicrotransitPerformanceByMode chartData={costPerPmtByMode}/>
+        <br/>
     </div>
   );
 }
 
-export default MicrotransitSummary;
+export default BusSummary;
