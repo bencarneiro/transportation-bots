@@ -1120,7 +1120,6 @@ def frr(request):
     data = []
     for x in spending_ts:
         cost = x['opexp']
-        print(x)
         revenue = fares_ts.get(year=x['year'])['fares']
         if cost == 0:
             cost = 1
