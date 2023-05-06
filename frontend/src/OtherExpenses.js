@@ -1,15 +1,64 @@
 import './App.css'
 import React, { useState } from 'react';
+import axios from 'axios';
 
-function OtherExpenses(props) {
+import SpendingByBudget from './SpendingByBudget';
+import OpexpByCategory from './OpexpByCategory'
+import CapexpByCategory from "./CapexpByCategory"
+import OpexpByService from './OpexpByService';
+import OtherOpexpByMode from './OtherOpexpByMode';
+
+function BusExpenses(props) {
+
+  const [spendingByBudget, setSpendingByBudget] = React.useState(null)
+  const [opexpByCategory, setOpexpByCategory] = React.useState(null)
+  const [capexpByCategory, setCapexpByCategory] = React.useState(null)
+  const [opexpByMode, setOpexpByMode] = React.useState(null)
+  const [capexpByMode, setCapexpByMode] = React.useState(null)
+  const [opexpByService, setOpexpByService] = React.useState(null)
 
 
+
+  React.useEffect(() => {
+    if (props.params) {
+    axios.get(`http://localhost:8000/spending_by_budget/?mode=FB,OT,AT,nan${props.params}`)
+      .then(response => setSpendingByBudget(response.data.data));
+    axios.get(`http://localhost:8000/spending_by_category/?mode=FB,OT,AT,nan${props.params}&expense_type=VO,VM,NVM,GA`)
+      .then(response => setOpexpByCategory(response.data.data));
+    axios.get(`http://localhost:8000/spending_by_category/?mode=FB,OT,AT,nan${props.params}&expense_type=RS,FC,OC`)
+      .then(response => setCapexpByCategory(response.data.data));
+    axios.get(`http://localhost:8000/spending_by_mode/?mode=FB,OT,AT,nan${props.params}&expense_type=VO,VM,NVM,GA`)
+      .then(response => setOpexpByMode(response.data.data));
+    axios.get(`http://localhost:8000/spending_by_mode/?mode=FB,OT,AT,nan${props.params}&expense_type=RS,FC,OC`)
+      .then(response => setCapexpByMode(response.data.data));
+      axios.get(`http://localhost:8000/opexp_by_service/?mode=FB,OT,AT,nan${props.params}&expense_type=VO,VM,NVM,GA`)
+      .then(response => setOpexpByService(response.data.data));}
+    }
+  , [props.params])
 
   return (
-    <div className="service">
-        <h1>This Page Under Development</h1>
+    <div className="expenses">
+        <></>
+        <h2>Expense by Budget</h2>
+        <SpendingByBudget chartData={spendingByBudget} />
+        <br/>
+        <h2>Operating Expense by Category</h2>
+        <OpexpByCategory chartData={opexpByCategory} />
+        <br/>
+        <h2>Capital Expense by Category</h2>
+        <CapexpByCategory chartData={capexpByCategory} />
+        <br/>
+        <h2>Operating Expense By Mode Type</h2>
+        <OtherOpexpByMode chartData={opexpByMode} />
+        <br/>
+        <h2>Capital Expense By Mode Type</h2>
+        <OtherOpexpByMode chartData={capexpByMode} />
+        <br/>
+        <h2>Operating Expense By Service</h2>
+        <OpexpByService chartData={opexpByService}/>
+        <br/>
     </div>
   );
 }
 
-export default OtherExpenses;
+export default BusExpenses;

@@ -269,7 +269,7 @@ def process_params(params):
     if "mode" in params and params["mode"]:
         filters['mode'] = params["mode"]
         mode_list = params['mode'].split(",")
-        q &= Q(mode=mode_list)
+        q &= Q(mode__in=mode_list)
 
     if "service" in params and params['service']:
         filters['service'] = params['service']
