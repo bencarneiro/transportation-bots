@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+   
+</head>
+<body><div id="root"></div>
+    {% if debug %}
+    <script src="http://localhost:8080/js/bundle.js"></script>
+    <p>{{ debug }}</p>
+{% else %}
+    <script src="{% static 'js/bundle.js' %}"></script>
+    <p>{{ debug }}</p>
+{% endif %}</body>
+</html>
