@@ -1337,16 +1337,12 @@ def cost_per_upt_by_mode_type(request):
         if ridership['bus_upt'] and ridership['bus_upt'] > 0 and x['bus_opexp'] and x['bus_opexp'] > 0:
             bus_upt = ridership['bus_upt']
             bus_opexp = x['bus_opexp']
-            print("bus")
-            print(bus_upt)
             bus_cpp = round(bus_opexp/bus_upt, 2)
         else:
             bus_cpp = 0
         if ridership['rail_upt'] and ridership['rail_upt'] > 0 and x['rail_opexp'] and x['rail_opexp'] > 0:
             rail_upt = ridership['rail_upt']
             rail_opexp = x['rail_opexp']
-            print("rail")
-            print(rail_upt)
             rail_cpp = round(rail_opexp/rail_upt, 2)
         else:
             rail_cpp = 0
