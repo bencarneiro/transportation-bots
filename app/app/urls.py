@@ -13,8 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.views.static import serve 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+from app.settings import STATIC_ROOT
 from views.views import spending_by_budget,\
 spending_by_category,\
 spending_by_mode,\
@@ -82,7 +84,7 @@ pmt_per_vrh_by_service,\
 pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
-get_agencies
+get_agencies, HomePage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -160,5 +162,8 @@ urlpatterns = [
     path('pmt_per_vrm_by_service/', pmt_per_vrm_by_service, name='pmt_per_vrm_by_service'),
     path('get_uzas/', get_uzas, name='get_uzas'),
     path('get_states/', get_states, name="get_states"),
-    path('get_agencies/', get_agencies, name="get_agencies")
+    path('get_agencies/', get_agencies, name="get_agencies"),
+    path('', HomePage.as_view(), name="home"),
+    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
+    
 ]

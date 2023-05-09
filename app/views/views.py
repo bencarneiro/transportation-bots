@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from views.models import Crash, TransitAgency, TransitExpense, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, VehicleRevenueHours, VehicleRevenueMiles, VehiclesOperatedMaximumService, DirectionalRouteMiles
 
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.db.models import Sum, Count, Q, F
 from django.db.models.functions import Round
+from app.settings import DEBUG
 
 """
 HI it's ben, the amateurish developer!
@@ -4064,3 +4066,8 @@ def get_agencies(request):
     else:
         agencies = TransitAgency.objects.values('agency_name', 'id').distinct().order_by('agency_name')
         return JsonResponse(list(agencies), safe=False)
+    
+class HomePage(View):
+    
+    def get(self, request, *args, **kwargs):
+        return render(request, "home.html", context={"debug": DEBUG})
