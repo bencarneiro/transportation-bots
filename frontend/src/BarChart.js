@@ -36,8 +36,8 @@ const CustomTooltip = ({ active, payload, label }) => {
   };
 
 const BarChartComponent = ({ chartData }) => (
-    <ResponsiveContainer width = '90%' height = {300} >
-    <BarChart width={730} height={250} data={chartData}>
+    <ResponsiveContainer width = '100%' height = {400} >
+    <BarChart data={chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="" /> */}

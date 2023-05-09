@@ -17,7 +17,7 @@ import {
 const moment = require('moment')
 
 const TimeSeriesChart = ({ chartData }) => (
-  <ResponsiveContainer width = '90%' height = {300} >
+  <ResponsiveContainer width = '100%' height = {400} >
     <ScatterChart>
       <Tooltip/>
       <XAxis

@@ -65,12 +65,13 @@ const CustomTooltip = ({ active, payload, label }) => {
 const OpexpByModeType = ({ chartData }) => (
 
     
-    <ResponsiveContainer width = '90%' height = {300} >
-    <LineChart width={730} height={250} data={chartData}>
+    <ResponsiveContainer width = '100%' height = {400} >
+    <LineChart margin={{ top: 10, right: 50, left: 25, bottom: 50 }} height={400} data={chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
     <YAxis 
+          
           tickFormatter={(value) =>
             new Intl.NumberFormat("en-US", {
               notation: "compact",
