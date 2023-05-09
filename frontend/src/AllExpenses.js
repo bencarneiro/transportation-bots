@@ -26,17 +26,17 @@ function AllExpenses(props) {
 
   React.useEffect(() => {
     if (props.params) {
-    axios.get(`http://localhost:8000/spending_by_budget/?t=t${props.params}`)
+    axios.get(`http://45.33.31.186/spending_by_budget/?t=t${props.params}`)
       .then(response => setSpendingByBudget(response.data.data));
-    axios.get(`http://localhost:8000/spending_by_category/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
+    axios.get(`http://45.33.31.186/spending_by_category/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
       .then(response => setOpexpByCategory(response.data.data));
-    axios.get(`http://localhost:8000/spending_by_category/?t=t${props.params}&expense_type=RS,FC,OC`)
+    axios.get(`http://45.33.31.186/spending_by_category/?t=t${props.params}&expense_type=RS,FC,OC`)
       .then(response => setCapexpByCategory(response.data.data));
-    axios.get(`http://localhost:8000/spending_by_mode_type/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
+    axios.get(`http://45.33.31.186/spending_by_mode_type/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
       .then(response => setOpexpByModeType(response.data.data));
-    axios.get(`http://localhost:8000/spending_by_mode_type/?t=t${props.params}&expense_type=RS,FC,OC`)
+    axios.get(`http://45.33.31.186/spending_by_mode_type/?t=t${props.params}&expense_type=RS,FC,OC`)
       .then(response => setCapexpByModeType(response.data.data));
-      axios.get(`http://localhost:8000/opexp_by_service/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
+      axios.get(`http://45.33.31.186/opexp_by_service/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
       .then(response => setOpexpByService(response.data.data));}
     }
   , [props.params])
