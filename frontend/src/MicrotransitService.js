@@ -89,41 +89,41 @@ function AllService(props) {
     <div className="service">
       <br/><br/>
     <h1>Passenger Trips</h1>
-        <Upt chartData={upt}/>
-        <MicrotransitUptByMode chartData={uptByMode}/>
-        <UptByService chartData={uptByService}/>
+        <Upt chartData={upt} axisLabel={"Unlinked Passenger Trips"}/>
+        <MicrotransitUptByMode chartData={uptByMode} axisLabel={"Unlinked Passenger Trips"}/>
+        <UptByService chartData={uptByService} axisLabel={"Unlinked Passenger Trips"}/>
 
         <br/><br/>
         <h1>Passenger Miles</h1>
-        <Pmt chartData={pmt}/>
-        <MicrotransitUptByMode chartData={pmtByMode}/>
-        <UptByService chartData={pmtByService}/>
+        <Pmt chartData={pmt} axisLabel={"Passenger Miles Travled"}/>
+        <MicrotransitUptByMode chartData={pmtByMode} axisLabel={"Passenger Miles Travled"}/>
+        <UptByService chartData={pmtByService} axisLabel={"Passenger Miles Travled"}/>
         <br/><br/>
 
         <h1>Vehicle Miles</h1>
-        <Vrm chartData={vrm}/>
-        <MicrotransitUptByMode chartData={vrmByMode}/>
-        <UptByService chartData={vrmByService}/>
+        <Vrm chartData={vrm} axisLabel={"Vehicle Revenue Miles"}/>
+        <MicrotransitUptByMode chartData={vrmByMode} axisLabel={"Vehicle Revenue Miles"}/>
+        <UptByService chartData={vrmByService} axisLabel={"Vehicle Revenue Miles"}/>
         <br/><br/>
 
 
         <h1>Vehicle Hours</h1>
-        <Vrh chartData={vrh}/>
-        <MicrotransitUptByMode chartData={vrhByMode}/>
-        <UptByService chartData={vrhByService}/>
+        <Vrh chartData={vrh} axisLabel={"Vehicle Revenue Hours"}/>
+        <MicrotransitUptByMode chartData={vrhByMode} axisLabel={"Vehicle Revenue Hours"}/>
+        <UptByService chartData={vrhByService} axisLabel={"Vehicle Revenue Hours"}/>
         <br/><br/>
 
         <h1>Vehicles Operated in Maximum Service</h1>
-        <Voms chartData={voms}/>
-        <MicrotransitUptByMode chartData={vomsByMode}/>
-        <UptByService chartData={vomsByService}/>
+        <Voms chartData={voms} axisLabel={"Vehicles at Max Service"}/>
+        <MicrotransitUptByMode chartData={vomsByMode} axisLabel={"Vehicles at Max Service"}/>
+        <UptByService chartData={vomsByService} axisLabel={"Vehicles at Max Service"}/>
 
 
         <br/><br/>
         <h1>Directional Route Miles</h1>
-        <Drm chartData={drm}/>
-        <MicrotransitUptByMode chartData={drmByMode}/>
-        <UptByService chartData={drmByService}/>
+        <Drm chartData={drm} axisLabel={"Directional Route Miles"}/>
+        <MicrotransitUptByMode chartData={drmByMode} axisLabel={"Directional Route Miles"}/>
+        <UptByService chartData={drmByService} axisLabel={"Directional Route Miles"}/>
         
         
         

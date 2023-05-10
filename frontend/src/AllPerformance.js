@@ -118,14 +118,14 @@ function AllPerformance(props) {
     <div className="App">
 
         <h2>Cost Per Passenger</h2>
-        <CostPerUpt chartData={costPerUpt}/>
-        <PerformanceByModeType chartData={costPerUptByModeType}/>
-        <PerformanceByService chartData={costPerUptByService}/>
+        <CostPerUpt chartData={costPerUpt} axisLabel={"2022 Dollars / Passenger"}/>
+        <PerformanceByModeType chartData={costPerUptByModeType} axisLabel={"2022 Dollars / Passenger"}/>
+        <PerformanceByService chartData={costPerUptByService} axisLabel={"2022 Dollars / Passenger"}/>
         <br/>
         <h2>Cost Per Passenger Mile</h2>
-        <CostPerPmt chartData={costPerPmt}/>
-        <PerformanceByModeType chartData={costPerPmtByModeType}/>
-        <PerformanceByService chartData={costPerPmtByService}/>
+        <CostPerPmt chartData={costPerPmt} axisLabel={"2022 Dollars / Mile"}/>
+        <PerformanceByModeType chartData={costPerPmtByModeType} axisLabel={"2022 Dollars / Mile"}/>
+        <PerformanceByService chartData={costPerPmtByService} axisLabel={"2022 Dollars / Mile"}/>
         <br/>
         {/* <h2>Cost Per Vehicle Service Mile</h2>
         <CostPerVrm chartData={costPerVrm}/>
@@ -134,34 +134,34 @@ function AllPerformance(props) {
         <CostPerVrh chartData={costPerVrh}/> */}
         <br/>
         <h2>Fare Recovery Ratio</h2>
-        <Frr chartData={frr}/>
-        <PerformanceByModeType chartData={frrByModeType}/>
-        <PerformanceByService chartData={frrByService}/>
+        <Frr chartData={frr} axisLabel={"% of Expenses Recovered"}/>
+        <PerformanceByModeType chartData={frrByModeType} axisLabel={"% of Expenses Recovered"}/>
+        <PerformanceByService chartData={frrByService} axisLabel={"% of Expenses Recovered"}/>
         <br/>
         <h2>Vehicle Miles per Vehicle Hour</h2>
-        <VrmPerVrh chartData={vrmPerVrh}/>
-        <PerformanceByModeType chartData={vrmPerVrhByModeType}/>
-        <PerformanceByService chartData={vrmPerVrhByService}/>
+        <VrmPerVrh chartData={vrmPerVrh} axisLabel={"Miles Per Hour"}/>
+        <PerformanceByModeType chartData={vrmPerVrhByModeType} axisLabel={"Miles Per Hour"}/>
+        <PerformanceByService chartData={vrmPerVrhByService} axisLabel={"Miles Per Hour"}/>
         <br/>
         <h2>Passengers per Service Mile</h2>
-        <UptPerVrm chartData={uptPerVrm}/>
-        <PerformanceByModeType chartData={uptPerVrmByModeType}/>
-        <PerformanceByService chartData={uptPerVrmByService}/>
+        <UptPerVrm chartData={uptPerVrm} axisLabel={"Passengers / Veh. Mile"}/>
+        <PerformanceByModeType chartData={uptPerVrmByModeType} axisLabel={"Passengers / Veh. Mile"}/>
+        <PerformanceByService chartData={uptPerVrmByService} axisLabel={"Passengers / Veh. Mile"}/>
         <br/>
         <h2>Passengers per Service Hour</h2>
-        <UptPerVrh chartData={uptPerVrh}/>
-        <PerformanceByModeType chartData={uptPerVrhByModeType}/>
-        <PerformanceByService chartData={uptPerVrhByService}/>
+        <UptPerVrh chartData={uptPerVrh} axisLabel={"Passengers / Veh. Hour"}/>
+        <PerformanceByModeType chartData={uptPerVrhByModeType} axisLabel={"Passengers / Veh. Hour"}/>
+        <PerformanceByService chartData={uptPerVrhByService} axisLabel={"Passengers / Veh. Hour"}/>
         <br/>
         <h2>Passenger Miles per Vehicle Mile</h2>
-        <PmtPerVrm chartData={pmtPerVrm}/>
-        <PerformanceByModeType chartData={pmtPerVrmByModeType}/>
-        <PerformanceByService chartData={pmtPerVrmByService}/>
+        <PmtPerVrm chartData={pmtPerVrm} axisLabel={"Pass. Miles / Veh. Mile"}/>
+        <PerformanceByModeType chartData={pmtPerVrmByModeType} axisLabel={"Pass. Miles / Veh. Mile"}/>
+        <PerformanceByService chartData={pmtPerVrmByService} axisLabel={"Pass. Miles / Veh. Mile"}/>
         <br/>
         <h2>Passenger Miles per Vehicle Hours</h2>
-        <PmtPerVrh chartData={pmtPerVrh}/>
-        <PerformanceByModeType chartData={pmtPerVrhByModeType}/>
-        <PerformanceByService chartData={pmtPerVrhByService}/>
+        <PmtPerVrh chartData={pmtPerVrh} axisLabel={"Pass. Miles / Veh. Hour"}/>
+        <PerformanceByModeType chartData={pmtPerVrhByModeType} axisLabel={"Pass. Miles / Veh. Hour"}/>
+        <PerformanceByService chartData={pmtPerVrhByService} axisLabel={"Pass. Miles / Veh. Hour"}/>
         <br/>
     </div>
   );

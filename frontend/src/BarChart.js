@@ -35,15 +35,19 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
   };
 
-const BarChartComponent = ({ chartData }) => (
+const BarChartComponent = (props) => (
     <ResponsiveContainer width = '100%' height = {400} >
-    <BarChart data={chartData}>
+    <BarChart data={props.chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="" /> */}
-    <YAxis dataKey={"mode_id__type"}/>
+    <YAxis 
+        label={{ value: props.axisLabel, angle: -90, position: 'left' }}
+        dataKey={"mode_id__type"}/>
     
-    <YAxis dataKey={'upt'}
+    <YAxis 
+        label={{ value: props.axisLabel, angle: -90, position: 'left' }}
+        dataKey={'upt'}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en-US", {
               notation: "compact",

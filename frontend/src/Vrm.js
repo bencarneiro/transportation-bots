@@ -37,15 +37,15 @@ const CustomTooltip = ({ active, payload, label }) => {
     }
   };
 
-const Vrm = ({ chartData }) => (
+const Vrm = (props) => (
 
     
     <ResponsiveContainer width = '100%' height = {400} >
-    <LineChart margin={{ top: 10, right: 50, left: 25, bottom: 50 }} data={chartData}>
+    <LineChart margin={{ top: 10, right: 50, left: 25, bottom: 50 }} data={props.chartData}>
     <CartesianGrid strokeDasharray="3 3" />
     <XAxis dataKey="year" />
     {/* <XAxis dataKey="expense_type_id_budget"/> */}
-    <YAxis
+    <YAxis label={{ value: props.axisLabel, angle: -90, position: 'left' }}
           tickFormatter={(value) =>
             new Intl.NumberFormat("en-US", {
               notation: "compact",
@@ -55,7 +55,7 @@ const Vrm = ({ chartData }) => (
 
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Line dataKey="vrm" name="Vehicle Miles of Service" fill="Black" stroke="Black" />
+    <Line dataKey="vrm" name="Vehicle Revenue Miles" fill="Black" stroke="Black" />
 
   </LineChart>
   </ResponsiveContainer>

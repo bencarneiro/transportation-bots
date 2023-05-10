@@ -16,7 +16,7 @@ import {
 
 const moment = require('moment')
 
-const TimeSeriesChart = ({ chartData }) => (
+const TimeSeriesChart = (props) => (
   <ResponsiveContainer width = '100%' height = {400} >
     <ScatterChart>
       <Tooltip/>
@@ -27,7 +27,9 @@ const TimeSeriesChart = ({ chartData }) => (
         // tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
         type = 'number'
       />
-      <YAxis dataKey = 'expense' 
+      <YAxis 
+        label={{ value: props.axisLabel, angle: -90, position: 'left' }}
+        dataKey = 'expense' 
       name = 'Value' 
       // dx={10}
       domain = {['auto', 'auto']}

@@ -40,22 +40,22 @@ function BusExpenses(props) {
     <div className="expenses">
         <></>
         <h2>Expense by Budget</h2>
-        <SpendingByBudget chartData={spendingByBudget} />
+        <SpendingByBudget chartData={spendingByBudget}  axisLabel={"2022 Dollars"}/>
         <br/>
         <h2>Operating Expense by Category</h2>
-        <OpexpByCategory chartData={opexpByCategory} />
+        <OpexpByCategory chartData={opexpByCategory} axisLabel={"2022 Dollars"}/>
         <br/>
         <h2>Capital Expense by Category</h2>
-        <CapexpByCategory chartData={capexpByCategory} />
+        <CapexpByCategory chartData={capexpByCategory} axisLabel={"2022 Dollars"}/>
         <br/>
         <h2>Operating Expense By Mode</h2>
-        <OtherOpexpByMode chartData={opexpByMode} />
+        <OtherOpexpByMode chartData={opexpByMode} axisLabel={"2022 Dollars"}/>
         <br/>
         <h2>Capital Expense By Mode</h2>
-        <OtherOpexpByMode chartData={capexpByMode} />
+        <OtherOpexpByMode chartData={capexpByMode} axisLabel={"2022 Dollars"}/>
         <br/>
         <h2>Operating Expense By Service</h2>
-        <OpexpByService chartData={opexpByService}/>
+        <OpexpByService chartData={opexpByService} axisLabel={"2022 Dollars"}/>
         <br/>
     </div>
   );

@@ -56,24 +56,24 @@ function AllSummary(props) {
     <div className="expenses">
         <></>
         <h2>Ridership</h2>
-        <UptByModeType chartData={uptByModeType}/>
+        <UptByModeType chartData={uptByModeType} axisLabel={"Unlinked Passenger Trips"}/>
         <h2>Passenger Miles</h2>
-        <PmtByModeType chartData={pmtByModeType}/>
+        <PmtByModeType chartData={pmtByModeType} axisLabel={"Passenger Miles Traveled"}/>
         <h2>Operating Expense</h2>
-        <OpexpByModeType chartData={opexpByModeType} />
+        <OpexpByModeType chartData={opexpByModeType} axisLabel={"2022 Dollars"} />
         <br/>
         <h2>Capital Expense</h2>
-        <CapexpByModeType chartData={capexpByModeType} />
+        <CapexpByModeType chartData={capexpByModeType} axisLabel={"2022 Dollars"} />
         <br/>
         <h2>Cost Per Passenger</h2>
-        <PerformanceByModeType chartData={costPerUptByModeType}/>
+        <PerformanceByModeType chartData={costPerUptByModeType} axisLabel={"2022 Dollars / Passenger"}/>
         <h2>Cost Per Passenger Mile Traveled</h2>
-        <PerformanceByModeType chartData={costPerPmtByModeType}/>
+        <PerformanceByModeType chartData={costPerPmtByModeType} axisLabel={"2022 Dollars / Mile"}/>
         <br/>
         {/* <h2>Spending by Budget</h2>
-        <SpendingByBudget chartData={spendingByBudget} />
+        <SpendingByBudget chartData={spendingByBudget}  axisLabel={"2022 Dollars"}/>
         <h2>Operating Expense By Service</h2>
-        <OpexpByService chartData={opexpByService}/>
+        <OpexpByService chartData={opexpByService} axisLabel={"2022 Dollars"}/>
         <br/> */}
     </div>
   );
