@@ -28,22 +28,22 @@ function BusSummary(props) {
 
   React.useEffect(() => {
     if (props.params) {
-      // axios.get(`http://45.33.31.186/spending_by_budget/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
+      // axios.get(`/spending_by_budget/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
       // .then(response => setSpendingByBudget(response.data.data))
-      axios.get(`http://45.33.31.186/upt_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
+      axios.get(`/upt_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
         .then(response => setUptByMode(response.data.data))
-        axios.get(`http://45.33.31.186/pmt_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
+        axios.get(`/pmt_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
           .then(response => setPmtByMode(response.data.data))
-      axios.get(`http://45.33.31.186/cost_per_upt_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
+      axios.get(`/cost_per_upt_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
         .then(response => setCostPerUptByMode(response.data.data))
-      axios.get(`http://45.33.31.186/cost_per_pmt_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
+      axios.get(`/cost_per_pmt_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}`)
         .then(response => setCostPerPmtByMode(response.data.data))
-        axios.get(`http://45.33.31.186/spending_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}&expense_type=VO,VM,NVM,GA`)
+        axios.get(`/spending_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}&expense_type=VO,VM,NVM,GA`)
           .then(response => setOpexpByMode(response.data.data));
-        axios.get(`http://45.33.31.186/spending_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}&expense_type=RS,FC,OC`)
+        axios.get(`/spending_by_mode/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}&expense_type=RS,FC,OC`)
           .then(response => setCapexpByMode(response.data.data));
 
-      // axios.get(`http://45.33.31.186/opexp_by_service/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}&expense_type=VO,VM,NVM,GA`)
+      // axios.get(`/opexp_by_service/?mode=LR,CR,HR,YR,SR,OR,MG,AR,IP,CC${props.params}&expense_type=VO,VM,NVM,GA`)
       // .then(response => setOpexpByService(response.data.data));
       
     }}

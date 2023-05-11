@@ -28,22 +28,22 @@ function AllSummary(props) {
 
   React.useEffect(() => {
     if (props.params) {
-      // axios.get(`http://45.33.31.186/spending_by_budget/?t=t${props.params}`)
+      // axios.get(`/spending_by_budget/?t=t${props.params}`)
       // .then(response => setSpendingByBudget(response.data.data))
-      axios.get(`http://45.33.31.186/upt_by_mode_type/?t=t${props.params}`)
+      axios.get(`/upt_by_mode_type/?t=t${props.params}`)
         .then(response => setUptByModeType(response.data.data))
-        axios.get(`http://45.33.31.186/pmt_by_mode_type/?t=t${props.params}`)
+        axios.get(`/pmt_by_mode_type/?t=t${props.params}`)
           .then(response => setPmtByModeType(response.data.data))
-      axios.get(`http://45.33.31.186/cost_per_upt_by_mode_type/?t=t${props.params}`)
+      axios.get(`/cost_per_upt_by_mode_type/?t=t${props.params}`)
         .then(response => setCostPerUptByModeType(response.data.data))
-      axios.get(`http://45.33.31.186/cost_per_pmt_by_mode_type/?t=t${props.params}`)
+      axios.get(`/cost_per_pmt_by_mode_type/?t=t${props.params}`)
         .then(response => setCostPerPmtByModeType(response.data.data))
-        axios.get(`http://45.33.31.186/spending_by_mode_type/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
+        axios.get(`/spending_by_mode_type/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
           .then(response => setOpexpByModeType(response.data.data));
-        axios.get(`http://45.33.31.186/spending_by_mode_type/?t=t${props.params}&expense_type=RS,FC,OC`)
+        axios.get(`/spending_by_mode_type/?t=t${props.params}&expense_type=RS,FC,OC`)
           .then(response => setCapexpByModeType(response.data.data));}
 
-      // axios.get(`http://45.33.31.186/opexp_by_service/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
+      // axios.get(`/opexp_by_service/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
       // .then(response => setOpexpByService(response.data.data));
       
     }
