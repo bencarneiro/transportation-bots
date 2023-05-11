@@ -25,7 +25,7 @@ export default function UzaField(props) {
 
     React.useEffect(() => {
         console.log(filters)
-        axios.get(':8000/get_states/')
+        axios.get('/get_states/')
             .then(response => setUzaList(response.data));
     }, []);
 
