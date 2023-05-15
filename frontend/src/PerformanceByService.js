@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip" style={{ backgroundColor: "white", fontSize: "16px", margin: "10px" }}>
-        <p className="label">{`Year: ${payload[0].payload.year}`}</p>
+        <h3 className="label">{`${payload[0].payload.year}`}</h3>
         {payload[0].payload.do > 0 && (
           <p className="label">{`Directly Operated: ${new Intl.NumberFormat("en-US", {
             notation: "compact",
