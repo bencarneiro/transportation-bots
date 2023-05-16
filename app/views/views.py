@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from views.models import Crash, TransitAgency, TransitExpense, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, VehicleRevenueHours, VehicleRevenueMiles, VehiclesOperatedMaximumService, DirectionalRouteMiles
+from views.models import Crash, TransitAgency, TransitExpense, MonthlyUnlinkedPassengerTrips, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, MonthlyVehicleRevenueHours, VehicleRevenueHours, MonthlyVehicleRevenueMiles, VehicleRevenueMiles, VehiclesOperatedMaximumService, MonthlyVehiclesOperatedMaximumService, DirectionalRouteMiles
 
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.db.models import Sum, Count, Q, F
 from django.db.models.functions import Round
 from app.settings import DEBUG
+import datetime
 
 """
 HI it's ben, the amateurish developer!
@@ -4067,3 +4068,90 @@ class HomePage(View):
     
     def get(self, request, *args, **kwargs):
         return render(request, "home.html", context={"debug": DEBUG})
+    
+
+class BlogPage(View):
+    
+    def get(self, request, *args, **kwargs):
+
+        return render(request, "blog.html", context={"debug": DEBUG})
+    
+
+@csrf_exempt
+def monthly_upt(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2018,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(upt=Round(Sum("upt"))).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+
+@csrf_exempt
+def monthly_voms(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2018,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyVehiclesOperatedMaximumService.objects.filter(q).values("year", "month").annotate(upt=Round(Sum("voms"))).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+
+@csrf_exempt
+def monthly_vrm(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2018,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(upt=Round(Sum("vrm"))).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+
+@csrf_exempt
+def monthly_vrh(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2018,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(upt=Round(Sum("vrh"))).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)

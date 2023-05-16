@@ -248,3 +248,57 @@ class PassengerMilesTraveled(models.Model):
         db_table = "pmt"
 
 
+# adding redundant fields for year + month and "date"
+# this is just cause I don't know which will be easier to query - probably doesn't matter
+
+class MonthlyUnlinkedPassengerTrips(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
+    year = models.IntegerField(null=False)
+    month = models.IntegerField(null=False)
+    date = models.DateTimeField(null=False, blank=False)
+    upt = models.BigIntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "monthly_upt"
+
+class MonthlyVehiclesOperatedMaximumService(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
+    year = models.IntegerField(null=False)
+    month = models.IntegerField(null=False)
+    date = models.DateTimeField(null=False, blank=False)
+    voms = models.IntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "monthly_voms"
+
+class MonthlyVehicleRevenueMiles(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
+    year = models.IntegerField(null=False)
+    month = models.IntegerField(null=False)
+    date = models.DateTimeField(null=False, blank=False)
+    vrm = models.BigIntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "monthly_vrm"
+
+class MonthlyVehicleRevenueHours(models.Model):
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    mode = models.ForeignKey(Mode, on_delete=models.DO_NOTHING, default="MB")
+    service = models.ForeignKey(Service, on_delete=models.DO_NOTHING, default="DO")
+    year = models.IntegerField(null=False)
+    month = models.IntegerField(null=False)
+    date = models.DateTimeField(null=False, blank=False)
+    vrh = models.BigIntegerField(null=False)
+
+    class Meta:
+        managed=True
+        db_table = "monthly_vrh"

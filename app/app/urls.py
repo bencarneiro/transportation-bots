@@ -24,7 +24,9 @@ spending_by_mode_type,\
 opexp_by_service,\
 spending_by_budget,\
 upt,\
+monthly_upt,\
 pmt,\
+monthly_vrm, monthly_vrh, monthly_voms,\
 vrm,\
 vrh,\
 drm,\
@@ -84,7 +86,7 @@ pmt_per_vrh_by_service,\
 pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
-get_agencies, HomePage
+get_agencies, HomePage, BlogPage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -94,6 +96,10 @@ urlpatterns = [
     path('spending_by_mode/', spending_by_mode, name='spending_by_mode'),
     path('opexp_by_service/', opexp_by_service, name='opexp_by_service'),
     path('upt/', upt, name='upt'),
+    path('monthly_upt/', monthly_upt, name='monthly_upt'),
+    path('monthly_vrm/', monthly_vrm, name='monthly_vrm'),
+    path('monthly_vrh/', monthly_vrh, name='monthly_vrh'),
+    path('monthly_voms/', monthly_voms, name='monthly_voms'),
     path('pmt/', pmt, name='pmt'),
     path('vrm/', vrm, name='vrm'),
     path('vrh/', vrh, name='vrh'),
@@ -164,6 +170,7 @@ urlpatterns = [
     path('get_states/', get_states, name="get_states"),
     path('get_agencies/', get_agencies, name="get_agencies"),
     path('', HomePage.as_view(), name="home"),
+    path('blog/', BlogPage.as_view(), name="blog"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
 ]
