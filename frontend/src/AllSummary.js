@@ -9,7 +9,7 @@ import PerformanceByModeType from "./PerformanceByModeType"
 import OpexpByService from "./OpexpByService"
 import OpexpByModeType from "./OpexpByModeType"
 import CapexpByModeType from "./CapexpByModeType"
-import MonthlyUpt from './MonthlyUpt';
+// import MonthlyUpt from './MonthlyUpt';
 
 
 
