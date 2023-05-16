@@ -9,6 +9,7 @@ import PerformanceByModeType from "./PerformanceByModeType"
 import OpexpByService from "./OpexpByService"
 import OpexpByModeType from "./OpexpByModeType"
 import CapexpByModeType from "./CapexpByModeType"
+import MonthlyUpt from './MonthlyUpt';
 
 
 
@@ -25,6 +26,7 @@ function AllSummary(props) {
   const [capexpByModeType, setCapexpByModeType] = React.useState(null)
   const [costPerUptByModeType, setCostPerUptByModeType] = React.useState(null)
   const [costPerPmtByModeType, setCostPerPmtByModeType] = React.useState(null)
+  // const [monthlyUpt, setMonthlyUpt] = React.useState(null)
 
   React.useEffect(() => {
     if (props.params) {
@@ -41,12 +43,15 @@ function AllSummary(props) {
         axios.get(`/spending_by_mode_type/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
           .then(response => setOpexpByModeType(response.data.data));
         axios.get(`/spending_by_mode_type/?t=t${props.params}&expense_type=RS,FC,OC`)
-          .then(response => setCapexpByModeType(response.data.data));}
+          .then(response => setCapexpByModeType(response.data.data));}}
+
+        // axios.get(`http://127.0.0.1:8000/monthly_upt/?t=t${props.params}`)
+        // .then(response => setMonthlyUpt(response.data.data));}
 
       // axios.get(`/opexp_by_service/?t=t${props.params}&expense_type=VO,VM,NVM,GA`)
       // .then(response => setOpexpByService(response.data.data));
       
-    }
+    
 
   , [props.params])
 
@@ -69,12 +74,9 @@ function AllSummary(props) {
         <PerformanceByModeType chartData={costPerUptByModeType} axisLabel={"2022 Dollars / Passenger"}/>
         <h2>Cost Per Passenger Mile Traveled</h2>
         <PerformanceByModeType chartData={costPerPmtByModeType} axisLabel={"2022 Dollars / Mile"}/>
+        {/* <h2>Monthly Ridership</h2>
+        <MonthlyUpt chartData={monthlyUpt} axisLabel={'Unlinked Passenger Trips'}/> */}
         <br/>
-        {/* <h2>Spending by Budget</h2>
-        <SpendingByBudget chartData={spendingByBudget}  axisLabel={"2022 Dollars"}/>
-        <h2>Operating Expense By Service</h2>
-        <OpexpByService chartData={opexpByService} axisLabel={"2022 Dollars"}/>
-        <br/> */}
     </div>
   );
 }
