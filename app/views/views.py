@@ -4086,7 +4086,7 @@ def monthly_upt(request):
     ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(upt=Round(Sum("upt"))).order_by('year', "month")
     data = []
     for x in ts:
-        x['month'] = months[x]
+        x['month'] = months[x['month']]
         data += [x]
     length = len(data)
     resp = {
@@ -4106,7 +4106,7 @@ def monthly_voms(request):
     ts = MonthlyVehiclesOperatedMaximumService.objects.filter(q).values("year", "month").annotate(upt=Round(Sum("voms"))).order_by('year', "month")
     data = []
     for x in ts:
-        x['month'] = months[x]
+        x['month'] = months[x['month']]
         data += [x]
     length = len(data)
     resp = {
@@ -4126,7 +4126,7 @@ def monthly_vrm(request):
     ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(upt=Round(Sum("vrm"))).order_by('year', "month")
     data = []
     for x in ts:
-        x['month'] = months[x]
+        x['month'] = months[x['month']]
         data += [x]
     length = len(data)
     resp = {
@@ -4146,7 +4146,7 @@ def monthly_vrh(request):
     ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(upt=Round(Sum("vrh"))).order_by('year', "month")
     data = []
     for x in ts:
-        x['month'] = months[x]
+        x['month'] = months[x['month']]
         data += [x]
     length = len(data)
     resp = {
