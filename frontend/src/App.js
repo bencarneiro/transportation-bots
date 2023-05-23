@@ -12,15 +12,17 @@ import Expenses from './Expenses';
 import Service from './Service';
 import Performance from './Performance';
 import Summary from './Summary';
+import Blog from './Blog';
+import { Button } from '@mui/material';
 
 function App() {
 
 
 
- 
 
 
-  
+
+
   const [alignment, setAlignment] = React.useState('summary');
   const [params, setParams] = React.useState("")
   const [uzaParams, setUzaParams] = React.useState("")
@@ -29,6 +31,19 @@ function App() {
   const [uzaIds, setUzaIds] = React.useState([])
   const [stateIds, setStateIds] = React.useState([])
   const [agencyIds, setAgencyIds] = React.useState([])
+  const [page, setPage] = React.useState("home")
+
+
+
+  function switchBlog() {
+    if (page == "home") {
+      setPage("blog")
+    } else {
+      setPage("home")
+    }
+  }
+
+
 
   React.useEffect(() => {
 
@@ -36,14 +51,14 @@ function App() {
     let param = "&uza="
     if (uzaIds) {
       while (i < uzaIds.length) {
-        param = param.concat(uzaIds[i]['uza'],",")
+        param = param.concat(uzaIds[i]['uza'], ",")
         i++;
+      }
     }
-    }
-    
+
     console.log(param)
     if (param !== "&uza=") {
-      setUzaParams(param.substring(0,param.length-1)
+      setUzaParams(param.substring(0, param.length - 1)
       )
     } else {
       setUzaParams("")
@@ -58,14 +73,14 @@ function App() {
     let param = "&state="
     if (stateIds) {
       while (i < stateIds.length) {
-        param = param.concat(stateIds[i]['state'],",")
+        param = param.concat(stateIds[i]['state'], ",")
         i++;
+      }
     }
-    }
-    
+
     console.log(param)
     if (param !== "&state=") {
-      setStateParams(param.substring(0,param.length-1)
+      setStateParams(param.substring(0, param.length - 1)
       )
     } else {
       setStateParams("")
@@ -79,14 +94,14 @@ function App() {
     let param = "&agency="
     if (agencyIds) {
       while (i < agencyIds.length) {
-        param = param.concat(agencyIds[i]['id'],",")
+        param = param.concat(agencyIds[i]['id'], ",")
         i++;
+      }
     }
-    }
-    
+
     console.log(param)
     if (param !== "&agency=") {
-      setAgencyParams(param.substring(0,param.length-1)
+      setAgencyParams(param.substring(0, param.length - 1)
       )
     } else {
       setAgencyParams("")
@@ -95,66 +110,77 @@ function App() {
 
 
   React.useEffect(() => {
-    console.log(uzaParams.concat(stateParams,agencyParams))
-    setParams(uzaParams.concat(stateParams,agencyParams))
+    console.log(uzaParams.concat(stateParams, agencyParams))
+    setParams(uzaParams.concat(stateParams, agencyParams))
   }, [uzaParams, stateParams, agencyParams])
-  
+
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
 
   return (
     <div className="App">
-      <header>
-        <h1>Search USA Public Transit Data</h1>
-        <br/>
-        {/* <h2>Search by City</h2> */}
-        <div  >
-        <UzaField  setUzaIds={(filters) => { setUzaIds(filters) }} />
+      {page == "home" && (
+        <div>
+          <header>
+            <h1>Search USA Public Transit Data</h1>
+            <br />
+            {/* <h2>Search by City</h2> */}
+            <div  >
+              <UzaField setUzaIds={(filters) => { setUzaIds(filters) }} />
+            </div>
+            <br />
+            {/* <h2>Search by State</h2> */}
+            <StateField id="state" setStateIds={(filters) => { setStateIds(filters) }} />
+            <br />
+            {/* <h2>Search by Transit Agency</h2> */}
+            <AgencyField id="agency" setAgencyIds={(filters) => { setAgencyIds(filters) }} />
+            <br />
+            {/* {uzaIds && (
+            <h1>{uzaIds.map((val)=><div>{val.uza_name}</div>)}</h1>
+          )} */}
+
+
+
+          </header>
+          <ToggleButtonGroup
+            size="large"
+            color="primary"
+            value={alignment}
+            exclusive
+            onChange={handleChange}
+            aria-label="Platform"
+          >
+
+            <ToggleButton value="summary">Executive Summary</ToggleButton>
+            <ToggleButton value="expenses">Expenses</ToggleButton>
+            <ToggleButton value="service">Service</ToggleButton>
+            <ToggleButton value="performance">Performance</ToggleButton>
+          </ToggleButtonGroup>
+          <body>
+            <></>
+            {alignment == "summary" && (
+              <Summary params={params} />
+            )}
+            {alignment == "expenses" && (
+              <Expenses params={params} />
+            )}
+            {alignment == "service" && (
+              <Service params={params} />
+            )}
+            {alignment == "performance" && (
+              <Performance params={params} />
+            )}
+            <Button onClick={switchBlog}>Check out the Blog</Button>
+          </body>
         </div>
-        <br/>
-        {/* <h2>Search by State</h2> */}
-        <StateField id="state"  setStateIds={(filters) => { setStateIds(filters) }} />
-        <br/>
-        {/* <h2>Search by Transit Agency</h2> */}
-        <AgencyField id="agency" setAgencyIds={(filters) => {setAgencyIds(filters)}}/>
-        <br/>
-        {/* {uzaIds && (
-        <h1>{uzaIds.map((val)=><div>{val.uza_name}</div>)}</h1>
-      )} */}
-
-
-
-      </header>
-      <ToggleButtonGroup
-      size="large"
-      color="primary"
-      value={alignment}
-      exclusive
-      onChange={handleChange}
-      aria-label="Platform"
-    >
-      
-      <ToggleButton value="summary">Executive Summary</ToggleButton>
-      <ToggleButton value="expenses">Expenses</ToggleButton>
-      <ToggleButton value="service">Service</ToggleButton>
-      <ToggleButton value="performance">Performance</ToggleButton>
-    </ToggleButtonGroup>
-      <body>
-        <></>
-        {alignment == "summary" && (
-          <Summary params={params}/>
-        )}
-        {alignment == "expenses" && (
-          <Expenses params={params}/>
-        )}
-        {alignment == "service" && (
-          <Service params={params}/>
-        )}
-        {alignment == "performance" && (
-          <Performance params={params}/>
-        )}
-      </body>
+      )}
+      {(page == "blog") && (
+        <div>
+          <Blog></Blog>
+          <Button onClick={switchBlog}>Go to Home Page</Button>
+        </div>
+      )}
     </div>
   );
 }
