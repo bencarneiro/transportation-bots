@@ -27,7 +27,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         <div className="custom-tooltip" style={{ backgroundColor: "white", fontSize: "16px", margin: "10px" }}>
           <h3 className="label">{`${payload[0].payload.year}`}</h3>
           {payload[0].payload.vrm > 0 && (
-            <p className="label">{`Vehicle Hours in Service: ${new Intl.NumberFormat("en-US", {
+            <p className="label">{`Vehicle Miles in Service: ${new Intl.NumberFormat("en-US", {
               notation: "compact",
               compactDisplay: "short",
             }).format(payload[0].payload.vrm)}`}</p>
