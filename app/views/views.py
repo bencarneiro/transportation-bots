@@ -4,7 +4,7 @@ from views.models import Crash, TransitAgency, TransitExpense, MonthlyUnlinkedPa
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.db.models import Sum, Count, Q, F
+from django.db.models import Sum, Count, Q, F, Avg
 from django.db.models.functions import Round
 from app.settings import DEBUG
 import datetime
@@ -4153,5 +4153,101 @@ def monthly_vrh(request):
         "filters": filters,
         "length": length,
         "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+
+
+
+@csrf_exempt
+def upt_month_over_month_baseline(request):
+    filters, q = process_params(request.GET)
+    baseline_ridership_start_date = datetime.datetime(year=2019,month=1,day=1)
+    baseline_ridership_end_date = datetime.datetime(year=2020,month=1,day=1)
+    ridership_data_start_date = datetime.datetime(year=2020,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    baseline_q = q & Q(date__gte=baseline_ridership_start_date, date__lt=baseline_ridership_end_date)
+
+    baseline_ridership = MonthlyUnlinkedPassengerTrips.objects.filter(baseline_q).values("year", "month").annotate(date=F("date"), upt=Round(Sum("upt"))).order_by('year', "month")
+    baseline_list = []
+    for x in baseline_ridership:
+        baseline_list += [x]
+
+    q &= Q(date__gte=ridership_data_start_date)
+    ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(date=F("date"), upt=Round(Sum("upt"))).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    mom_data = []
+    for x in range(length):
+        month_id = x % 12
+        print(month_id)
+        if data[x]['upt'] > 0 and baseline_list[month_id]["upt"] > 0:
+            print(data[x])
+            print(f"ridership: {data[x]['upt']}")
+            print(f"baseline ridership: {baseline_list[month_id]['upt']}")
+            ratio = data[x]['upt'] / baseline_list[month_id]['upt']
+            print(ratio)
+            new_month = { 
+                'year': data[x]['year'],
+                'month': data[x]['month'],
+                'date': data[x]['date'],
+                'change_from_baseline': ratio
+            }
+            mom_data += [new_month]
+
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": mom_data
+    }
+    return JsonResponse(resp, safe=False)
+
+
+# eh I'm not sure if this is wrong I feel like I'm supposed to divide the baseline ridership values by five, but it's not working rn
+@csrf_exempt
+def upt_month_over_month_baseline_average(request):
+    filters, q = process_params(request.GET)
+    baseline_ridership_start_date = datetime.datetime(year=2015,month=1,day=1)
+    baseline_ridership_end_date = datetime.datetime(year=2020,month=1,day=1)
+    ridership_data_start_date = datetime.datetime(year=2020,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    baseline_q = q & Q(date__gte=baseline_ridership_start_date, date__lt=baseline_ridership_end_date)
+
+    baseline_ridership = MonthlyUnlinkedPassengerTrips.objects.filter(baseline_q).values("month").annotate(date=F("date"), upt=(Round(Sum("upt")))).order_by("month")
+    baseline_list = []
+    for x in baseline_ridership:
+        baseline_list += [x]
+
+    q &= Q(date__gte=ridership_data_start_date)
+    ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(date=F("date"), upt=Round(Sum("upt"))).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    mom_data = []
+    for x in range(length):
+        month_id = x % 12
+        print(month_id)
+        if data[x]['upt'] > 0 and baseline_list[month_id]["upt"] > 0:
+            print(data[x])
+            print(f"ridership: {data[x]['upt']}")
+            print(f"baseline ridership: {baseline_list[month_id]['upt']}")
+            ratio = data[x]['upt'] / baseline_list[month_id]['upt']
+            print(ratio)
+            new_month = { 
+                'year': data[x]['year'],
+                'month': data[x]['month'],
+                'date': data[x]['date'],
+                'change_from_baseline': ratio
+            }
+            mom_data += [new_month]
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": mom_data
     }
     return JsonResponse(resp, safe=False)
