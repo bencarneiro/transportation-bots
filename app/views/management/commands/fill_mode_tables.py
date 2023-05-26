@@ -38,6 +38,7 @@ class Command(BaseCommand):
         Mode(id="CR", name="Commuter Rail", type="Rail").save()
         Mode(id="YR", name="Hybrid Rail", type="Rail").save()
         Mode(id="OR", name="Other Rail", type="Rail").save()
+        Mode(id="AG", name="Automated Guideway", type="Rail").save()
         Mode(id="MG", name="Monorail", type="Rail").save()
         Mode(id="MO", name="Monorail", type="Rail").save()
         Mode(id="AR", name="Alaska Railroad", type="Rail").save()
