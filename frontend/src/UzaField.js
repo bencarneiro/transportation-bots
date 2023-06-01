@@ -25,7 +25,7 @@ export default function UzaField(props) {
 
     React.useEffect(() => {
         console.log(filters)
-        axios.get('/get_uzas/')
+        axios.get('http://127.0.0.1:8000/get_uzas/')
             .then(response => setUzaList(response.data));
     }, []);
 

@@ -4,7 +4,7 @@ from views.models import Crash, TransitAgency, TransitExpense, MonthlyUnlinkedPa
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.db.models import Sum, Count, Q, F, Avg
+from django.db.models import Sum, Count, Q, F, Avg, Value
 from django.db.models.functions import Round
 from app.settings import DEBUG
 import datetime
@@ -4194,7 +4194,8 @@ def upt_month_over_month_baseline(request):
                 'year': data[x]['year'],
                 'month': data[x]['month'],
                 'date': data[x]['date'],
-                'change_from_baseline': ratio
+                'change_from_baseline': ratio,
+                "baseline": 1
             }
             mom_data += [new_month]
 
