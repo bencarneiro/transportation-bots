@@ -24,7 +24,7 @@ spending_by_mode_type,\
 opexp_by_service,\
 spending_by_budget,\
 upt,\
-monthly_upt, upt_month_over_month_baseline, upt_month_over_month_baseline_average, \
+monthly_upt, upt_month_over_month_baseline, upt_month_over_month_baseline_average, upt_month_over_month_baseline_by_mode_type, upt_month_over_month_baseline_average_by_mode_type,\
 pmt,\
 monthly_vrm, monthly_vrh, monthly_voms,\
 vrm,\
@@ -101,7 +101,9 @@ urlpatterns = [
     path('monthly_vrh/', monthly_vrh, name='monthly_vrh'),
     path('monthly_voms/', monthly_voms, name='monthly_voms'),
     path('upt_month_over_month_baseline/', upt_month_over_month_baseline, name='upt_month_over_month_baseline'),
+    path('upt_month_over_month_baseline_by_mode_type/', upt_month_over_month_baseline_by_mode_type, name="upt_month_over_month_baseline_by_mode_type"),
     path('upt_month_over_month_baseline_average/', upt_month_over_month_baseline_average, name='upt_month_over_month_baseline_average'),
+    path('upt_month_over_month_baseline_average_by_mode_type/', upt_month_over_month_baseline_average_by_mode_type, name="upt_month_over_month_baseline_average_by_mode_type"),
     path('pmt/', pmt, name='pmt'),
     path('vrm/', vrm, name='vrm'),
     path('vrh/', vrh, name='vrh'),

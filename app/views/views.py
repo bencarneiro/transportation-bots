@@ -4205,7 +4205,105 @@ def upt_month_over_month_baseline(request):
         "data": mom_data
     }
     return JsonResponse(resp, safe=False)
+    
+@csrf_exempt
+def upt_month_over_month_baseline_by_mode_type(request):
+    filters, q = process_params(request.GET)
+    baseline_ridership_start_date = datetime.datetime(year=2019,month=1,day=1)
+    baseline_ridership_end_date = datetime.datetime(year=2020,month=1,day=1)
+    ridership_data_start_date = datetime.datetime(year=2020,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    baseline_q = q & Q(date__gte=baseline_ridership_start_date, date__lt=baseline_ridership_end_date)
 
+    baseline_ridership = MonthlyUnlinkedPassengerTrips.objects.filter(baseline_q)\
+    .values("year", "month").annotate(date=F("date"), bus=Round(Sum(F('upt'), filter=Q(mode_id__type="Bus"))), \
+        rail=Round(Sum(F('upt'), filter=Q(mode_id__type="Rail"))), \
+        microtransit=Round(Sum(F('upt'), filter=Q(mode_id__type="MicroTransit"))), \
+        ferry=Round(Sum(F('upt'), filter=Q(mode_id__type="Ferry"))), \
+        other=Round(Sum(F('upt'), filter=Q(mode_id__type="Other")))).order_by("year", "month")
+    baseline_list = []
+    for x in baseline_ridership:
+        baseline_list += [x]
+
+    q &= Q(date__gte=ridership_data_start_date)
+    ts = MonthlyUnlinkedPassengerTrips.objects.filter(q)\
+    .values("year", "month").annotate(date=F("date"), bus=Round(Sum(F('upt'), filter=Q(mode_id__type="Bus"))), \
+        rail=Round(Sum(F('upt'), filter=Q(mode_id__type="Rail"))), \
+        microtransit=Round(Sum(F('upt'), filter=Q(mode_id__type="MicroTransit"))), \
+        ferry=Round(Sum(F('upt'), filter=Q(mode_id__type="Ferry"))), \
+        other=Round(Sum(F('upt'), filter=Q(mode_id__type="Other")))).order_by("year", "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    mom_data = []
+
+    for x in range(length):
+        month_id = x % 12
+        print(month_id)
+
+        if data[x]['bus'] and baseline_list[month_id]["bus"] and data[x]['bus'] > 0 and baseline_list[month_id]["bus"] > 0:
+            bus = data[x]['bus'] / baseline_list[month_id]['bus']
+        else:
+            bus = 0
+        if data[x]['rail'] and baseline_list[month_id]["rail"] and data[x]['rail'] > 0 and baseline_list[month_id]["rail"] > 0:
+            rail = data[x]['rail'] / baseline_list[month_id]['rail']
+        else:
+            rail = 0
+        if data[x]['microtransit'] and baseline_list[month_id]["microtransit"] and data[x]['microtransit'] > 0 and baseline_list[month_id]["microtransit"] > 0:
+            microtransit = data[x]['microtransit'] / baseline_list[month_id]['microtransit']
+        else:
+            microtransit = 0
+        if data[x]['ferry'] and baseline_list[month_id]["ferry"] and data[x]['ferry'] > 0 and baseline_list[month_id]["ferry"] > 0:
+            ferry = data[x]['ferry'] / baseline_list[month_id]['ferry']
+        else:
+            ferry = 0
+        if data[x]['other'] and baseline_list[month_id]["other"] and data[x]['other'] > 0 and baseline_list[month_id]["other"] > 0:
+            other = data[x]['other'] / baseline_list[month_id]['other']
+        else:
+            other = 0
+
+        new_month = { 
+            'year': data[x]['year'],
+            'month': data[x]['month'],
+            'date': data[x]['date'],
+            'bus': bus,
+            'rail': rail,
+            'microtransit': microtransit,
+            'ferry': ferry,
+            'other': other,
+            "baseline": 1
+        }
+        mom_data += [new_month]
+
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": mom_data
+    }
+    return JsonResponse(resp, safe=False)
+
+# @csrf_exempt
+# def upt_month_over_month_baseline_by_mode_type(request):
+#     filters, q = process_params(request.GET)
+#     ts = MonthlyUnlinkedPassengerTrips.objects.filter(q)\
+#         .values("year", "").annotate(bus=Round(Sum(F('upt'), filter=Q(mode_id__type="Bus"))), \
+#                                  rail=Round(Sum(F('upt'), filter=Q(mode_id__type="Rail"))), \
+#                                  microtransit=Round(Sum(F('upt'), filter=Q(mode_id__type="MicroTransit"))), \
+#                                  ferry=Round(Sum(F('upt'), filter=Q(mode_id__type="Ferry"))), \
+#                                  other=Round(Sum(F('upt'), filter=Q(mode_id__type="Other")))).\
+#         order_by('year')
+#     data = []
+#     for x in ts:
+#         data += [x]
+#     length = len(data)
+#     resp = {
+#         "filters": filters,
+#         "length": length,
+#         "data": data
+#     }
+#     return JsonResponse(resp, safe=False)
 
 # eh I'm not sure if this is wrong I feel like I'm supposed to divide the baseline ridership values by five, but it's not working rn
 @csrf_exempt
@@ -4246,6 +4344,85 @@ def upt_month_over_month_baseline_average(request):
                 'change_from_baseline': ratio
             }
             mom_data += [new_month]
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": mom_data
+    }
+    return JsonResponse(resp, safe=False)
+
+
+@csrf_exempt
+def upt_month_over_month_baseline_average_by_mode_type(request):
+    filters, q = process_params(request.GET)
+    baseline_ridership_start_date = datetime.datetime(year=2016,month=1,day=1)
+    baseline_ridership_end_date = datetime.datetime(year=2020,month=1,day=1)
+    ridership_data_start_date = datetime.datetime(year=2020,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    baseline_q = q & Q(date__gte=baseline_ridership_start_date, date__lt=baseline_ridership_end_date)
+
+    baseline_ridership = MonthlyUnlinkedPassengerTrips.objects.filter(baseline_q)\
+    .values("month").annotate(date=F("date"), bus=Round(Sum(F('upt'), filter=Q(mode_id__type="Bus"))), \
+        rail=Round(Sum(F('upt'), filter=Q(mode_id__type="Rail"))), \
+        microtransit=Round(Sum(F('upt'), filter=Q(mode_id__type="MicroTransit"))), \
+        ferry=Round(Sum(F('upt'), filter=Q(mode_id__type="Ferry"))), \
+        other=Round(Sum(F('upt'), filter=Q(mode_id__type="Other")))).order_by("month")
+    baseline_list = []
+    for x in baseline_ridership:
+        baseline_list += [x]
+
+    q &= Q(date__gte=ridership_data_start_date)
+    ts = MonthlyUnlinkedPassengerTrips.objects.filter(q)\
+    .values("year", "month").annotate(date=F("date"), bus=Round(Sum(F('upt'), filter=Q(mode_id__type="Bus"))), \
+        rail=Round(Sum(F('upt'), filter=Q(mode_id__type="Rail"))), \
+        microtransit=Round(Sum(F('upt'), filter=Q(mode_id__type="MicroTransit"))), \
+        ferry=Round(Sum(F('upt'), filter=Q(mode_id__type="Ferry"))), \
+        other=Round(Sum(F('upt'), filter=Q(mode_id__type="Other")))).order_by("year", "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    mom_data = []
+
+    for x in range(length):
+        month_id = x % 12
+        print(month_id)
+
+        if data[x]['bus'] and baseline_list[month_id]["bus"] and data[x]['bus'] > 0 and baseline_list[month_id]["bus"] > 0:
+            bus = data[x]['bus'] / baseline_list[month_id]['bus']
+        else:
+            bus = 0
+        if data[x]['rail'] and baseline_list[month_id]["rail"] and data[x]['rail'] > 0 and baseline_list[month_id]["rail"] > 0:
+            rail = data[x]['rail'] / baseline_list[month_id]['rail']
+        else:
+            rail = 0
+        if data[x]['microtransit'] and baseline_list[month_id]["microtransit"] and data[x]['microtransit'] > 0 and baseline_list[month_id]["microtransit"] > 0:
+            microtransit = data[x]['microtransit'] / baseline_list[month_id]['microtransit']
+        else:
+            microtransit = 0
+        if data[x]['ferry'] and baseline_list[month_id]["ferry"] and data[x]['ferry'] > 0 and baseline_list[month_id]["ferry"] > 0:
+            ferry = data[x]['ferry'] / baseline_list[month_id]['ferry']
+        else:
+            ferry = 0
+        if data[x]['other'] and baseline_list[month_id]["other"] and data[x]['other'] > 0 and baseline_list[month_id]["other"] > 0:
+            other = data[x]['other'] / baseline_list[month_id]['other']
+        else:
+            other = 0
+
+        new_month = { 
+            'year': data[x]['year'],
+            'month': data[x]['month'],
+            'date': data[x]['date'],
+            'bus': bus,
+            'rail': rail,
+            'microtransit': microtransit,
+            'ferry': ferry,
+            'other': other,
+            "baseline": 1
+        }
+        mom_data += [new_month]
+
     resp = {
         "filters": filters,
         "length": length,
