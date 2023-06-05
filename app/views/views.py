@@ -4075,7 +4075,13 @@ class BlogPage(View):
     def get(self, request, *args, **kwargs):
 
         return render(request, "blog.html", context={"debug": DEBUG})
+
+        
+class CityMapperPage(View):
     
+    def get(self, request, *args, **kwargs):
+
+        return render(request, "citymapper.html", context={"debug": DEBUG})
 
 @csrf_exempt
 def monthly_upt(request):

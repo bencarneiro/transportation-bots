@@ -86,7 +86,7 @@ pmt_per_vrh_by_service,\
 pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
-get_agencies, HomePage, BlogPage
+get_agencies, HomePage, BlogPage, CityMapperPage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -173,6 +173,7 @@ urlpatterns = [
     path('get_agencies/', get_agencies, name="get_agencies"),
     path('', HomePage.as_view(), name="home"),
     path('blog/', BlogPage.as_view(), name="blog"),
+    path('citymapper/', CityMapperPage.as_view(), name="citymapper"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
 ]
