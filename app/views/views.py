@@ -4448,6 +4448,102 @@ def monthly_vrh_by_service(request):
     }
     return JsonResponse(resp, safe=False)
 
+@csrf_exempt
+def monthly_upt_per_vrh(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2020,month=1,day=1)
+    q &= Q(date__gte=start_date)
+    upt_ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(date=F("date"), upt=Round(Sum("upt"))).order_by('year', "month")
+    vrh_ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(date=F("date"), vrh=Round(Sum("vrh"))).order_by('year', "month")
+    data = []
+    x = 0
+    for upt_month in upt_ts:
+        upt = upt_month['upt']
+        vrh = vrh_ts[x]['vrh']
+        if upt and vrh and upt > 0 and vrh > 0:
+            data += [{
+                "year": upt_month['year'],
+                "month": upt_month['month'],
+                "date": upt_month['date'],
+                "upt_per_vrh": upt / vrh
+            }]
+        x += 1
+
+    resp = {
+        "filters": filters,
+        "length": len(data),
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+@csrf_exempt
+def monthly_upt_per_vrh_by_mode_type(request):
+
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2020,month=1,day=1)
+    q &= Q(date__gte=start_date)
+
+    upt_ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(
+        date=F("date"), bus=Round(Sum(F('upt'), filter=Q(mode_id__type="Bus"))), \
+        rail=Round(Sum(F('upt'), filter=Q(mode_id__type="Rail"))), \
+        microtransit=Round(Sum(F('upt'), filter=Q(mode_id__type="MicroTransit"))), \
+        ferry=Round(Sum(F('upt'), filter=Q(mode_id__type="Ferry"))), \
+        other=Round(Sum(F('upt'), filter=Q(mode_id__type="Other")))
+    ).order_by('year', "month")
+
+    vrh_ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(
+        date=F("date"), bus=Round(Sum(F('vrh'), filter=Q(mode_id__type="Bus"))), \
+        rail=Round(Sum(F('vrh'), filter=Q(mode_id__type="Rail"))), \
+        microtransit=Round(Sum(F('vrh'), filter=Q(mode_id__type="MicroTransit"))), \
+        ferry=Round(Sum(F('vrh'), filter=Q(mode_id__type="Ferry"))), \
+        other=Round(Sum(F('vrh'), filter=Q(mode_id__type="Other")))
+    ).order_by('year', "month")
+
+    data = []
+    x = 0
+
+    for upt_month in upt_ts:
+        if upt_month['bus'] and vrh_ts[x]['bus'] and upt_month['bus'] > 0 and vrh_ts[x]['bus'] > 0:
+            bus = upt_month['bus'] / vrh_ts[x]['bus']
+        else:
+            bus = 0
+        if upt_month['rail'] and vrh_ts[x]['rail'] and upt_month['rail'] > 0 and vrh_ts[x]['rail'] > 0:
+            rail = upt_month['rail'] / vrh_ts[x]['rail']
+        else:
+            rail = 0
+        if upt_month['microtransit'] and vrh_ts[x]['microtransit'] and upt_month['microtransit'] > 0 and vrh_ts[x]['microtransit'] > 0:
+            microtransit = upt_month['microtransit'] / vrh_ts[x]['microtransit']
+        else:
+            microtransit = 0
+        if upt_month['ferry'] and vrh_ts[x]['ferry'] and upt_month['ferry'] > 0 and vrh_ts[x]['ferry'] > 0:
+            ferry = upt_month['ferry'] / vrh_ts[x]['ferry']
+        else:
+            ferry = 0
+        if upt_month['other'] and vrh_ts[x]['other'] and upt_month['other'] > 0 and vrh_ts[x]['other'] > 0:
+            other = upt_month['other'] / vrh_ts[x]['other']
+        else:
+            other = 0
+    
+        data += [{
+            "year": upt_month['year'],
+            "month": upt_month['month'],
+            "date": upt_month['date'],
+            "bus": bus,
+            "rail": rail, 
+            "microtransit": microtransit,
+            "ferry": ferry,
+            "other": other
+        }]
+        x += 1
+
+    resp = {
+        "filters": filters,
+        "length": len(data),
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
 
 @csrf_exempt
 def upt_month_over_month_baseline(request):
