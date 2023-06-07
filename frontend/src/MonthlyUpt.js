@@ -58,7 +58,7 @@ const MonthlyUpt = (props) => (
   
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Line dataKey="upt" name="Passenger Trips" fill="Black" stroke="Black" />
+    <Line dataKey={props.dataKey} name={props.lineLabel} fill="Black" stroke="Black" />
 
   </LineChart>
   </ResponsiveContainer>
