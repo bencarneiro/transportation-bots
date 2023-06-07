@@ -24,9 +24,12 @@ spending_by_mode_type,\
 opexp_by_service,\
 spending_by_budget,\
 upt,\
-monthly_upt, upt_month_over_month_baseline, upt_month_over_month_baseline_average, upt_month_over_month_baseline_by_mode_type, upt_month_over_month_baseline_average_by_mode_type,\
+monthly_upt, monthly_upt_by_mode, monthly_upt_by_mode_type, monthly_upt_by_service , \
+upt_month_over_month_baseline, upt_month_over_month_baseline_average, upt_month_over_month_baseline_by_mode_type, upt_month_over_month_baseline_average_by_mode_type,\
 pmt,\
-monthly_vrm, monthly_vrh, monthly_voms,\
+monthly_vrm, monthly_vrm_by_mode, monthly_vrm_by_mode_type, monthly_vrm_by_service,\
+monthly_vrh, monthly_vrh_by_mode, monthly_vrh_by_mode_type, monthly_vrh_by_service,\
+monthly_voms,\
 vrm,\
 vrh,\
 drm,\
@@ -97,8 +100,18 @@ urlpatterns = [
     path('opexp_by_service/', opexp_by_service, name='opexp_by_service'),
     path('upt/', upt, name='upt'),
     path('monthly_upt/', monthly_upt, name='monthly_upt'),
+    path('monthly_upt_by_mode/', monthly_upt_by_mode, name='monthly_upt_by_mode'),
+    path('monthly_upt_by_mode_type/', monthly_upt_by_mode_type, name='monthly_upt_by_mode_type'),
+    path('monthly_upt_by_service/', monthly_upt_by_service, name='monthly_upt_by_service'),
+
     path('monthly_vrm/', monthly_vrm, name='monthly_vrm'),
+    path('monthly_vrm_by_mode/', monthly_vrm_by_mode, name='monthly_vrm_by_mode'),
+    path('monthly_vrm_by_mode_type/', monthly_vrm_by_mode_type, name='monthly_vrm_by_mode_type'),
+    path('monthly_vrm_by_service/', monthly_vrm_by_service, name='monthly_vrm_by_service'),
     path('monthly_vrh/', monthly_vrh, name='monthly_vrh'),
+    path('monthly_vrh_by_mode/', monthly_vrh_by_mode, name='monthly_vrh_by_mode'),
+    path('monthly_vrh_by_mode_type/', monthly_vrh_by_mode_type, name='monthly_vrh_by_mode_type'),
+    path('monthly_vrh_by_service/', monthly_vrh_by_service, name='monthly_vrh_by_service'),
     path('monthly_voms/', monthly_voms, name='monthly_voms'),
     path('upt_month_over_month_baseline/', upt_month_over_month_baseline, name='upt_month_over_month_baseline'),
     path('upt_month_over_month_baseline_by_mode_type/', upt_month_over_month_baseline_by_mode_type, name="upt_month_over_month_baseline_by_mode_type"),

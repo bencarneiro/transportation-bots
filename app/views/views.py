@@ -4096,6 +4096,102 @@ def monthly_upt(request):
     }
     return JsonResponse(resp, safe=False)
 
+@csrf_exempt
+def monthly_upt_by_mode(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2013,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(
+        date=F("date"), 
+        mb=Round(Sum(F('upt'), filter=Q(mode_id="MB"))), \
+        cb=Round(Sum(F('upt'), filter=Q(mode_id="CB"))), \
+        rb=Round(Sum(F('upt'), filter=Q(mode_id="RB"))), \
+        tb=Round(Sum(F('upt'), filter=Q(mode_id="TB"))), \
+        pb=Round(Sum(F('upt'), filter=Q(mode_id="PB"))), \
+        hr=Round(Sum(F('upt'), filter=Q(mode_id="HR"))), \
+        lr=Round(Sum(F('upt'), filter=Q(mode_id="LR"))), \
+        cr=Round(Sum(F('upt'), filter=Q(mode_id="CR"))), \
+        yr=Round(Sum(F('upt'), filter=Q(mode_id="YR"))), \
+        sr=Round(Sum(F('upt'), filter=Q(mode_id="SR"))), \
+        cc=Round(Sum(F('upt'), filter=Q(mode_id="CC"))), \
+        mg=Round(Sum(F('upt'), filter=Q(mode_id__in=["MG", "MO"]))), \
+        ip=Round(Sum(F('upt'), filter=Q(mode_id="IP"))), \
+        ar=Round(Sum(F('upt'), filter=Q(mode_id="AR"))), \
+        at=Round(Sum(F('upt'), filter=Q(mode_id="AT"))), \
+        other_rail=Round(Sum(F('upt'), filter=Q(mode_id="OR"))), \
+        dr=Round(Sum(F('upt'), filter=Q(mode_id="DR"))), \
+        dt=Round(Sum(F('upt'), filter=Q(mode_id="DT"))), \
+        vp=Round(Sum(F('upt'), filter=Q(mode_id="VP"))), \
+        jt=Round(Sum(F('upt'), filter=Q(mode_id="JT"))), \
+        fb=Round(Sum(F('upt'), filter=Q(mode_id="FB"))), \
+        tr=Round(Sum(F('upt'), filter=Q(mode_id="TR"))), \
+        ot=Round(Sum(F('upt'), filter=Q(mode_id__in=["OT", "nan"])))
+    ).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+@csrf_exempt
+def monthly_upt_by_mode_type(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2013,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(
+        date=F("date"),
+        bus=Round(Sum(F('upt'), filter=Q(mode_id__type="Bus"))), \
+        rail=Round(Sum(F('upt'), filter=Q(mode_id__type="Rail"))), \
+        microtransit=Round(Sum(F('upt'), filter=Q(mode_id__type="MicroTransit"))), \
+        ferry=Round(Sum(F('upt'), filter=Q(mode_id__type="Ferry"))), \
+        other=Round(Sum(F('upt'), filter=Q(mode_id__type="Other")))
+    )\
+    .order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+@csrf_exempt
+def monthly_upt_by_service(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2020,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(
+        date=F("date"), 
+        directly_operated=Round(Sum(F('upt'), filter=Q(service_id="DO"))), \
+        purchased_transportation=Round(Sum(F('upt'), filter=Q(service_id="PT"))), \
+        taxi=Round(Sum(F('upt'), filter=Q(service_id="TX"))), \
+        other=Round(Sum(F('upt'), filter=Q(service_id="OT")))\
+    ).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
 
 @csrf_exempt
 def monthly_voms(request):
@@ -4137,6 +4233,104 @@ def monthly_vrm(request):
     return JsonResponse(resp, safe=False)
 
 
+
+@csrf_exempt
+def monthly_vrm_by_mode(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2013,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(
+        date=F("date"), 
+        mb=Round(Sum(F('vrm'), filter=Q(mode_id="MB"))), \
+        cb=Round(Sum(F('vrm'), filter=Q(mode_id="CB"))), \
+        rb=Round(Sum(F('vrm'), filter=Q(mode_id="RB"))), \
+        tb=Round(Sum(F('vrm'), filter=Q(mode_id="TB"))), \
+        pb=Round(Sum(F('vrm'), filter=Q(mode_id="PB"))), \
+        hr=Round(Sum(F('vrm'), filter=Q(mode_id="HR"))), \
+        lr=Round(Sum(F('vrm'), filter=Q(mode_id="LR"))), \
+        cr=Round(Sum(F('vrm'), filter=Q(mode_id="CR"))), \
+        yr=Round(Sum(F('vrm'), filter=Q(mode_id="YR"))), \
+        sr=Round(Sum(F('vrm'), filter=Q(mode_id="SR"))), \
+        cc=Round(Sum(F('vrm'), filter=Q(mode_id="CC"))), \
+        mg=Round(Sum(F('vrm'), filter=Q(mode_id__in=["MG", "MO"]))), \
+        ip=Round(Sum(F('vrm'), filter=Q(mode_id="IP"))), \
+        ar=Round(Sum(F('vrm'), filter=Q(mode_id="AR"))), \
+        at=Round(Sum(F('vrm'), filter=Q(mode_id="AT"))), \
+        other_rail=Round(Sum(F('vrm'), filter=Q(mode_id="OR"))), \
+        dr=Round(Sum(F('vrm'), filter=Q(mode_id="DR"))), \
+        dt=Round(Sum(F('vrm'), filter=Q(mode_id="DT"))), \
+        vp=Round(Sum(F('vrm'), filter=Q(mode_id="VP"))), \
+        jt=Round(Sum(F('vrm'), filter=Q(mode_id="JT"))), \
+        fb=Round(Sum(F('vrm'), filter=Q(mode_id="FB"))), \
+        tr=Round(Sum(F('vrm'), filter=Q(mode_id="TR"))), \
+        ot=Round(Sum(F('vrm'), filter=Q(mode_id__in=["OT", "nan"])))
+    ).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+@csrf_exempt
+def monthly_vrm_by_mode_type(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2013,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(
+        date=F("date"),
+        bus=Round(Sum(F('vrm'), filter=Q(mode_id__type="Bus"))), \
+        rail=Round(Sum(F('vrm'), filter=Q(mode_id__type="Rail"))), \
+        microtransit=Round(Sum(F('vrm'), filter=Q(mode_id__type="MicroTransit"))), \
+        ferry=Round(Sum(F('vrm'), filter=Q(mode_id__type="Ferry"))), \
+        other=Round(Sum(F('vrm'), filter=Q(mode_id__type="Other")))
+    )\
+    .order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+@csrf_exempt
+def monthly_vrm_by_service(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2020,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(
+        date=F("date"), 
+        directly_operated=Round(Sum(F('vrm'), filter=Q(service_id="DO"))), \
+        purchased_transportation=Round(Sum(F('vrm'), filter=Q(service_id="PT"))), \
+        taxi=Round(Sum(F('vrm'), filter=Q(service_id="TX"))), \
+        other=Round(Sum(F('vrm'), filter=Q(service_id="OT")))\
+    ).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+
 @csrf_exempt
 def monthly_vrh(request):
     filters, q = process_params(request.GET)
@@ -4157,6 +4351,102 @@ def monthly_vrh(request):
     return JsonResponse(resp, safe=False)
 
 
+
+@csrf_exempt
+def monthly_vrh_by_mode(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2013,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(
+        date=F("date"), 
+        mb=Round(Sum(F('vrh'), filter=Q(mode_id="MB"))), \
+        cb=Round(Sum(F('vrh'), filter=Q(mode_id="CB"))), \
+        rb=Round(Sum(F('vrh'), filter=Q(mode_id="RB"))), \
+        tb=Round(Sum(F('vrh'), filter=Q(mode_id="TB"))), \
+        pb=Round(Sum(F('vrh'), filter=Q(mode_id="PB"))), \
+        hr=Round(Sum(F('vrh'), filter=Q(mode_id="HR"))), \
+        lr=Round(Sum(F('vrh'), filter=Q(mode_id="LR"))), \
+        cr=Round(Sum(F('vrh'), filter=Q(mode_id="CR"))), \
+        yr=Round(Sum(F('vrh'), filter=Q(mode_id="YR"))), \
+        sr=Round(Sum(F('vrh'), filter=Q(mode_id="SR"))), \
+        cc=Round(Sum(F('vrh'), filter=Q(mode_id="CC"))), \
+        mg=Round(Sum(F('vrh'), filter=Q(mode_id__in=["MG", "MO"]))), \
+        ip=Round(Sum(F('vrh'), filter=Q(mode_id="IP"))), \
+        ar=Round(Sum(F('vrh'), filter=Q(mode_id="AR"))), \
+        at=Round(Sum(F('vrh'), filter=Q(mode_id="AT"))), \
+        other_rail=Round(Sum(F('vrh'), filter=Q(mode_id="OR"))), \
+        dr=Round(Sum(F('vrh'), filter=Q(mode_id="DR"))), \
+        dt=Round(Sum(F('vrh'), filter=Q(mode_id="DT"))), \
+        vp=Round(Sum(F('vrh'), filter=Q(mode_id="VP"))), \
+        jt=Round(Sum(F('vrh'), filter=Q(mode_id="JT"))), \
+        fb=Round(Sum(F('vrh'), filter=Q(mode_id="FB"))), \
+        tr=Round(Sum(F('vrh'), filter=Q(mode_id="TR"))), \
+        ot=Round(Sum(F('vrh'), filter=Q(mode_id__in=["OT", "nan"])))
+    ).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+@csrf_exempt
+def monthly_vrh_by_mode_type(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2013,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(
+        date=F("date"),
+        bus=Round(Sum(F('vrh'), filter=Q(mode_id__type="Bus"))), \
+        rail=Round(Sum(F('vrh'), filter=Q(mode_id__type="Rail"))), \
+        microtransit=Round(Sum(F('vrh'), filter=Q(mode_id__type="MicroTransit"))), \
+        ferry=Round(Sum(F('vrh'), filter=Q(mode_id__type="Ferry"))), \
+        other=Round(Sum(F('vrh'), filter=Q(mode_id__type="Other")))
+    )\
+    .order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+
+@csrf_exempt
+def monthly_vrh_by_service(request):
+    filters, q = process_params(request.GET)
+    start_date = datetime.datetime(year=2020,month=1,day=1)
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    q &= Q(date__gte=start_date)
+    ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(
+        date=F("date"), 
+        directly_operated=Round(Sum(F('vrh'), filter=Q(service_id="DO"))), \
+        purchased_transportation=Round(Sum(F('vrh'), filter=Q(service_id="PT"))), \
+        taxi=Round(Sum(F('vrh'), filter=Q(service_id="TX"))), \
+        other=Round(Sum(F('vrh'), filter=Q(service_id="OT")))\
+    ).order_by('year', "month")
+    data = []
+    for x in ts:
+        x['month'] = months[x['month']]
+        data += [x]
+    length = len(data)
+    resp = {
+        "filters": filters,
+        "length": length,
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
 
 
 @csrf_exempt
