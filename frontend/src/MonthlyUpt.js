@@ -32,6 +32,24 @@ const CustomTooltip = ({ active, payload, label }) => {
               compactDisplay: "short",
             }).format(payload[0].payload.upt)}`}</p>
           )}
+          {payload[0].payload.vrm > 0 && (
+            <p className="label">{`Vehicle Miles: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.vrm)}`}</p>
+          )}
+          {payload[0].payload.vrh > 0 && (
+            <p className="label">{`Vehicle Hours: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.vrh)}`}</p>
+          )}
+          {payload[0].payload.upt_per_vrh > 0 && (
+            <p className="label">{`Passengers Per Vehicle Hour: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.upt_per_vrh)}`}</p>
+          )}
         </div>
       );
     }
@@ -58,7 +76,7 @@ const MonthlyUpt = (props) => (
   
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Line dataKey="upt" name="Passenger Trips" fill="Black" stroke="Black" />
+    <Line dataKey={props.dataKey} name={props.lineLabel} fill="Black" stroke="Black" />
 
   </LineChart>
   </ResponsiveContainer>

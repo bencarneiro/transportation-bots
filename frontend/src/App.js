@@ -12,6 +12,7 @@ import Expenses from './Expenses';
 import Service from './Service';
 import Performance from './Performance';
 import Summary from './Summary';
+import Recovery from './Recovery';
 
 function App() {
 
@@ -139,6 +140,7 @@ function App() {
       <ToggleButton value="expenses">Expenses</ToggleButton>
       <ToggleButton value="service">Service</ToggleButton>
       <ToggleButton value="performance">Performance</ToggleButton>
+      <ToggleButton value="recovery">Pandemic Recovery</ToggleButton>
     </ToggleButtonGroup>
       <body>
         <></>
@@ -153,6 +155,9 @@ function App() {
         )}
         {alignment == "performance" && (
           <Performance params={params}/>
+        )}
+        {alignment == "recovery" && (
+          <Recovery params={params}/>
         )}
       </body>
     </div>
