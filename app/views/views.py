@@ -4450,6 +4450,7 @@ def monthly_vrh_by_service(request):
 
 @csrf_exempt
 def monthly_upt_per_vrh(request):
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     filters, q = process_params(request.GET)
     start_date = datetime.datetime(year=2020,month=1,day=1)
     q &= Q(date__gte=start_date)
@@ -4463,7 +4464,7 @@ def monthly_upt_per_vrh(request):
         if upt and vrh and upt > 0 and vrh > 0:
             data += [{
                 "year": upt_month['year'],
-                "month": upt_month['month'],
+                "month": months[upt_month['month']],
                 "date": upt_month['date'],
                 "upt_per_vrh": upt / vrh
             }]
@@ -4479,7 +4480,7 @@ def monthly_upt_per_vrh(request):
 
 @csrf_exempt
 def monthly_upt_per_vrh_by_mode_type(request):
-
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     filters, q = process_params(request.GET)
     start_date = datetime.datetime(year=2020,month=1,day=1)
     q &= Q(date__gte=start_date)
@@ -4527,7 +4528,7 @@ def monthly_upt_per_vrh_by_mode_type(request):
     
         data += [{
             "year": upt_month['year'],
-            "month": upt_month['month'],
+            "month": months[upt_month['month']],
             "date": upt_month['date'],
             "bus": bus,
             "rail": rail, 

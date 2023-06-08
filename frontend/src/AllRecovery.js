@@ -21,6 +21,8 @@ function AllRecovery(props) {
   const [monthlyVrmByModeType, setMonthlyVrmByModeType] = React.useState(null)
   const [monthlyVrh, setMonthlyVrh] = React.useState(null)
   const [monthlyVrhByModeType, setMonthlyVrhByModeType] = React.useState(null)
+  const [monthlyUptPerVrh, setMonthlyUptPerVrh] = React.useState(null)
+  const [monthlyUptPerVrhByModeType, setMonthlyUptPerVrhByModeType] = React.useState(null)
 
   React.useEffect(() => {
     if (props.params) {
@@ -40,6 +42,10 @@ function AllRecovery(props) {
       .then(response => setMonthlyVrh(response.data.data));
       axios.get(`http://127.0.0.1:8000/monthly_vrh_by_mode_type/?t=t${props.params}`)
       .then(response => setMonthlyVrhByModeType(response.data.data));
+      // axios.get(`http://127.0.0.1:8000/monthly_upt_per_vrh/?t=t${props.params}`)
+      // .then(response => setMonthlyUptPerVrh(response.data.data));
+      // axios.get(`http://127.0.0.1:8000/monthly_upt_per_vrh_by_mode_type/?t=t${props.params}`)
+      // .then(response => setMonthlyUptPerVrhByModeType(response.data.data));
       }}
 
 
@@ -48,39 +54,22 @@ function AllRecovery(props) {
 
 
   return (
-    <div className="expenses">
-        <></>
-        <></>
-        {/* # Change in Ridership Month over Month by mode type
-        UPT by mode type
-        upt by service
-        # Change in VRM Month over Month by mode type
-        vrm by mode type
-        vrm by service
-        # Change in VRH Month over Month by mode type
-        vrh by mode type
-        vrh by service */}
+    <div className="recovery">
         <h1>Percentage of Pre-Pandemic Ridership</h1>
         <UptMom chartData={uptMom} axisLabel={"% of Pre-Pandemic Riders"}/>
         <UptMomByModeType chartData={uptMomByModeType} axisLabel={"% of Pre-Pandemic Riders"}/>
-
-        <h2>Monthly Ridership</h2>
+        {/* <h1>Riders per Vehicle Hour</h1>
+        <MonthlyUpt chartData={monthlyUptPerVrh} axisLabel={'UPT / VRH'} dataKey="upt_per_vrh" lineLabel="Passengers Per Vehicle Hour"/>
+        <MonthlyUptByModeType chartData={monthlyUptPerVrhByModeType} axisLabel={"UPT / VRH"}/> */}
+        <h1>Ridership</h1>
         <MonthlyUpt chartData={monthlyUpt} axisLabel={'Unlinked Passenger Trips'} dataKey="upt" lineLabel="Unlinked Passenger Trips"/>
         <MonthlyUptByModeType chartData={monthlyUptByModeType} axisLabel={"Unlinked Passenger Trips"}/>
-        <h2>Monthly Vehicle Miles</h2>
+        <h1>Vehicle Miles</h1>
         <MonthlyUpt chartData={monthlyVrm} axisLabel={'Vehicle Revenue Miles'} dataKey="vrm" lineLabel="Vehicle Revenue Miles"/>
         <MonthlyUptByModeType chartData={monthlyVrmByModeType} axisLabel={"Vehicle Revenue Miles"}/>
-
-        <h2>Monthly Vehicle Hours</h2>
+        <h1>Vehicle Hours</h1>
         <MonthlyUpt chartData={monthlyVrh} axisLabel={'Vehicle Revenue Hours'} dataKey="vrh" lineLabel="Vehicle Revenue Hours"/>
         <MonthlyUptByModeType chartData={monthlyVrhByModeType} axisLabel={"Vehicle Revenue Hours"}/>
-        
-        <h2>UPT M over 2019 M last 5 years By mode type</h2>
-        <h2>UPT M over 5yr MA M Last 5 years By mode type</h2>
-        <h2>UPT last 5 years By mode type</h2>
-        <h2> Vrm last 5 years By mode type</h2>
-        <h2> VRH last 5 years By mode type</h2>
-        <h2> VOMS last 5 years By mode type</h2>
         <br/>
     </div>
   );

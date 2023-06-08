@@ -44,6 +44,12 @@ const CustomTooltip = ({ active, payload, label }) => {
               compactDisplay: "short",
             }).format(payload[0].payload.vrh)}`}</p>
           )}
+          {payload[0].payload.upt_per_vrh > 0 && (
+            <p className="label">{`Passengers Per Vehicle Hour: ${new Intl.NumberFormat("en-US", {
+              notation: "compact",
+              compactDisplay: "short",
+            }).format(payload[0].payload.upt_per_vrh)}`}</p>
+          )}
         </div>
       );
     }

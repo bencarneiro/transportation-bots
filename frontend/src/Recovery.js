@@ -25,7 +25,7 @@ function Recovery(props) {
   return (
     <div className="expenses">
         <br/>
-              <ToggleButtonGroup
+              {/* <ToggleButtonGroup
                 size="large"
                 color="primary"
                 value={alignment}
@@ -38,9 +38,8 @@ function Recovery(props) {
                 <ToggleButton value="bus">Bus</ToggleButton>
                 <ToggleButton value="rail">Rail</ToggleButton>
                 <ToggleButton value="microtransit">Micro-Transit</ToggleButton>
-                {/* <ToggleButton value="ferry">Ferry</ToggleButton> */}
                 <ToggleButton value="other">Other Modes</ToggleButton>
-                </ToggleButtonGroup>
+                </ToggleButtonGroup> */}
         {alignment == "all" && (
             <AllRecovery params={props.params} />
         )}
