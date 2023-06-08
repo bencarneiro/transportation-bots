@@ -21,30 +21,30 @@ function AllRecovery(props) {
   const [monthlyVrmByModeType, setMonthlyVrmByModeType] = React.useState(null)
   const [monthlyVrh, setMonthlyVrh] = React.useState(null)
   const [monthlyVrhByModeType, setMonthlyVrhByModeType] = React.useState(null)
-  const [monthlyUptPerVrh, setMonthlyUptPerVrh] = React.useState(null)
-  const [monthlyUptPerVrhByModeType, setMonthlyUptPerVrhByModeType] = React.useState(null)
+  // const [monthlyUptPerVrh, setMonthlyUptPerVrh] = React.useState(null)
+  // const [monthlyUptPerVrhByModeType, setMonthlyUptPerVrhByModeType] = React.useState(null)
 
   React.useEffect(() => {
     if (props.params) {
-      axios.get(`http://127.0.0.1:8000/upt_month_over_month_baseline/?t=t${props.params}`)
+      axios.get(`/upt_month_over_month_baseline/?t=t${props.params}`)
       .then(response => setUptMom(response.data.data));
-      axios.get(`http://127.0.0.1:8000/upt_month_over_month_baseline_by_mode_type/?t=t${props.params}`)
+      axios.get(`/upt_month_over_month_baseline_by_mode_type/?t=t${props.params}`)
       .then(response => setUptMomByModeType(response.data.data));
-      axios.get(`http://127.0.0.1:8000/monthly_upt/?t=t${props.params}`)
+      axios.get(`/monthly_upt/?t=t${props.params}`)
       .then(response => setMonthlyUpt(response.data.data));
-      axios.get(`http://127.0.0.1:8000/monthly_upt_by_mode_type/?t=t${props.params}`)
+      axios.get(`/monthly_upt_by_mode_type/?t=t${props.params}`)
       .then(response => setMonthlyUptByModeType(response.data.data));
-      axios.get(`http://127.0.0.1:8000/monthly_vrm/?t=t${props.params}`)
+      axios.get(`/monthly_vrm/?t=t${props.params}`)
       .then(response => setMonthlyVrm(response.data.data));
-      axios.get(`http://127.0.0.1:8000/monthly_vrm_by_mode_type/?t=t${props.params}`)
+      axios.get(`/monthly_vrm_by_mode_type/?t=t${props.params}`)
       .then(response => setMonthlyVrmByModeType(response.data.data));
-      axios.get(`http://127.0.0.1:8000/monthly_vrh/?t=t${props.params}`)
+      axios.get(`/monthly_vrh/?t=t${props.params}`)
       .then(response => setMonthlyVrh(response.data.data));
-      axios.get(`http://127.0.0.1:8000/monthly_vrh_by_mode_type/?t=t${props.params}`)
+      axios.get(`/monthly_vrh_by_mode_type/?t=t${props.params}`)
       .then(response => setMonthlyVrhByModeType(response.data.data));
-      // axios.get(`http://127.0.0.1:8000/monthly_upt_per_vrh/?t=t${props.params}`)
+      // axios.get(`/monthly_upt_per_vrh/?t=t${props.params}`)
       // .then(response => setMonthlyUptPerVrh(response.data.data));
-      // axios.get(`http://127.0.0.1:8000/monthly_upt_per_vrh_by_mode_type/?t=t${props.params}`)
+      // axios.get(`/monthly_upt_per_vrh_by_mode_type/?t=t${props.params}`)
       // .then(response => setMonthlyUptPerVrhByModeType(response.data.data));
       }}
 
