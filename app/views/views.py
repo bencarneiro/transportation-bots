@@ -4086,7 +4086,11 @@ class CityMapperPage(View):
 @csrf_exempt
 def monthly_upt(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(date=F("date"), upt=Round(Sum("upt"))).order_by('year', "month")
@@ -4105,7 +4109,11 @@ def monthly_upt(request):
 @csrf_exempt
 def monthly_upt_by_mode(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(
@@ -4149,7 +4157,11 @@ def monthly_upt_by_mode(request):
 @csrf_exempt
 def monthly_upt_by_mode_type(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(
@@ -4176,7 +4188,11 @@ def monthly_upt_by_mode_type(request):
 @csrf_exempt
 def monthly_upt_by_service(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(
@@ -4202,7 +4218,11 @@ def monthly_upt_by_service(request):
 @csrf_exempt
 def monthly_voms(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyVehiclesOperatedMaximumService.objects.filter(q).values("year", "month").annotate(date=F("date"), voms=Round(Sum("voms"))).order_by('year', "month")
@@ -4222,7 +4242,11 @@ def monthly_voms(request):
 @csrf_exempt
 def monthly_vrm(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(date=F("date"), vrm=Round(Sum("vrm"))).order_by('year', "month")
@@ -4243,7 +4267,11 @@ def monthly_vrm(request):
 @csrf_exempt
 def monthly_vrm_by_mode(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(
@@ -4287,7 +4315,11 @@ def monthly_vrm_by_mode(request):
 @csrf_exempt
 def monthly_vrm_by_mode_type(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(
@@ -4314,7 +4346,11 @@ def monthly_vrm_by_mode_type(request):
 @csrf_exempt
 def monthly_vrm_by_service(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(
@@ -4340,7 +4376,11 @@ def monthly_vrm_by_service(request):
 @csrf_exempt
 def monthly_vrh(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(date=F("date"), vrh=Round(Sum("vrh"))).order_by('year', "month")
@@ -4361,7 +4401,11 @@ def monthly_vrh(request):
 @csrf_exempt
 def monthly_vrh_by_mode(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(
@@ -4405,7 +4449,11 @@ def monthly_vrh_by_mode(request):
 @csrf_exempt
 def monthly_vrh_by_mode_type(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(
@@ -4432,7 +4480,11 @@ def monthly_vrh_by_mode_type(request):
 @csrf_exempt
 def monthly_vrh_by_service(request):
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     q &= Q(date__gte=start_date)
     ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(
@@ -4458,7 +4510,11 @@ def monthly_vrh_by_service(request):
 def monthly_upt_per_vrh(request):
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     filters, q = process_params(request.GET)
-    start_date = datetime.datetime(year=2020,month=1,day=1)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
     q &= Q(date__gte=start_date)
     upt_ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(date=F("date"), upt=Round(Sum("upt"))).order_by('year', "month")
     vrh_ts = MonthlyVehicleRevenueHours.objects.filter(q).values("year", "month").annotate(date=F("date"), vrh=Round(Sum("vrh"))).order_by('year', "month")
