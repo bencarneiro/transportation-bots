@@ -61,7 +61,7 @@ const MonthlyUpt = (props) => (
     <ResponsiveContainer width = '100%' height = {400} >
     <LineChart margin={{ top: 10, right: 50, left: 25, bottom: 50 }} data={props.chartData}>
     <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey="date" 
+    <XAxis dataKey="date"   interval={3}
     tickFormatter={(value) =>
         new Date(value).getFullYear()}
     />
