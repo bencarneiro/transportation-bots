@@ -4541,6 +4541,40 @@ def monthly_upt_per_vrh(request):
     # months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 @csrf_exempt
+def monthly_upt_per_vrm(request):
+    months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    filters, q = process_params(request.GET)
+    if "start" in  request.GET and request.GET['start']:
+        date_array = request.GET['start'].split("-")
+        start_date = datetime.datetime(year=int(date_array[0]),month=int(date_array[1]),day=int(date_array[2]))
+    else:
+        start_date = datetime.datetime(year=1980,month=1,day=1)
+    q &= Q(date__gte=start_date)
+    upt_ts = MonthlyUnlinkedPassengerTrips.objects.filter(q).values("year", "month").annotate(date=F("date"), upt=Round(Sum("upt"))).order_by('year', "month")
+    vrm_ts = MonthlyVehicleRevenueMiles.objects.filter(q).values("year", "month").annotate(date=F("date"), vrm=Round(Sum("vrm"))).order_by('year', "month")
+    data = []
+    x = 0
+    for upt_month in upt_ts:
+        upt = upt_month['upt']
+        vrm = vrm_ts[x]['vrm']
+        if upt and vrm and upt > 0 and vrm > 0:
+            data += [{
+                "year": upt_month['year'],
+                "month": months[upt_month['month']],
+                "date": upt_month['date'],
+                "upt_per_vrm": upt / vrm
+            }]
+        x += 1
+
+    resp = {
+        "filters": filters,
+        "length": len(data),
+        "data": data
+    }
+    return JsonResponse(resp, safe=False)
+    # months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+@csrf_exempt
 def monthly_upt_per_vrh_by_mode_type(request):
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     filters, q = process_params(request.GET)
