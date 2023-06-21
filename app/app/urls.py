@@ -90,7 +90,7 @@ pmt_per_vrh_by_service,\
 pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
-get_agencies, HomePage, BlogPage, CityMapperPage, BikeCrashMap
+get_agencies, HomePage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -193,6 +193,7 @@ urlpatterns = [
     path('', HomePage.as_view(), name="home"),
     path('blog/', BlogPage.as_view(), name="blog"),
     path('bike_crash_map/', BikeCrashMap.as_view(), name="bike_crash_map"),
+    path('pedestrian_crash_map/', PedestrianCrashMap.as_view(), name="pedestrian_crash_map"),
     path('citymapper/', CityMapperPage.as_view(), name="citymapper"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     

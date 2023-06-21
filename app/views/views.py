@@ -4103,9 +4103,9 @@ class BikeCrashMap(View):
             link = f"<a target='_blank' href='{description}'>Link to More Info</a>"
             tooltip = f"""
             <div>{crash.crash_date.strftime("%Y-%m-%d")}</div></br>
-            <div>{crash.units_involved} </br>
             {crash.bicycle_death_count} deaths </br>
-            {crash.bicycle_serious_injury_count} serious injuries</div>
+            {crash.bicycle_serious_injury_count} serious injuries</div></br>
+            <div>{crash.units_involved}
             """
             crash_summary = f"""
             <h4>{crash.crash_date.strftime("%Y-%m-%d")}</h4></br>
@@ -4124,6 +4124,59 @@ class BikeCrashMap(View):
             # }
             if crash.latitude and crash.longitude and crash.latitude != 0  and crash.longitude != 0:
                 if crash.bicycle_death_count > 0:
+                    folium.Marker(
+                        [crash.latitude, crash.longitude], tooltip=tooltip, popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
+                    ).add_to(m)
+                else:
+                    folium.Marker(
+                        [crash.latitude, crash.longitude], tooltip=tooltip, popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="green")
+                    ).add_to(m)
+        # folium.GeoJson(geojson, name="geojson", tooltip="hi").add_to(m)
+        m = m._repr_html_()
+        context = {"map": m}
+        return render(request, "bike_crash_map.html", context=context)
+    
+    
+class PedestrianCrashMap(View):
+    
+    def get(self, request, *args, **kwargs):
+
+        m = folium.Map(location=[30.297370913553245, -97.7313631855747], zoom_start=12)
+        # crashes = Crash.objects.filter(Q(pedestrian_death_count__gt = 0) | Q(bicycle_death_count__gt = 0))
+        crashes = Crash.objects.filter(Q(pedestrian_serious_injury_count__gt = 0) | Q(pedestrian_death_count__gt = 0))
+        # Crash.bicycle_serious_injury_count
+        print(len(crashes))
+        
+        
+        for crash in crashes:
+            # print(crash)
+            # print(crash.atd_mode_category_metadata)
+            description = f"{'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + str(crash.crash_id)}"
+
+            link = f"<a target='_blank' href='{description}'>Link to More Info</a>"
+            tooltip = f"""
+            <div>{crash.crash_date.strftime("%Y-%m-%d")}</div></br>
+            {crash.pedestrian_death_count} deaths </br>
+            {crash.pedestrian_serious_injury_count} serious injuries</div></br>
+            <div>{crash.units_involved} 
+            """
+            crash_summary = f"""
+            <h4>{crash.crash_date.strftime("%Y-%m-%d")}</h4></br>
+
+            <div>Pedestrian Deaths: {crash.pedestrian_death_count}</div></br>
+
+            <div>Serious Injuries: {crash.pedestrian_serious_injury_count}</div></br>
+
+            {link}
+            """
+            # crash_summary = {
+            #     "date": crash.crash_date.strftime("%Y-%m-%d"),
+            #     "bike_deaths": crash.bicycle_death_count,
+            #     "bicycle_serious_injuries": crash.bicycle_serious_injury_count,
+            #     "more_info": link
+            # }
+            if crash.latitude and crash.longitude and crash.latitude != 0  and crash.longitude != 0:
+                if crash.pedestrian_death_count > 0:
                     folium.Marker(
                         [crash.latitude, crash.longitude], tooltip=tooltip, popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
                     ).add_to(m)
