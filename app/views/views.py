@@ -4099,7 +4099,14 @@ class BikeCrashMap(View):
             # print(crash)
             # print(crash.atd_mode_category_metadata)
             description = f"{'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + str(crash.crash_id)}"
+
             link = f"<a target='_blank' href='{description}'>Link to More Info</a>"
+            tooltip = f"""
+            <div>{crash.crash_date.strftime("%Y-%m-%d")}</div></br>
+            <div>{crash.units_involved} </br>
+            {crash.bicycle_death_count} deaths </br>
+            {crash.bicycle_serious_injury_count} serious injuries</div>
+            """
             crash_summary = f"""
             <h4>{crash.crash_date.strftime("%Y-%m-%d")}</h4></br>
 
@@ -4118,11 +4125,11 @@ class BikeCrashMap(View):
             if crash.latitude and crash.longitude and crash.latitude != 0  and crash.longitude != 0:
                 if crash.bicycle_death_count > 0:
                     folium.Marker(
-                        [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
+                        [crash.latitude, crash.longitude], tooltip=tooltip, popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
                     ).add_to(m)
                 else:
                     folium.Marker(
-                        [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="green")
+                        [crash.latitude, crash.longitude], tooltip=tooltip, popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="green")
                     ).add_to(m)
         # folium.GeoJson(geojson, name="geojson", tooltip="hi").add_to(m)
         m = m._repr_html_()
