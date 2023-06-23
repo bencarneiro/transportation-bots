@@ -6,7 +6,10 @@
   </head>
   <body>
     <!-- <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/> -->
+    <h1>Red Line All Time Ridership</h1>
     <div style="width: 800px;"><canvas id="chart"></canvas></div>
+    <div style="width: 800px;"><canvas id="chart2"></canvas></div>
+    <div style="width: 800px;"><canvas id="chart3"></canvas></div>
 
     <!-- <script type="module" src="dimensions.js"></script> -->
     <!-- <script type="module" src="{% static './chart.js' %}"></script> -->
@@ -25,16 +28,9 @@
                         datasets: [
                         {
                             label: 'upt',
+                            borderColor: "red",
+                            backgroundColor: "pink",
                             data: resp.data.data.map(row => row.upt)
-                        },
-                        {
-                            label: 'Rail',
-                            data: resp.data.data.map(row => row.passengers)
-                        },
-
-                        {
-                            label: 'MicroTransit',
-                            data: resp.data.data.map(row => row.microtransit)
                         }
                         ]
                     }
@@ -42,28 +38,35 @@
             )
         })
     </script>
+    <br></br>
     <script>
-        const otherOtherData = axios.get("https://transit.observer/upt/?ntd_id=60048&mode=CR,YR").then((resp) => {
+        const ridersByModeType = axios.get("https://transit.observer/upt_by_mode_type/?ntd_id=60048").then((resp) => {
             const chart = new Chart(
-                document.getElementById('chart'),
+                document.getElementById('chart2'),
                 {
-                    type: 'line',
+                    type: 'bar',
                     data: 
                     {
                         labels: resp.data.data.map(row => row.year),
                         datasets: [
                         {
-                            label: 'upt',
-                            data: resp.data.data.map(row => row.upt)
+                            label: 'Bus',
+                            data: resp.data.data.map(row => row.bus),
+                            backgroundColor: "green",
+                            borderColor: "black"
                         },
                         {
                             label: 'Rail',
-                            data: resp.data.data.map(row => row.passengers)
+                            data: resp.data.data.map(row => row.rail),
+                            backgroundColor: "red",
+                            borderColor: "black"
                         },
 
                         {
                             label: 'MicroTransit',
-                            data: resp.data.data.map(row => row.microtransit)
+                            data: resp.data.data.map(row => row.microtransit),
+                            backgroundColor: "yellow",
+                            borderColor: "black"
                         }
                         ]
                     }
@@ -71,6 +74,42 @@
             )
         })
     </script>
+
+<script>
+    const opexpByModeType = axios.get("https://transit.observer/spending_by_mode_type/?expense_type=VO,VM,NVM,GA&ntd_id=60048").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart3'),
+            {
+                type: 'bar',
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bus',
+                        data: resp.data.data.map(row => row.bus),
+                        backgroundColor: "green",
+                        borderColor: "black"
+                    },
+                    {
+                        label: 'Rail',
+                        data: resp.data.data.map(row => row.rail),
+                        backgroundColor: "red",
+                        borderColor: "black"
+                    },
+
+                    {
+                        label: 'MicroTransit',
+                        data: resp.data.data.map(row => row.microtransit),
+                        backgroundColor: "yellow",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
   </body>
 </html>
  
