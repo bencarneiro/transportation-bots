@@ -1,1 +1,76 @@
-<html><h1>hi</h1></html>
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <title>Chart.js example</title>
+  </head>
+  <body>
+    <!-- <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/> -->
+    <div style="width: 800px;"><canvas id="chart"></canvas></div>
+
+    <!-- <script type="module" src="dimensions.js"></script> -->
+    <!-- <script type="module" src="{% static './chart.js' %}"></script> -->
+    <!-- <script type="text/html"  src="path/to/chartjs/dist/chart.umd.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+    <script>
+        const otherData = axios.get("https://transit.observer/upt/?ntd_id=60048&mode=CR,YR").then((resp) => {
+            const chart = new Chart(
+                document.getElementById('chart'),
+                {
+                    type: 'line',
+                    data: 
+                    {
+                        labels: resp.data.data.map(row => row.year),
+                        datasets: [
+                        {
+                            label: 'upt',
+                            data: resp.data.data.map(row => row.upt)
+                        },
+                        {
+                            label: 'Rail',
+                            data: resp.data.data.map(row => row.passengers)
+                        },
+
+                        {
+                            label: 'MicroTransit',
+                            data: resp.data.data.map(row => row.microtransit)
+                        }
+                        ]
+                    }
+                }
+            )
+        })
+    </script>
+    <script>
+        const otherOtherData = axios.get("https://transit.observer/upt/?ntd_id=60048&mode=CR,YR").then((resp) => {
+            const chart = new Chart(
+                document.getElementById('chart'),
+                {
+                    type: 'line',
+                    data: 
+                    {
+                        labels: resp.data.data.map(row => row.year),
+                        datasets: [
+                        {
+                            label: 'upt',
+                            data: resp.data.data.map(row => row.upt)
+                        },
+                        {
+                            label: 'Rail',
+                            data: resp.data.data.map(row => row.passengers)
+                        },
+
+                        {
+                            label: 'MicroTransit',
+                            data: resp.data.data.map(row => row.microtransit)
+                        }
+                        ]
+                    }
+                }
+            )
+        })
+    </script>
+  </body>
+</html>
+ 

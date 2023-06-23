@@ -132,6 +132,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 
+STATICFILES_DIRS = ('static/js/', "static/js", "/static/js/", "app/app/static/js", "app/static/js")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
