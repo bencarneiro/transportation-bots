@@ -8,14 +8,19 @@
     <!-- <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/> -->
     <h1>Is Austin's Red Line the Worst Train of All Time?</h1>
     <div style="width: 800px;"><canvas id="chart"></canvas></div>
+    <h1>Annual Riders by Mode</h1>
     <div style="width: 800px;"><canvas id="chart2"></canvas></div>
+    <h1>Annual Operating Expenses by Mode</h1>
     <div style="width: 800px;"><canvas id="chart3"></canvas></div>
+    <h1>Monthly Red Line Riders</h1>
+    <div style="width: 800px;"><canvas id="chart4"></canvas></div>
 
     <!-- <script type="module" src="dimensions.js"></script> -->
     <!-- <script type="module" src="{% static './chart.js' %}"></script> -->
     <!-- <script type="text/html"  src="path/to/chartjs/dist/chart.umd.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+
     <script>
         const otherData = axios.get("https://transit.observer/upt/?ntd_id=60048&mode=CR,YR").then((resp) => {
             const chart = new Chart(
@@ -165,6 +170,73 @@
                         data: resp.data.data.map(row => row.microtransit),
                         backgroundColor: "yellow",
                         borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const monthlyUpt = axios.get("https://transit.observer/monthly_upt/?ntd_id=60048&mode=CR,YR&start=2010-01-01").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart4'),
+            {
+                type: 'line',
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            title: function(tooltipItem, data){
+                                return (
+                                        tooltipItem[0].xLabel.substring(0,7)
+                                    )
+                            },
+                            label: function(tooltipItem, data) {
+                                return (
+                                    new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)
+                                )
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        value.substring(0,7)
+                                    )
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.date),
+                    datasets: [
+                    {
+                        label: 'upt',
+                        borderColor: "red",
+                        backgroundColor: "pink",
+                        data: resp.data.data.map(row => row.upt)
                     }
                     ]
                 }
