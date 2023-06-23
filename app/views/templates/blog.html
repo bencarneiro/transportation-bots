@@ -6,7 +6,7 @@
   </head>
   <body>
     <!-- <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/> -->
-    <h1>Red Line All Time Ridership</h1>
+    <h1>Is Austin's Red Line the Worst Train of All Time?</h1>
     <div style="width: 800px;"><canvas id="chart"></canvas></div>
     <div style="width: 800px;"><canvas id="chart2"></canvas></div>
     <div style="width: 800px;"><canvas id="chart3"></canvas></div>
@@ -23,6 +23,18 @@
                 {
                     type: 'line',
                     options: {
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(tooltipItem.yLabel)
+                                    )
+                                }
+                            }
+                        },
                         scales: {
                             yAxes: [{
                                 ticks: {
@@ -55,7 +67,6 @@
             )
         })
     </script>
-    <br></br>
     <script>
         const ridersByModeType = axios.get("https://transit.observer/upt_by_mode_type/?ntd_id=60048").then((resp) => {
             const chart = new Chart(
