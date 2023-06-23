@@ -5024,3 +5024,179 @@ def upt_month_over_month_baseline_average_by_mode_type(request):
         "data": mom_data
     }
     return JsonResponse(resp, safe=False)
+
+
+from django.db import connection
+
+@csrf_exempt
+def commuter_rail_upt(request):
+    cursor = connection.cursor()
+    cursor.execute('''
+        SELECT 
+            transit_agency.agency_name,
+            transit_agency.id AS transit_agency_id,
+            riders.total_riders,
+            spending.operating_expenses,
+            (spending.operating_expenses / riders.total_riders) AS cost_per_trip
+        FROM 
+            transit_agency
+
+        LEFT JOIN (
+            
+            SELECT 
+                transit_agency.agency_name,
+                transit_agency.id AS transit_agency_id,
+                sum(upt.upt) AS total_riders
+            FROM 
+                upt
+            LEFT JOIN
+                transit_agency
+            ON
+                transit_agency.id = upt.transit_agency_id
+            WHERE
+                upt.mode_id IN ("CR", "YR")
+            AND
+                upt.year >= 2010
+            GROUP BY
+                transit_agency.id, transit_agency.agency_name
+            ORDER BY total_riders DESC
+
+        ) AS riders ON riders.transit_agency_id = transit_agency.id
+
+        LEFT JOIN (
+
+            SELECT 
+                transit_agency.agency_name,
+                transit_agency.id AS transit_agency_id,
+                sum(transit_expense.expense * cpi.in_todays_dollars) AS operating_expenses
+            FROM 
+                transit_expense
+            LEFT JOIN cpi ON cpi.year = transit_expense.year_id
+            LEFT JOIN
+                transit_agency
+            ON
+                transit_agency.id = transit_expense.transit_agency_id
+            WHERE
+                transit_expense.mode_id  IN ("CR", "YR")
+            AND
+                transit_expense.expense_type_id IN ("VO", "VM", "NVM", "GA")
+            AND
+                transit_expense.year_id >= 2010
+            GROUP BY
+                transit_agency.id, transit_agency.agency_name
+            ORDER BY operating_expenses DESC
+
+        ) 
+        AS spending ON spending.transit_agency_id = transit_agency.id
+            
+        WHERE 
+            riders.total_riders IS NOT NULL
+        AND 
+            riders.total_riders > 0
+        AND 
+            spending.operating_expenses IS NOT NULL
+        AND 
+            spending.operating_expenses > 0
+        ORDER BY 
+            cost_per_trip ASC;
+    ''')
+    # print(cursor.fetchall())
+    data = []
+    for x in cursor.fetchall():
+        data += [
+            {
+                "agency": x[0], 
+                "riders": x[2],
+                "operating_expense": x[3],
+                "cost_per_passenger": x[4]
+            }
+        ]
+    resp = {"data": data}
+    return JsonResponse(resp)
+
+
+@csrf_exempt
+def commuter_rail_pmt(request):
+    cursor = connection.cursor()
+    cursor.execute('''
+        SELECT
+            transit_agency.agency_name,
+            transit_agency.id AS transit_agency_id,
+            passenger_miles.passenger_miles,
+            spending.operating_expenses,
+            (spending.operating_expenses / passenger_miles.passenger_miles) AS cost_per_passenger_mile
+        FROM 
+            transit_agency
+
+        LEFT JOIN (
+            
+            SELECT 
+                transit_agency.agency_name,
+                transit_agency.id AS transit_agency_id,
+                sum(pmt.pmt) AS passenger_miles
+            FROM 
+                pmt
+            LEFT JOIN
+                transit_agency
+            ON
+                transit_agency.id = pmt.transit_agency_id
+            WHERE
+                pmt.mode_id IN ("CR", "YR")
+            AND
+                pmt.year >= 2010
+            GROUP BY
+                transit_agency.id, transit_agency.agency_name
+            ORDER BY passenger_miles DESC
+
+        ) AS passenger_miles ON passenger_miles.transit_agency_id = transit_agency.id
+
+        LEFT JOIN (
+
+            SELECT 
+                transit_agency.agency_name,
+                transit_agency.id AS transit_agency_id,
+                sum(transit_expense.expense * cpi.in_todays_dollars) AS operating_expenses
+            FROM 
+                transit_expense
+            LEFT JOIN cpi ON cpi.year = transit_expense.year_id
+            LEFT JOIN
+                transit_agency
+            ON
+                transit_agency.id = transit_expense.transit_agency_id
+            WHERE
+                transit_expense.mode_id  IN ("CR", "YR")
+            AND
+                transit_expense.expense_type_id IN ("VO", "VM", "NVM", "GA")
+            AND
+                transit_expense.year_id >= 2010
+            GROUP BY
+                transit_agency.id, transit_agency.agency_name
+            ORDER BY operating_expenses DESC
+
+        ) 
+        AS spending ON spending.transit_agency_id = transit_agency.id
+            
+        WHERE 
+            passenger_miles.passenger_miles IS NOT NULL
+        AND 
+            passenger_miles.passenger_miles > 0
+        AND 
+            spending.operating_expenses IS NOT NULL
+        AND 
+            spending.operating_expenses > 0
+        ORDER BY 
+            cost_per_passenger_mile ASC;
+    ''')
+    # print(cursor.fetchall())
+    data = []
+    for x in cursor.fetchall():
+        data += [
+            {
+                "agency": x[0], 
+                "riders": x[2],
+                "operating_expense": x[3],
+                "cost_per_passenger_mile": x[4]
+            }
+        ]
+    resp = {"data": data}
+    return JsonResponse(resp)
