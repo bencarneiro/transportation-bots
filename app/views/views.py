@@ -5200,3 +5200,44 @@ def commuter_rail_pmt(request):
         ]
     resp = {"data": data}
     return JsonResponse(resp)
+
+
+
+
+
+@csrf_exempt
+def total_red_line_spending(request):
+    cursor = connection.cursor()
+    cursor.execute('''
+        SELECT 
+            transit_agency.agency_name,
+            transit_agency.id AS transit_agency_id,
+            round(sum(transit_expense.expense * cpi.in_todays_dollars)) AS total_red_line_spending
+        FROM 
+            transit_expense
+        LEFT JOIN cpi ON cpi.year = transit_expense.year_id
+        LEFT JOIN
+            transit_agency
+        ON
+            transit_agency.id = transit_expense.transit_agency_id
+        WHERE
+
+            transit_agency.ntd_id = 60048
+        AND
+            transit_expense.mode_id  IN ("CR", "YR")
+        AND
+            transit_expense.year_id >= 2010
+        GROUP BY
+            transit_agency.id, transit_agency.agency_name;
+    ''')
+    # print(cursor.fetchall())
+    data = []
+    for x in cursor.fetchall():
+        data += [
+            {
+                "agency": x[0], 
+                "total_red_line_spending": x[2]
+            }
+        ]
+    resp = {"data": data}
+    return JsonResponse(resp)

@@ -1,30 +1,64 @@
 <!doctype html>
 {% load static %}
 <html lang="en">
+    <style>
+        body {background-color: white;}
+        body   {text-align: center; align-items: center;}
+        canvas    {align-content: center;}
+        </style>
   <head>
     <title>Chart.js example</title>
   </head>
   <body>
     <!-- <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/> -->
     <h1>Is Austin's Red Line the Worst Train of All Time?</h1>
-    <h1>Monthly Ridership - All Time</h1>
-    <div style="width: 800px;"><canvas id="chart4"></canvas></div>
-    <br></br>
-    <div>You could make an argument that it's pretty close</div>
-    <div>Here is a look at some budgeting</div>
-    <h1>Operating Expenditure by Mode</h1>
-    <div style="width: 800px;"><canvas id="chart3"></canvas></div>
-    <h1>Capital Expenditure by Mode</h1>
-    <div style="width: 800px;"><canvas id="chart5"></canvas></div>
-    <h1>Ridership By Mode</h1>
-    <div style="width: 800px;"><canvas id="chart2"></canvas></div>
-    <h1>Passenger Miles by Mode</h1>
-    <div style="width: 800px;"><canvas id="chart"></canvas></div>
-    <h1>Compared to Other Commuter Rails</h1>
+    <h2>No, but it is among the worst-performing commuter rail systems in the country</h2>
+    <h2>Let's compare the Red Line to other commuter rail systems in key performance metrics</h2>
     <h1>Operating Expense Per Passenger</h1>
-    <div style="width: 800px;"><canvas id="chart6"></canvas></div>
+    <div style="width: 100%;"><canvas id="chart6"></canvas></div>
     <h1>Operating Expense Per Passenger Mile</h1>
-    <div style="width: 800px;"><canvas id="chart7"></canvas></div>
+    <div style="width: 100%;"><canvas id="chart7"></canvas></div>
+    <h2>I want to try to emphasize the outsized negative impact of red line spending on Austin's transit network performance.</h2>
+    <h2>The proposed rail line wasn't estimated to cost much</h2>
+    <h2>Original Estimated Annual Operating Costs (2022 Dollars)</h2>
+    <h2>$3.9 Million</h2>
+    <h2>Original Estimated Capital Costs (2022 Dollars)</h2>
+    <h2>$94 Million</h2>
+    <div>Source: <a target="_blank" href="https://docs.google.com/document/d/1qgbIg6elpBox2MPVWJ6oNZJI3-FOLQMSwBXNxYHtrnc/edit?pli=1">Austin American Statesman</a></div>
+    <h1>Actual CapMetro Red Line Spending</h1>
+    <div style="width: 100%;"><canvas id="chart8"></canvas></div>
+    <br></br>
+    <h1>Capmetro Capital Expenditure by Mode</h1>
+    <div style="width: 100%;"><canvas id="chart5"></canvas></div>
+    <h1>Capmetro Operating Expenditure by Mode</h1>
+    <div style="width: 100%;"><canvas id="chart3"></canvas></div>
+    <h1>Capmetro Ridership By Mode</h1>
+    <div style="width: 100%;"><canvas id="chart2"></canvas></div>
+    <h1>Capmetro Passenger Miles by Mode</h1>
+    <div style="width: 100%;"><canvas id="chart"></canvas></div>
+    <h1>Capmetro Cost Per Passenger Mile</h1>
+    <div style="width: 100%;"><canvas id="chart9"></canvas></div>
+    <h1>Capmetro Cost Per Passenger</h1>
+    <div style="width: 100%;"><canvas id="chart10"></canvas></div>
+    <h2>The rail expenses bear an outsized proportion of the system costs, compared to rail ridership and passenger mileage</h2>
+    <h2>Here is the most recent ridership data</h2>
+    <h1>Monthly Ridership - All Time</h1>
+    <div style="width: 100%;"><canvas id="chart4"></canvas></div>
+    <h2>This chart of all-time ridership appears to show a fairly sound COVID-19 recovery</h2>
+    <h2>The abrupt uptick in riders in 2021 is due to a new professional sports stadium opening along the route</h2>
+    <h2>Perhaps the Austin FC has saved the Red Line</h2>
+    <h2>We will also see an uptick when the line connects to the upcoming downtown light rail.</h2>
+    <h2>But even with a new pro sports team and the being nearly the fastest growing city in America</h2>
+    <h2>The Red Line will continue to have some of the worst financial effectiveness of any commuter rail system</h2>
+
+    <h2>The Operating inefficiency is on top of the quarter billion dollars in sunk capital costs</h2>
+    <h2>Money all dedicated to rehabbing a rail line, which 90% of the time, isn't even worth worth running. </h2>
+    <h2>The bus serving, on average, 2-3X as many passenger-miles per dollar spent</h2>
+    <h2>Indicates that the money dedicated to rail operations better serves the community when spent on bus hours</h2>
+    <h2>I am Very Very Sad</h2>
+    <h2>Ben Carneiro</h2>
+    <div>Check out my <a href="https://bencarneiro.com">website</a>, or my open-source tool for searching the <a href="https://bencarneiro.com">National Transit Database</a></div>
+   
 
     <!-- <script type="module" src="dimensions.js"></script> -->
     <!-- <script type="module" src="{% static './chart.js' %}"></script> -->
@@ -66,7 +100,7 @@
                                 }
                             }]
                         }
-                    },
+                    }
                     data: 
                     {
                         labels: resp.data.data.map(row => row.year),
@@ -87,7 +121,7 @@
                         {
                             label: 'MicroTransit',
                             data: resp.data.data.map(row => row.microtransit),
-                            backgroundColor: "yellow",
+                            backgroundColor: "blue",
                             borderColor: "black"
                         }
                         ]
@@ -151,7 +185,7 @@
                         {
                             label: 'MicroTransit',
                             data: resp.data.data.map(row => row.microtransit),
-                            backgroundColor: "yellow",
+                            backgroundColor: "blue",
                             borderColor: "black"
                         }
                         ]
@@ -216,7 +250,7 @@
                     {
                         label: 'MicroTransit',
                         data: resp.data.data.map(row => row.microtransit),
-                        backgroundColor: "yellow",
+                        backgroundColor: "blue",
                         borderColor: "black"
                     }
                     ]
@@ -348,7 +382,7 @@
                     {
                         label: 'MicroTransit',
                         data: resp.data.data.map(row => row.microtransit),
-                        backgroundColor: "yellow",
+                        backgroundColor: "blue",
                         borderColor: "black"
                     }
                     ]
@@ -383,9 +417,11 @@
                             ticks: {
                                 // Include a dollar sign in the ticks
                                 callback: function(value, index, ticks) {
-                                    return (
-                                        null
-                                    )
+                                    if (value.split("(")[1]) {
+                                        return value.split("(")[1].replace(")","")
+                                    } else {
+                                        return value
+                                    }
                                 }
                             }
                         }],
@@ -415,7 +451,7 @@
                             if (row.agency == "Capital Metropolitan Transportation Authority(CMTA)") {
                                 return "red"
                             } else {
-                                return "green"
+                                return "black"
                             }
                         }),
                         borderColor: "black"
@@ -452,9 +488,11 @@
                             ticks: {
                                 // Include a dollar sign in the ticks
                                 callback: function(value, index, ticks) {
-                                    return (
-                                        null
-                                    )
+                                    if (value.split("(")[1]) {
+                                        return value.split("(")[1].replace(")","")
+                                    } else {
+                                        return value
+                                    }
                                 }
                             }
                         }],
@@ -484,7 +522,7 @@
                             if (row.agency == "Capital Metropolitan Transportation Authority(CMTA)") {
                                 return "red"
                             } else {
-                                return "green"
+                                return "black"
                             }
                         }),
                         borderColor: "black"
@@ -495,6 +533,195 @@
         )
     })
 </script>
+
+<script>
+    const spendingByBudget = axios.get("https://transit.observer/spending_by_budget/?mode=CR,YR&ntd_id=60048").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart8'),
+            {
+                type: 'bar',
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)}`
+                                )
+                            }
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Operating Expenses',
+                        data: resp.data.data.map(row => row.opexp),
+                        backgroundColor: "black",
+                        borderColor: "black"
+                    },
+                    {
+                        label: 'Capital Expenses',
+                        data: resp.data.data.map(row => row.capexp),
+                        backgroundColor: "gray",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const costPerPmtByModeType = axios.get("https://transit.observer/cost_per_pmt_by_mode_type/?ntd_id=60048").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart9'),
+            {
+                type: 'line',
+                options: {
+                    tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)} / mile`
+                                )
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        `$${new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)} / mile`
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bus',
+                        data: resp.data.data.map(row => row.bus),
+                        backgroundColor: "white",
+                        borderColor: "green"
+                    },
+                    {
+                        label: 'Rail',
+                        data: resp.data.data.map(row => row.rail),
+                        backgroundColor: "white",
+                        borderColor: "red"
+                    },
+
+                    {
+                        label: 'MicroTransit',
+                        data: resp.data.data.map(row => row.microtransit),
+                        backgroundColor: "white",
+                        borderColor: "blue"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const costPerUptByModeType = axios.get("https://transit.observer/cost_per_upt_by_mode_type/?ntd_id=60048").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart10'),
+            {
+                type: 'line',
+                options: {
+                    tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)} / trip`
+                                    )
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        `$${new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)} / trip`
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bus',
+                        data: resp.data.data.map(row => row.bus),
+                        backgroundColor: "white",
+                        borderColor: "green"
+                    },
+                    {
+                        label: 'Rail',
+                        data: resp.data.data.map(row => row.rail),
+                        backgroundColor: "white",
+                        borderColor: "red"
+                    },
+
+                    {
+                        label: 'MicroTransit',
+                        data: resp.data.data.map(row => row.microtransit),
+                        backgroundColor: "white",
+                        borderColor: "blue"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
   </body>
 </html>
  
