@@ -1,1 +1,876 @@
-<html><h1>hi</h1></html>
+<!doctype html>
+{% load static %}
+<html lang="en">
+    <style>
+        img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        body {background-color: white;}
+        body   {text-align: center; align-items: center;}
+        canvas    {align-content: center;}
+        </style>
+  <head>
+    <title>Chart.js example</title>
+  </head>
+  <body>
+    <!-- <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/> -->
+    <h1>Is Austin's Red Line the Worst Train of All Time?</h1>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Lakeline_metrorail_station_2014.jpg"></img>
+    <h2>No, but it is among the worst-performing commuter rail systems in the country</h2>
+    <h2>Let's compare the Red Line to other commuter rail systems in key performance metrics</h2>
+    <h1>Operating Expense Per Passenger</h1>
+    <div style="width: 100%;"><canvas id="chart6"></canvas></div>
+    <h1>Operating Expense Per Passenger Mile</h1>
+    <div style="width: 100%;"><canvas id="chart7"></canvas></div>
+    <h2>I want to try to emphasize the outsized negative impact of red line spending on Austin's transit network performance.</h2>
+    <h2>The proposed rail line wasn't estimated to cost much</h2>
+    <h2>Original Estimated Annual Operating Costs</h2>
+    <h2>$3.9 Million (2022 Dollars)</h2>
+    <h2>Original Estimated Capital Costs</h2>
+    <h2>$94 Million (2022 Dollars)</h2>
+    <div>Source: <a target="_blank" href="https://docs.google.com/document/d/1qgbIg6elpBox2MPVWJ6oNZJI3-FOLQMSwBXNxYHtrnc/edit?pli=1">Austin American Statesman</a></div>
+    <h1>Actual CapMetro Red Line Spending</h1>
+    <div style="width: 100%;"><canvas id="chart8"></canvas></div>
+    <br></br>
+    <h1>CapMetro Annual Capital Expenditure by Mode</h1>
+    <h3>(2022 Dollars)</h3>
+    <div style="width: 100%;"><canvas id="chart5"></canvas></div>
+    <h1>CapMetro Annual Operating Expenditure by Mode</h1>
+    <h3>(2022 Dollars)</h3>
+    <div style="width: 100%;"><canvas id="chart3"></canvas></div>
+    <h1>CapMetro Annual Ridership By Mode</h1>
+    <h3>(Unlinked Passenger Trips)</h3>
+    <div style="width: 100%;"><canvas id="chart2"></canvas></div>
+    <h1>CapMetro Annual Passenger Miles Traveled by Mode</h1>
+    <div style="width: 100%;"><canvas id="chart"></canvas></div> 
+    <h2>The rail expenses bear an outsized proportion of the system costs, compared to rail ridership and passenger mileage</h2>
+    <h1>CapMetro Cost Per Passenger Mile by Mode</h1>
+    <h3>(2022 Dollars per Passenger Mile Traveled)</h3>
+    <div style="width: 100%;"><canvas id="chart9"></canvas></div>
+    <h1>CapMetro Cost Per Passenger by Mode</h1>
+    <h3>(2022 Dollars per Unlinked Passenger Trip)</h3>
+    <div style="width: 100%;"><canvas id="chart10"></canvas></div>
+    <h2>You might not believe it from the above chart</h2>
+    <h2>But trains are actually supposed to be more efficient at moving people than buses.</h2>
+    <h2>Here is Denver's data for comparison</h2>
+    <h1>RTD (Denver) Cost Per Passenger Mile by Mode</h1>
+    <h3>(2022 Dollars per Passenger Mile Traveled)</h3>
+    <div style="width: 100%;"><canvas id="chart11"></canvas></div>
+    <h1>RTD (Denver) Cost Per Passenger by Mode</h1>
+    <h3>(2022 Dollars per Unlinked Passenger Trip)</h3>
+    <div style="width: 100%;"><canvas id="chart12"></canvas></div>
+    <h2>Here is the most recent ridership data</h2>
+    <h1>Monthly Ridership - All Time</h1>
+    <h3>(Unlinked Passenger Trips)</h3>
+    <div style="width: 100%;"><canvas id="chart4"></canvas></div>
+    <h2>This chart of all-time ridership appears to show a fairly sound COVID-19 recovery</h2>
+    <h2>The abrupt uptick in riders in 2021 is due to a new professional sports stadium opening along the route</h2>
+    <h2>Perhaps the Austin FC has saved the Red Line</h2>
+    <h2>We will also see an uptick when the line connects to the upcoming downtown light rail.</h2>
+    <h2>But even with a new pro sports team and the being nearly the fastest growing city in America</h2>
+    <h2>The Red Line will continue to have some of the worst financial effectiveness of any commuter rail system</h2>
+
+    <h2>This obscene operating inefficiency is the cherry on top of the quarter billion dollars in sunk capital costs</h2>
+    <h2>Money all dedicated to rehabbing a rail line, which 90% of the time, isn't even worth worth running. </h2>
+    <h2>The bus serving, on average, 2-3X as many passenger-miles per dollar spent</h2>
+    <h2>Indicates that the money dedicated to rail operations better serves the community when spent on bus hours</h2>
+    <h2>I am Very Very Sad</h2>
+    <h2>Ben Carneiro</h2>
+    <div>Check out my <a href="https://bencarneiro.com">website</a>, or my open-source tool for searching the <a href="https://bencarneiro.com">National Transit Database</a></div>
+   
+
+    <!-- <script type="module" src="dimensions.js"></script> -->
+    <!-- <script type="module" src="{% static './chart.js' %}"></script> -->
+    <!-- <script type="text/html"  src="path/to/chartjs/dist/chart.umd.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+
+    <script>
+        const pmtByMode = axios.get("https://transit.observer/pmt_by_mode_type/?ntd_id=60048").then((resp) => {
+            const chart = new Chart(
+                document.getElementById('chart'),
+                {
+                    type: 'bar',
+                    options: {
+                        tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return (
+                                    new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)
+                                )
+                            }
+                        }
+                    },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    // Include a dollar sign in the ticks
+                                    callback: function(value, index, ticks) {
+                                        return (
+                                            new Intl.NumberFormat("en-US", {
+                                                notation: "compact",
+                                                compactDisplay: "short",
+                                                }).format(value)
+                                        )
+                                    }
+                                }
+                            }]
+                        }
+                    },
+                    data: 
+                    {
+                        labels: resp.data.data.map(row => row.year),
+                        datasets: [
+                        {
+                            label: 'Bus',
+                            data: resp.data.data.map(row => row.bus),
+                            backgroundColor: "green",
+                            borderColor: "black"
+                        },
+                        {
+                            label: 'Rail',
+                            data: resp.data.data.map(row => row.rail),
+                            backgroundColor: "red",
+                            borderColor: "black"
+                        },
+
+                        {
+                            label: 'MicroTransit',
+                            data: resp.data.data.map(row => row.microtransit),
+                            backgroundColor: "blue",
+                            borderColor: "black"
+                        }
+                        ]
+                    }
+                }
+            )
+        })
+    </script>
+    <script>
+        const ridersByModeType = axios.get("https://transit.observer/upt_by_mode_type/?ntd_id=60048").then((resp) => {
+            const chart = new Chart(
+                document.getElementById('chart2'),
+                {
+                    type: 'bar',
+                    options: {
+                        tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return (
+                                    new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)
+                                )
+                            }
+                        }
+                    },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    // Include a dollar sign in the ticks
+                                    callback: function(value, index, ticks) {
+                                        return (
+                                            new Intl.NumberFormat("en-US", {
+                                                notation: "compact",
+                                                compactDisplay: "short",
+                                                }).format(value)
+                                        )
+                                    }
+                                }
+                            }]
+                        }
+                    },
+                    data: 
+                    {
+                        labels: resp.data.data.map(row => row.year),
+                        datasets: [
+                        {
+                            label: 'Bus',
+                            data: resp.data.data.map(row => row.bus),
+                            backgroundColor: "green",
+                            borderColor: "black"
+                        },
+                        {
+                            label: 'Rail',
+                            data: resp.data.data.map(row => row.rail),
+                            backgroundColor: "red",
+                            borderColor: "black"
+                        },
+
+                        {
+                            label: 'MicroTransit',
+                            data: resp.data.data.map(row => row.microtransit),
+                            backgroundColor: "blue",
+                            borderColor: "black"
+                        }
+                        ]
+                    }
+                }
+            )
+        })
+    </script>
+
+<script>
+    const opexpByModeType = axios.get("https://transit.observer/spending_by_mode_type/?expense_type=VO,VM,NVM,GA&ntd_id=60048").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart3'),
+            {
+                type: 'bar',
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)}`
+                                )
+                            }
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bus',
+                        data: resp.data.data.map(row => row.bus),
+                        backgroundColor: "green",
+                        borderColor: "black"
+                    },
+                    {
+                        label: 'Rail',
+                        data: resp.data.data.map(row => row.rail),
+                        backgroundColor: "red",
+                        borderColor: "black"
+                    },
+
+                    {
+                        label: 'MicroTransit',
+                        data: resp.data.data.map(row => row.microtransit),
+                        backgroundColor: "blue",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const monthlyUpt = axios.get("https://transit.observer/monthly_upt/?ntd_id=60048&mode=CR,YR&start=2010-01-01").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart4'),
+            {
+                type: 'line',
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            title: function(tooltipItem, data){
+                                return (
+                                        tooltipItem[0].xLabel.substring(0,7)
+                                    )
+                            },
+                            label: function(tooltipItem, data) {
+                                return (
+                                    new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)
+                                )
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        value.substring(0,7)
+                                    )
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.date),
+                    datasets: [
+                    {
+                        label: 'upt',
+                        borderColor: "red",
+                        backgroundColor: "pink",
+                        data: resp.data.data.map(row => row.upt)
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const spendingByModeType = axios.get("https://transit.observer/spending_by_mode_type/?expense_type=RS,FC,OC&ntd_id=60048").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart5'),
+            {
+                type: 'bar',
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)}`
+                                )
+                            }
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bus',
+                        data: resp.data.data.map(row => row.bus),
+                        backgroundColor: "green",
+                        borderColor: "black"
+                    },
+                    {
+                        label: 'Rail',
+                        data: resp.data.data.map(row => row.rail),
+                        backgroundColor: "red",
+                        borderColor: "black"
+                    },
+
+                    {
+                        label: 'MicroTransit',
+                        data: resp.data.data.map(row => row.microtransit),
+                        backgroundColor: "blue",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const commuterUpt = axios.get("../commuter_rail_upt/").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart6'),
+            {
+                type: 'bar',
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)
+                                    } per trip`
+                                )
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    if (value.split("(")[1]) {
+                                        return value.split("(")[1].replace(")","")
+                                    } else {
+                                        return value
+                                    }
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.agency),
+                    datasets: [
+                    {
+                        label: '2022 Dollars / Unlinked Passenger Trip (2010-2011)',
+                        data: resp.data.data.map(row => row.cost_per_passenger),
+                        backgroundColor: resp.data.data.map(row => {
+                            if (row.agency == "Capital Metropolitan Transportation Authority(CMTA)") {
+                                return "red"
+                            } else {
+                                return "black"
+                            }
+                        }),
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const commuterPmt = axios.get("../commuter_rail_pmt/").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart7'),
+            {
+                type: 'bar',
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)} per mile`
+                                    
+                                )
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    if (value.split("(")[1]) {
+                                        return value.split("(")[1].replace(")","")
+                                    } else {
+                                        return value
+                                    }
+                                }
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.agency),
+                    datasets: [
+                    {
+                        label: '2022 Dollars Per Passenger Mile Traveled (2010-2011)',
+                        data: resp.data.data.map(row => row.cost_per_passenger_mile),
+                        backgroundColor: resp.data.data.map(row => {
+                            if (row.agency == "Capital Metropolitan Transportation Authority(CMTA)") {
+                                return "red"
+                            } else {
+                                return "black"
+                            }
+                        }),
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const spendingByBudget = axios.get("https://transit.observer/spending_by_budget/?mode=CR,YR&ntd_id=60048").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart8'),
+            {
+                type: 'bar',
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)}`
+                                )
+                            }
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Operating Expenses',
+                        data: resp.data.data.map(row => row.opexp),
+                        backgroundColor: "black",
+                        borderColor: "black"
+                    },
+                    {
+                        label: 'Capital Expenses',
+                        data: resp.data.data.map(row => row.capexp),
+                        backgroundColor: "gray",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const costPerPmtByModeType = axios.get("https://transit.observer/cost_per_pmt_by_mode_type/?ntd_id=60048").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart9'),
+            {
+                type: 'line',
+                options: {
+                    tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)} / mile`
+                                )
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        `$${new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)} / mile`
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bus',
+                        data: resp.data.data.map(row => row.bus),
+                        backgroundColor: "white",
+                        borderColor: "green"
+                    },
+                    {
+                        label: 'Rail',
+                        data: resp.data.data.map(row => row.rail),
+                        backgroundColor: "white",
+                        borderColor: "red"
+                    },
+
+                    {
+                        label: 'MicroTransit',
+                        data: resp.data.data.map(row => row.microtransit),
+                        backgroundColor: "white",
+                        borderColor: "blue"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+<script>
+    const costPerUptByModeType = axios.get("https://transit.observer/cost_per_upt_by_mode_type/?ntd_id=60048").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart10'),
+            {
+                type: 'line',
+                options: {
+                    tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)} / trip`
+                                    )
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        `$${new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)} / trip`
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bus',
+                        data: resp.data.data.map(row => row.bus),
+                        backgroundColor: "white",
+                        borderColor: "green"
+                    },
+                    {
+                        label: 'Rail',
+                        data: resp.data.data.map(row => row.rail),
+                        backgroundColor: "white",
+                        borderColor: "red"
+                    },
+
+                    {
+                        label: 'MicroTransit',
+                        data: resp.data.data.map(row => row.microtransit),
+                        backgroundColor: "white",
+                        borderColor: "blue"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+
+
+<script>
+    const denverPmt = axios.get("https://transit.observer/cost_per_pmt_by_mode_type/?ntd_id=80006").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart11'),
+            {
+                type: 'line',
+                options: {
+                    tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)} / mile`
+                                )
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        `$${new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)} / mile`
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bus',
+                        data: resp.data.data.map(row => row.bus),
+                        backgroundColor: "white",
+                        borderColor: "green"
+                    },
+                    {
+                        label: 'Rail',
+                        data: resp.data.data.map(row => row.rail),
+                        backgroundColor: "white",
+                        borderColor: "red"
+                    },
+
+                    {
+                        label: 'MicroTransit',
+                        data: resp.data.data.map(row => row.microtransit),
+                        backgroundColor: "white",
+                        borderColor: "blue"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+<script>
+    const denverUpt = axios.get("https://transit.observer/cost_per_upt_by_mode_type/?ntd_id=80006").then((resp) => {
+        const chart = new Chart(
+            document.getElementById('chart12'),
+            {
+                type: 'line',
+                options: {
+                    tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                    `$${new Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        compactDisplay: "short",
+                                        }).format(tooltipItem.yLabel)} / trip`
+                                    )
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        `$${new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)} / trip`
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bus',
+                        data: resp.data.data.map(row => row.bus),
+                        backgroundColor: "white",
+                        borderColor: "green"
+                    },
+                    {
+                        label: 'Rail',
+                        data: resp.data.data.map(row => row.rail),
+                        backgroundColor: "white",
+                        borderColor: "red"
+                    },
+
+                    {
+                        label: 'MicroTransit',
+                        data: resp.data.data.map(row => row.microtransit),
+                        backgroundColor: "white",
+                        borderColor: "blue"
+                    }
+                    ]
+                }
+            }
+        )
+    })
+</script>
+  </body>
+</html>
+ 

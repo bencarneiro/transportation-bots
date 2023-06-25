@@ -13,10 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.views.static import serve 
 from django.contrib import admin
 from django.urls import path, re_path
 from app.settings import STATIC_ROOT
+from django.conf import settings
+from django.conf.urls.static import static
 from views.views import spending_by_budget,\
 spending_by_category,\
 spending_by_mode,\
@@ -90,7 +93,8 @@ pmt_per_vrh_by_service,\
 pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
-get_agencies, HomePage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap
+get_agencies, HomePage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap,\
+commuter_rail_upt, commuter_rail_pmt, total_red_line_spending
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -195,6 +199,9 @@ urlpatterns = [
     path('bike_crash_map/', BikeCrashMap.as_view(), name="bike_crash_map"),
     path('pedestrian_crash_map/', PedestrianCrashMap.as_view(), name="pedestrian_crash_map"),
     path('citymapper/', CityMapperPage.as_view(), name="citymapper"),
+    path("commuter_rail_upt/", commuter_rail_upt, name="commuter_rail_upt"),
+    path("commuter_rail_pmt/", commuter_rail_pmt, name="commuter_rail_pmt"),
+    path("total_red_line_spending", total_red_line_spending, name="total_red_line_spending"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

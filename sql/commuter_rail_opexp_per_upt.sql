@@ -21,6 +21,8 @@ LEFT JOIN (
         transit_agency.id = upt.transit_agency_id
     WHERE
         upt.mode_id IN ("CR", "YR")
+    AND
+    	upt.year >= 2010
     GROUP BY
         transit_agency.id, transit_agency.agency_name
     ORDER BY total_riders DESC
@@ -32,9 +34,10 @@ LEFT JOIN (
 	SELECT 
 		transit_agency.agency_name,
 		transit_agency.id AS transit_agency_id,
-		sum(transit_expense.expense) AS operating_expenses
+		sum(transit_expense.expense * cpi.in_todays_dollars) AS operating_expenses
 	FROM 
 		transit_expense
+    LEFT JOIN cpi ON cpi.year = transit_expense.year_id
 	LEFT JOIN
 		transit_agency
 	ON
@@ -43,6 +46,8 @@ LEFT JOIN (
 		transit_expense.mode_id  IN ("CR", "YR")
 	AND
 		transit_expense.expense_type_id IN ("VO", "VM", "NVM", "GA")
+	AND
+		transit_expense.year_id >= 2010
 	GROUP BY
 		transit_agency.id, transit_agency.agency_name
 	ORDER BY operating_expenses DESC
