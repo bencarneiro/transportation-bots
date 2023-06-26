@@ -304,6 +304,18 @@ class MonthlyVehicleRevenueHours(models.Model):
         db_table = "monthly_vrh"
 
 
+class Shapes(models.Model):
+    id = models.AutoField(primary_key=True)
+    shape_id = models.PositiveIntegerField(null=False)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    shape_pt_lat = models.FloatField(null=False)
+    shape_pt_lon = models.FloatField(null=False)
+    shape_pt_sequence = models.PositiveIntegerField(null=True)
+    shape_dist_traveled = models.FloatField(null=False)
+    
+    class Meta:
+        managed=True
+        db_table="shapes"
 
 class CalendarDates(models.Model):
 
@@ -334,26 +346,23 @@ class Routes(models.Model):
         managed=True
         db_table="routes"
 
-        constraints = [
-            models.UniqueConstraint(fields=['route_id', 'transit_agency'], name='unique_registration')
-        ]
 
-class Trips:
+class Trips(models.Model):
+
     id = models.AutoField(primary_key=True)
     trip_id = models.CharField(null=False, max_length=128)
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    route = models.ForeignKey(Routes)
-    route_id = models.IntegerField(null=False)
+    route = models.ForeignKey(Routes, on_delete=models.DO_NOTHING)
     service_id = models.CharField(max_length=64)
-    trip_id = models.CharField(null=False, max_length=128)
     trip_headsign  = models.CharField(max_length=64)
     direction_id = models.IntegerField(default=0)
     block_id = models.CharField(max_length=64)
-    shape_id = models.PositiveIntegerField(null=True, blank=True)
+    shape = models.ForeignKey(Shapes, on_delete=models.DO_NOTHING)
     scheduled_trip_id = models.PositiveIntegerField(null=True, blank=True)
     trip_short_name = models.CharField(max_length=64)
     wheelchair_accessible = models.BooleanField(default=True)
     bikes_allowed = models.BooleanField(default=True)
+    
     class Meta:
         managed=True
         db_table="trips"
@@ -382,13 +391,11 @@ class Stops(models.Model):
         managed=True
         db_table="stops"
 
-class StopTimes:
+class StopTimes(models.Model):
     id = models.AutoField(primary_key=True)
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     trip = models.ForeignKey(Trips, on_delete=models.DO_NOTHING)
-    trip_id = models.CharField(null=False, max_length=128)
     stop = models.ForeignKey(Stops, on_delete=models.DO_NOTHING)
-    stop_id = models.PositiveIntegerField(null=False)
     arrival_time = models.DateTimeField(null=True, blank=True)
     departure_time = models.DateTimeField(null=True, blank=True)
     stop_sequence = models.PositiveSmallIntegerField(null=True)
@@ -400,16 +407,3 @@ class StopTimes:
     class Meta:
         managed=True
         db_table="stop_times"
-
-class Shapes:
-    id = models.AutoField(primary_key=True)
-    shape_id = models.PositiveIntegerField(null=False)
-    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    shape_pt_lat = models.FloatField(null=False)
-    shape_pt_lon = models.FloatField(null=False)
-    shape_pt_sequence = models.PositiveIntegerField(null=True)
-    shape_dist_traveled = models.FloatField(null=False)
-    
-    class Meta:
-        managed=True
-        db_table="shapes"
