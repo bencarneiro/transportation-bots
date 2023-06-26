@@ -305,20 +305,23 @@ class MonthlyVehicleRevenueHours(models.Model):
 
 
 
-
-
 class CalendarDates(models.Model):
+
+    id = models.AutoField(primary_key=True)
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     date = models.DateField(null=False)
     service_id = models.CharField(null=False, max_length=64)
     exception_type = models.IntegerField(default=1)
+
     class Meta:
         managed=True
         db_table = "calendar_dates"
 
 
 class Routes(models.Model):
-    id = models.PositiveBigIntegerField(null=False)
+
+    id = models.AutoField(primary_key=True)
+    route_id = models.PositiveBigIntegerField(null=False)
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     route_short_name = models.CharField(null=True, blank=True, max_length=64)
     route_long_name = models.CharField(null=True, blank=True, max_length=256)
@@ -336,9 +339,11 @@ class Routes(models.Model):
         ]
 
 class Trips:
-    id = models.CharField(null=False, max_length=128)
+    id = models.AutoField(primary_key=True)
+    trip_id = models.CharField(null=False, max_length=128)
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     route = models.ForeignKey(Routes)
+    route_id = models.IntegerField(null=False)
     service_id = models.CharField(max_length=64)
     trip_id = models.CharField(null=False, max_length=128)
     trip_headsign  = models.CharField(max_length=64)
@@ -354,8 +359,9 @@ class Trips:
         db_table="trips"
 
 class Stops(models.Model):
+    id = models.AutoField(primary_key=True)
+    stop_id = models.PositiveIntegerField(null=False)
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
-    id = models.PositiveIntegerField(primary_key=True)
     at_street = models.CharField(max_length=128)
     corner_placement = models.CharField(max_length=16)
     heading = models.PositiveSmallIntegerField(null=True, blank=True)
@@ -377,9 +383,12 @@ class Stops(models.Model):
         db_table="stops"
 
 class StopTimes:
+    id = models.AutoField(primary_key=True)
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     trip = models.ForeignKey(Trips, on_delete=models.DO_NOTHING)
+    trip_id = models.CharField(null=False, max_length=128)
     stop = models.ForeignKey(Stops, on_delete=models.DO_NOTHING)
+    stop_id = models.PositiveIntegerField(null=False)
     arrival_time = models.DateTimeField(null=True, blank=True)
     departure_time = models.DateTimeField(null=True, blank=True)
     stop_sequence = models.PositiveSmallIntegerField(null=True)
@@ -393,8 +402,9 @@ class StopTimes:
         db_table="stop_times"
 
 class Shapes:
-    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    id = models.AutoField(primary_key=True)
     shape_id = models.PositiveIntegerField(null=False)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     shape_pt_lat = models.FloatField(null=False)
     shape_pt_lon = models.FloatField(null=False)
     shape_pt_sequence = models.PositiveIntegerField(null=True)
