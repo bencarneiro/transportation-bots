@@ -337,7 +337,7 @@ class Routes(models.Model):
     transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
     route_short_name = models.CharField(null=True, blank=True, max_length=64)
     route_long_name = models.CharField(null=True, blank=True, max_length=256)
-    route_type = models.CharField(null=True, blank=True, max_length=64)
+    route_type = models.PositiveSmallIntegerField(null=True)
     route_url = models.CharField(null=True, blank=True, max_length=128)
     route_color = models.CharField(null=True, blank=True, max_length=16)
     route_text_color = models.CharField(null=True, blank=True, max_length=16)
