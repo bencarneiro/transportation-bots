@@ -23,7 +23,7 @@ class Command(BaseCommand):
                 route_type = int(results[4]),
                 route_url = results[5],
                 route_color =  results[6],
-                route_text_color =  results[7]
+                route_text_color =  results[7][:-1]
             )
             route.save()
             print(f"Route #{results[0]} written")
