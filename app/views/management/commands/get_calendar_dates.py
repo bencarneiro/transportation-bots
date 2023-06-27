@@ -16,10 +16,6 @@ class Command(BaseCommand):
         results = x.decode()
         results = results.split(',')
         if "service_id" not in results[0]:
-            print(results)
-            print(results[1][0:4])
-            print(results[1][4:6])
-            print(results[1][6:])
             date = datetime(
                 year=int(results[1][0:4]),
                 month=int(results[1][4:6]),
@@ -33,3 +29,4 @@ class Command(BaseCommand):
                 exception_type=int(results[2][:-1])
             )
             new_date.save()
+            print(f"saved the date data for {results[1]}")
