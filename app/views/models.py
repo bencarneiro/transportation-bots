@@ -357,7 +357,7 @@ class Trips(models.Model):
     trip_headsign  = models.CharField(max_length=64)
     direction_id = models.IntegerField(default=0)
     block_id = models.CharField(max_length=64)
-    shape = models.ForeignKey(Shapes, on_delete=models.DO_NOTHING)
+    shape_id = models.PositiveIntegerField(null=False)
     scheduled_trip_id = models.PositiveIntegerField(null=True, blank=True)
     trip_short_name = models.CharField(max_length=64)
     wheelchair_accessible = models.BooleanField(default=True)
