@@ -18,7 +18,11 @@ class Command(BaseCommand):
 
         if "trip_id" not in results[0]:
             trip = Trips.objects.get(trip_id=results[0])
-            stop = Stops.objects.get(stop_id=int(results[3]))
+            try:
+                stop = Stops.objects.get(stop_id=int(results[3]))
+            except: 
+                print(f" stop_id #{results[3]} not found- stop time not written")
+                continue
             if int(results[1][0:2]) > 23:
                 arrival_time = datetime(
                     day=2,
