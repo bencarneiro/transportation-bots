@@ -94,7 +94,7 @@ pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
 get_agencies, HomePage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap,\
-commuter_rail_upt, commuter_rail_pmt, total_red_line_spending
+commuter_rail_upt, commuter_rail_pmt, total_red_line_spending, get_closest_bus_stops
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -202,6 +202,7 @@ urlpatterns = [
     path("commuter_rail_upt/", commuter_rail_upt, name="commuter_rail_upt"),
     path("commuter_rail_pmt/", commuter_rail_pmt, name="commuter_rail_pmt"),
     path("total_red_line_spending", total_red_line_spending, name="total_red_line_spending"),
+    path("get_closest_bus_stops/", get_closest_bus_stops, name="get_closest_bus_stops"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

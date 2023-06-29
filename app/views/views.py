@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from views.models import Crash, TransitAgency, TransitExpense, MonthlyUnlinkedPassengerTrips, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, MonthlyVehicleRevenueHours, VehicleRevenueHours, MonthlyVehicleRevenueMiles, VehicleRevenueMiles, VehiclesOperatedMaximumService, MonthlyVehiclesOperatedMaximumService, DirectionalRouteMiles
+from views.models import Crash, TransitAgency, TransitExpense, MonthlyUnlinkedPassengerTrips, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, MonthlyVehicleRevenueHours, VehicleRevenueHours, MonthlyVehicleRevenueMiles, VehicleRevenueMiles, VehiclesOperatedMaximumService, MonthlyVehiclesOperatedMaximumService, DirectionalRouteMiles, Stops, StopTimes, Routes, Trips, Shapes, CalendarDates
 
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -9,6 +9,7 @@ import folium
 from django.db.models.functions import Round
 from app.settings import DEBUG
 import datetime
+# from shapely.geometry import LineString
 
 """
 HI it's ben, the amateurish developer!
@@ -5241,3 +5242,122 @@ def total_red_line_spending(request):
         ]
     resp = {"data": data}
     return JsonResponse(resp)
+
+
+@csrf_exempt
+def get_closest_bus_stops(request):
+    if "lat" in request.GET and request.GET['lat'] and "lon" in request.GET and request.GET['lon']:
+        lat = request.GET['lat']
+        lon = request.GET['lon']
+    else:
+        return JsonResponse({"hi": "hello"})
+    stops = Stops.objects.raw("""
+        SELECT 
+            SQRT(POWER(ABS(longitude - (%s)), 2) + POWER(ABS(latitude - (%s)), 2)) as distance,
+            id, stop_id,
+            stop_name, corner_placement,
+            latitude, longitude
+        FROM stops
+        order by SQRT(POWER(ABS(longitude - (%s)), 2) + POWER(ABS(latitude - (%s)), 2)) ASC
+        LIMIT 5;
+    """, [lon, lat, lon, lat])
+    stop_ids = []
+    # for stop in stops:
+    #     stop_ids += [stop.id]
+    m = folium.Map(location=[lat, lon], zoom_start=12)
+    for stop in stops:
+        stop_ids += [stop.id]
+        folium.Marker(
+            [stop.latitude, stop.longitude], popup=folium.Popup(max_width=450, html="<h1>Bus Stop</h1>", parse_html=False), icon=folium.Icon(color="red")
+        ).add_to(m)
+    for stop_id in stop_ids:
+        cursor = connection.cursor()
+        cursor.execute('''
+            select time(stop_times.departure_time) as departs,
+            trip_headsign,
+            stops.stop_id,
+            stops.stop_name,
+            trips.shape_id,
+            trips.trip_id
+            from stop_times
+            left join trips on trips.id = stop_times.trip_id
+            left join routes on trips.route_id = routes.id
+            LEFT JOIN stops on stop_times.stop_id = stops.id
+            where stop_times.trip_id in
+            (select id from trips where service_id in 
+            (select service_id from calendar_dates where date = 20230629))
+            and departure_time > "1970-01-01 09:40:00"
+            and departure_time < "1970-01-01 10:50:00"
+            and stop_times.stop_id = %s
+            order by stop_times.departure_time;
+
+        ''', [stop_id])
+        shape_ids = []
+        for x in cursor.fetchall():
+            if int(x[4]) not in shape_ids:
+                shape_ids += [int(x[4])]
+
+        for shape in shape_ids:
+            shapes_points = Shapes.objects.filter(shape_id=shape)
+            line = []
+            for shape_point in shapes_points:
+                # print(f"{shape_point.shape_pt_lat}, {shape_point.shape_pt_lon}")
+                line += [(float(shape_point.shape_pt_lat), float(shape_point.shape_pt_lon))]
+            # line_string = LineString(line)
+            folium.PolyLine(line, tooltip="bus").add_to(m)
+
+    m = m._repr_html_()
+    context = {"map": m}
+    return render(request, "bike_crash_map.html", context=context)
+
+
+
+#   m = folium.Map(location=[30.297370913553245, -97.7313631855747], zoom_start=12)
+#         # crashes = Crash.objects.filter(Q(pedestrian_death_count__gt = 0) | Q(bicycle_death_count__gt = 0))
+#         crashes = Crash.objects.filter(Q(bicycle_serious_injury_count__gt = 0) | Q(bicycle_death_count__gt = 0))
+#         # Crash.bicycle_serious_injury_count
+#         print(len(crashes))
+        
+        
+#         for crash in crashes:
+#             # print(crash)
+#             # print(crash.atd_mode_category_metadata)
+#             description = f"{'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + str(crash.crash_id)}"
+
+#             link = f"<a target='_blank' href='{description}'>Link to More Info</a>"
+#             tooltip = f"""
+#             <div>{crash.crash_date.strftime("%Y-%m-%d")}</div></br>
+#             {crash.bicycle_death_count} deaths </br>
+#             {crash.bicycle_serious_injury_count} serious injuries</br>
+#             {crash.units_involved}
+#             """
+#             crash_summary = f"""
+#             <h4>{crash.crash_date.strftime("%Y-%m-%d")}</h4></br>
+
+#             <div>Bike Deaths: {crash.bicycle_death_count}</div></br>
+
+#             <div>Serious Injuries: {crash.bicycle_serious_injury_count}</div></br>
+            
+#             <div>{crash.units_involved}</div></br>
+
+#             {link}
+#             """
+#             # crash_summary = {
+#             #     "date": crash.crash_date.strftime("%Y-%m-%d"),
+#             #     "bike_deaths": crash.bicycle_death_count,
+#             #     "bicycle_serious_injuries": crash.bicycle_serious_injury_count,
+#             #     "more_info": link
+#             # }
+#             if crash.latitude and crash.longitude and crash.latitude != 0  and crash.longitude != 0:
+#                 if crash.bicycle_death_count > 0:
+#                     folium.Marker(
+#                         [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
+#                     ).add_to(m)
+#                 else:
+#                     folium.Marker(
+#                         [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="green")
+#                     ).add_to(m)
+#         # folium.GeoJson(geojson, name="geojson", tooltip="hi").add_to(m)
+#         m = m._repr_html_()
+#         context = {"map": m}
+#         return render(request, "bike_crash_map.html", context=context)
