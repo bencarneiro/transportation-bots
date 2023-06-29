@@ -5251,6 +5251,12 @@ def get_closest_bus_stops(request):
         lon = request.GET['lon']
     else:
         return JsonResponse({"hi": "hello"})
+    now = (datetime.datetime.now() - datetime.timedelta(hours=5)).strftime("%H:%M:%S") 
+    # now_timestring = now
+    in_two_hours = datetime.datetime.now() - datetime.timedelta(hours=3)
+    in_two_hours_timestring = in_two_hours.strftime("%H:%M:%S")
+    print(f"NOW {now}")
+    print(f"INTWOHOURS {in_two_hours_timestring}")
     stops = Stops.objects.raw("""
         SELECT 
             SQRT(POWER(ABS(longitude - (%s)), 2) + POWER(ABS(latitude - (%s)), 2)) as distance,
@@ -5269,9 +5275,7 @@ def get_closest_bus_stops(request):
         stop_ids += [stop.id]
         # move this into the next for loop, then write the upcoming schedule into the html object before adding the html to the stop marker
 
-        folium.Marker(
-            [stop.latitude, stop.longitude], popup=folium.Popup(max_width=450, html="<h1>Bus Stop</h1>", parse_html=False), icon=folium.Icon(color="red")
-        ).add_to(m)
+
     for stop_id in stop_ids:
         cursor = connection.cursor()
         cursor.execute('''
@@ -5280,7 +5284,9 @@ def get_closest_bus_stops(request):
             stops.stop_id,
             stops.stop_name,
             trips.shape_id,
-            trips.trip_id
+            trips.trip_id,
+            stops.latitude,
+            stops.longitude
             from stop_times
             left join trips on trips.id = stop_times.trip_id
             left join routes on trips.route_id = routes.id
@@ -5288,16 +5294,28 @@ def get_closest_bus_stops(request):
             where stop_times.trip_id in
             (select id from trips where service_id in 
             (select service_id from calendar_dates where date = 20230629))
-            and departure_time > "1970-01-01 09:40:00"
-            and departure_time < "1970-01-01 10:50:00"
+            and departure_time > "1970-01-01 %s"
+            and departure_time < "1970-01-01 %s"
             and stop_times.stop_id = %s
             order by stop_times.departure_time;
 
-        ''', [stop_id])
+        ''', [now, in_two_hours_timestring, stop_id])
         shape_ids = []
+        html = ""
+        stop_lat = None
+        stop_lon = None
+
         for x in cursor.fetchall():
+            print(cursor)
+            html += f"<h1>{x[0]} - {x[1]}</h1></br>\n"
+            stop_lat = x[6]
+            stop_lon = x[7]
             if int(x[4]) not in shape_ids:
                 shape_ids += [int(x[4])]
+        if stop_lat and stop_lon:
+            folium.Marker(
+                [stop_lat, stop_lon], popup=folium.Popup(max_width=450, html=html, parse_html=False), icon=folium.Icon(color="red")
+            ).add_to(m)
 
         for shape in shape_ids:
             shapes_points = Shapes.objects.filter(shape_id=shape)
