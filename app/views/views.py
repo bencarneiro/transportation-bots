@@ -5267,6 +5267,8 @@ def get_closest_bus_stops(request):
     m = folium.Map(location=[lat, lon], zoom_start=12)
     for stop in stops:
         stop_ids += [stop.id]
+        # move this into the next for loop, then write the upcoming schedule into the html object before adding the html to the stop marker
+        
         folium.Marker(
             [stop.latitude, stop.longitude], popup=folium.Popup(max_width=450, html="<h1>Bus Stop</h1>", parse_html=False), icon=folium.Icon(color="red")
         ).add_to(m)
