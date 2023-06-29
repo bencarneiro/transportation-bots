@@ -5382,7 +5382,7 @@ def system_map(request):
     m = folium.Map(location=[30.26807592381281, -97.74281180530993], zoom_start=12)
 
     for shape in shapes:
-        if int(shape['shape_id']) == 522:
+        if int(shape['shape_id']) in (522, 428, 446, 457):
             continue
         print(shape)
         shapes_points = Shapes.objects.filter(shape_id=shape['shape_id'])
@@ -5392,7 +5392,7 @@ def system_map(request):
             line += [(float(shape_point.shape_pt_lat), float(shape_point.shape_pt_lon))]
         # line_string = LineString(line)
         tooltip = f"""
-            <h1>{shape['route_id__route_long_name']}</h1>
+            <h1>{shape['route_id__route_long_name']} {shape['shape_id']}</h1>
         """
         folium.PolyLine(line, color=f"#{shape['route_id__route_color']}", tooltip=tooltip).add_to(m)
     m = m._repr_html_()
