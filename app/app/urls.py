@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 from views.views import spending_by_budget,\
 spending_by_category,\
 spending_by_mode,\
-spending_by_mode_type,\
+spending_by_mode_type, system_map, display_shape,\
 opexp_by_service,\
 spending_by_budget,\
 upt,\
@@ -203,6 +203,8 @@ urlpatterns = [
     path("commuter_rail_pmt/", commuter_rail_pmt, name="commuter_rail_pmt"),
     path("total_red_line_spending", total_red_line_spending, name="total_red_line_spending"),
     path("get_closest_bus_stops/", get_closest_bus_stops, name="get_closest_bus_stops"),
+    path("system_map/", system_map, name="system_map"),
+    path("display_shape/", display_shape, name="display_shape"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

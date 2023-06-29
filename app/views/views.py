@@ -5268,7 +5268,7 @@ def get_closest_bus_stops(request):
     for stop in stops:
         stop_ids += [stop.id]
         # move this into the next for loop, then write the upcoming schedule into the html object before adding the html to the stop marker
-        
+
         folium.Marker(
             [stop.latitude, stop.longitude], popup=folium.Popup(max_width=450, html="<h1>Bus Stop</h1>", parse_html=False), icon=folium.Icon(color="red")
         ).add_to(m)
@@ -5363,3 +5363,55 @@ def get_closest_bus_stops(request):
 #         m = m._repr_html_()
 #         context = {"map": m}
 #         return render(request, "bike_crash_map.html", context=context)
+
+@csrf_exempt
+def system_map(request):
+    yesterday = (datetime.datetime.today()- datetime.timedelta(1)).replace(hour=0, minute=0, second=0, microsecond=0) 
+    today = (datetime.datetime.today()).replace(hour=0, minute=0, second=0, microsecond=0) 
+    print(today)
+    service = CalendarDates.objects.filter(date__gt=yesterday, date__lte=today)
+    services = []
+    for s in service:
+        print(s.service_id)
+        print(s.date)
+        services += [s.service_id]
+    shapes = Trips.objects.filter(service_id__in=services).values('shape_id', "route_id__route_color", "route_id__route_short_name", "route_id__route_long_name").distinct()
+    # for shape in shapes:
+    #     print(shape)
+
+    m = folium.Map(location=[30.26807592381281, -97.74281180530993], zoom_start=12)
+
+    for shape in shapes:
+        if int(shape['shape_id']) == 522:
+            continue
+        print(shape)
+        shapes_points = Shapes.objects.filter(shape_id=shape['shape_id'])
+        line = []
+        for shape_point in shapes_points:
+            # print(f"{shape_point.shape_pt_lat}, {shape_point.shape_pt_lon}")
+            line += [(float(shape_point.shape_pt_lat), float(shape_point.shape_pt_lon))]
+        # line_string = LineString(line)
+        tooltip = f"""
+            <h1>{shape['route_id__route_long_name']}</h1>
+        """
+        folium.PolyLine(line, color=f"#{shape['route_id__route_color']}", tooltip=tooltip).add_to(m)
+    m = m._repr_html_()
+    context = {"map": m}
+    return render(request, "bike_crash_map.html", context=context)
+
+
+@csrf_exempt
+def display_shape(request):
+
+    shapes_points = Shapes.objects.filter(shape_id=request.GET['shape_id'])
+    m = folium.Map(location=[30.26807592381281, -97.74281180530993], zoom_start=12)
+    line=[]
+    for shape_point in shapes_points:
+        line += [(float(shape_point.shape_pt_lat), float(shape_point.shape_pt_lon))]
+        tooltip = f"""
+            <h1>{request.GET['shape_id']}</h1>
+        """
+        folium.PolyLine(line, color="red", tooltip=tooltip).add_to(m)
+    m = m._repr_html_()
+    context = {"map": m}
+    return render(request, "bike_crash_map.html", context=context)
