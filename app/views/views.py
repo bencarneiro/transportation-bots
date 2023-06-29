@@ -5415,3 +5415,100 @@ def display_shape(request):
     m = m._repr_html_()
     context = {"map": m}
     return render(request, "bike_crash_map.html", context=context)
+
+@csrf_exempt
+def route(request):
+    if "from_lat" in request.GET and request.GET['from_lat'] and "from_lon" in request.GET and request.GET['from_lon'] and "to_lat" in request.GET and request.GET['to_lat'] and "to_lon" in request.GET and request.GET['to_lon']:
+        from_lat = float(request.GET['from_lat'])
+        from_lon = float(request.GET['from_lon'])
+        to_lat = float(request.GET['to_lat'])
+        to_lon = float(request.GET['to_lon'])
+        walk_dist = pow(pow(abs(to_lon - from_lon), 2) + pow(abs(to_lat-from_lat),2),(1/2))
+        min_dist = walk_dist
+        min_trip_id = "Walk"
+        min_stop_id = None
+        print("yes")
+    else:
+        return JsonResponse({"hi": "hi"})
+    stops = Stops.objects.raw("""
+        SELECT 
+            SQRT(POWER(ABS(longitude - (%s)), 2) + POWER(ABS(latitude - (%s)), 2)) as distance,
+            id, stop_id,
+            stop_name, corner_placement,
+            latitude, longitude
+        FROM stops
+        order by SQRT(POWER(ABS(longitude - (%s)), 2) + POWER(ABS(latitude - (%s)), 2)) ASC
+        LIMIT 5;
+    """, [from_lon, from_lat, from_lon, from_lat])
+
+    stop_ids = []
+    
+    m = folium.Map(location=[from_lat, from_lon], zoom_start=12)
+    for stop in stops:
+        stop_ids += [stop.id]
+        
+        # move this into the next for loop, then write the upcoming schedule into the html object before adding the html to the stop marker
+
+        folium.Marker(
+            [stop.latitude, stop.longitude], popup=folium.Popup(max_width=450, html="<h1>Bus Stop</h1>", parse_html=False), icon=folium.Icon(color="red")
+        ).add_to(m)
+    for stop_id in stop_ids:
+        cursor = connection.cursor()
+        cursor.execute('''
+            select time(stop_times.departure_time) as departs,
+            trip_headsign,
+            stops.stop_id,
+            stops.stop_name,
+            trips.shape_id,
+            trips.id
+            from stop_times
+            left join trips on trips.id = stop_times.trip_id
+            left join routes on trips.route_id = routes.id
+            LEFT JOIN stops on stop_times.stop_id = stops.id
+            where stop_times.trip_id in
+            (select id from trips where service_id in 
+            (select service_id from calendar_dates where date = 20230629))
+            and departure_time > "1970-01-01 09:40:00"
+            and departure_time < "1970-01-01 10:50:00"
+            and stop_times.stop_id = %s
+            order by stop_times.departure_time;
+
+        ''', [stop_id])
+        shape_ids = []
+        trips = []
+        trip_times = []
+        for x in cursor.fetchall():
+            if x[5] not in trips:
+                trips += [x[5]]
+            print(x)
+            if int(x[4]) not in shape_ids:
+                shape_ids += [int(x[4])]
+        for trip_id in trips:
+            min_dist = walk_dist
+            min_stop_id = None
+            arrival_time = None
+            queryset = StopTimes.objects.filter(trip_id=trip_id).values('arrival_time', "stop_id", "stop_id__latitude", "stop_id__longitude", "trip_id__trip_headsign")
+            for q in queryset:
+                # print(q)
+                potential_distance = pow(pow(abs(to_lon - q['stop_id__longitude']), 2) + pow(abs(to_lat-q['stop_id__latitude']),2),(1/2))
+                if potential_distance < min_dist:
+                    min_dist = potential_distance
+                    min_trip_id = trip_id
+                    min_stop_id = q['stop_id']
+                    arrival_time = q['arrival_time']
+                    headsign = q['trip_id__trip_headsign']
+            trip_times += [{"trip_id": trip_id, "min_dist": min_dist, "from_stop": stop_id, "to_stop": min_stop_id, "arrival": arrival_time, "headsign": headsign}]
+        for shape in shape_ids:
+            shapes_points = Shapes.objects.filter(shape_id=shape)
+            line = []
+            for shape_point in shapes_points:
+                # print(f"{shape_point.shape_pt_lat}, {shape_point.shape_pt_lon}")
+                line += [(float(shape_point.shape_pt_lat), float(shape_point.shape_pt_lon))]
+            # line_string = LineString(line)
+            folium.PolyLine(line, tooltip="bus").add_to(m)
+
+    m = m._repr_html_()
+    context = {"map": m}
+    # print(f"take trip #{min_trip_id} to stop {min_stop_id} and walk for {min_dist} degrees")
+    print(trip_times)
+    return render(request, "bike_crash_map.html", context=context)
