@@ -9,6 +9,8 @@ import folium
 from django.db.models.functions import Round
 from app.settings import DEBUG
 import datetime
+import requests
+import json
 # from shapely.geometry import LineString
 
 """
@@ -5251,6 +5253,8 @@ def get_closest_bus_stops(request):
         lon = request.GET['lon']
     else:
         return JsonResponse({"hi": "hello"})
+    r = requests.get("https://data.texas.gov/download/cuc7-ywmd/text%2Fplain")
+    bus_positions = json.loads(r.text)
     now = (datetime.datetime.now() - datetime.timedelta(hours=5)).strftime("%H:%M:%S") 
     # now_timestring = now
     in_two_hours = datetime.datetime.now() - datetime.timedelta(hours=3)
@@ -5307,7 +5311,12 @@ def get_closest_bus_stops(request):
 
         for x in cursor.fetchall():
             print(cursor)
-            html += f"<h1>{x[0]} - {x[1]}</h1></br>\n"
+            bus_real_time_location = None
+            for bus_position in bus_positions['entity']:
+                # print(bus_position['vehicle'])
+                if "trip" in bus_position['vehicle'] and "tripId" in bus_position['vehicle']['trip']:
+                    bus_real_time_location = bus_position
+            html += f"<h1>{x[0]} - {x[1]}</h1></br>\n <h2>{bus_real_time_location}</h2>"
             stop_lat = x[6]
             stop_lon = x[7]
             if int(x[4]) not in shape_ids:
