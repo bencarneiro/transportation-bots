@@ -5310,13 +5310,13 @@ def get_closest_bus_stops(request):
         stop_lon = None
 
         for x in cursor.fetchall():
-            print(cursor)
+            print(x)
             bus_real_time_location = None
             for bus_position in bus_positions['entity']:
                 # print(bus_position['vehicle'])
-                if "trip" in bus_position['vehicle'] and "tripId" in bus_position['vehicle']['trip']:
+                if "trip" in bus_position['vehicle'] and "tripId" in bus_position['vehicle']['trip'] and bus_position['vehicle']['trip']["tripId"] == x[5]:
                     bus_real_time_location = bus_position
-            html += f"<h1>{x[0]} - {x[1]}</h1></br>\n <h2>{bus_real_time_location}</h2>"
+            html += f"<h1>{x[0]} - {x[1]}</h1></br>\n <h2>{bus_real_time_location} ---- {x[5]}</h2>"
             stop_lat = x[6]
             stop_lon = x[7]
             if int(x[4]) not in shape_ids:
@@ -5340,56 +5340,57 @@ def get_closest_bus_stops(request):
     return render(request, "bike_crash_map.html", context=context)
 
 
+@csrf_exempt
+def bus_positions(request):
+    if "route_id" in request.GET and request.GET['route_id']:
+        route_id = request.GET['route_id']
+        all_routes = False
+    else:
+        all_routes = True
+    r = requests.get("https://data.texas.gov/download/cuc7-ywmd/text%2Fplain")
+    bus_positions = json.loads(r.text)
+    # print(bus_positions['entity'])
+    m = folium.Map(location=[30.26807592381281, -97.74281180530993], zoom_start=12)
+    for bus_position in bus_positions['entity']:
+        # folium.Marker(
+        #     [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
+        # ).add_to(m)
+        # print(bus_position)
+        # print(bus_position['vehicle']['position']['latitude'])
+        lat = bus_position['vehicle']['position']['latitude']
+        # print(bus_position['vehicle']['position']['longitude'])
+        lon = bus_position['vehicle']['position']['longitude']
+        if "vehicle" in bus_position and "position" in bus_position['vehicle'] and "latitude" in bus_position['vehicle']['position']:
+            # print("I'M GONN AKMSKS")
+            # print(bus_position)
+            if "trip" in bus_position['vehicle']:
+                trip_id = bus_position['vehicle']['trip']['tripId']
+                route = bus_position['vehicle']['trip']['routeId']
+                print(trip_id)
+                print(trip_id[:7])
+                print(route)
+                try:
+                    trip = Trips.objects.filter(trip_id__contains=trip_id[:7])
+                    headsign = f"<h1>{trip[0].trip_headsign}</h1>"
+                    print("success")
+                except:
+                    headsign = "<h1>Unknown</h1>"
+                    print("failure")
 
-#   m = folium.Map(location=[30.297370913553245, -97.7313631855747], zoom_start=12)
-#         # crashes = Crash.objects.filter(Q(pedestrian_death_count__gt = 0) | Q(bicycle_death_count__gt = 0))
-#         crashes = Crash.objects.filter(Q(bicycle_serious_injury_count__gt = 0) | Q(bicycle_death_count__gt = 0))
-#         # Crash.bicycle_serious_injury_count
-#         print(len(crashes))
-        
-        
-#         for crash in crashes:
-#             # print(crash)
-#             # print(crash.atd_mode_category_metadata)
-#             description = f"{'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + str(crash.crash_id)}"
+            else:
+                headsign = "<h1>Unknown</h1>"
+            if all_routes or (int(route) == int(route_id)):
+                folium.Marker(
+                    [float(bus_position['vehicle']['position']['latitude']), float(bus_position['vehicle']['position']['longitude'])], popup=folium.Popup(max_width=450, html=headsign, parse_html=False), icon=folium.Icon(color="red")
+                ).add_to(m)
+        # break
 
-#             link = f"<a target='_blank' href='{description}'>Link to More Info</a>"
-#             tooltip = f"""
-#             <div>{crash.crash_date.strftime("%Y-%m-%d")}</div></br>
-#             {crash.bicycle_death_count} deaths </br>
-#             {crash.bicycle_serious_injury_count} serious injuries</br>
-#             {crash.units_involved}
-#             """
-#             crash_summary = f"""
-#             <h4>{crash.crash_date.strftime("%Y-%m-%d")}</h4></br>
+    m = m._repr_html_()
+    context = {"map": m}
+    return render(request, "bike_crash_map.html", context=context)
+    
+    # return JsonResponse({"hi": "hi"})
 
-#             <div>Bike Deaths: {crash.bicycle_death_count}</div></br>
-
-#             <div>Serious Injuries: {crash.bicycle_serious_injury_count}</div></br>
-            
-#             <div>{crash.units_involved}</div></br>
-
-#             {link}
-#             """
-#             # crash_summary = {
-#             #     "date": crash.crash_date.strftime("%Y-%m-%d"),
-#             #     "bike_deaths": crash.bicycle_death_count,
-#             #     "bicycle_serious_injuries": crash.bicycle_serious_injury_count,
-#             #     "more_info": link
-#             # }
-#             if crash.latitude and crash.longitude and crash.latitude != 0  and crash.longitude != 0:
-#                 if crash.bicycle_death_count > 0:
-#                     folium.Marker(
-#                         [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
-#                     ).add_to(m)
-#                 else:
-#                     folium.Marker(
-#                         [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="green")
-#                     ).add_to(m)
-#         # folium.GeoJson(geojson, name="geojson", tooltip="hi").add_to(m)
-#         m = m._repr_html_()
-#         context = {"map": m}
-#         return render(request, "bike_crash_map.html", context=context)
 
 @csrf_exempt
 def system_map(request):
@@ -5409,7 +5410,7 @@ def system_map(request):
     m = folium.Map(location=[30.26807592381281, -97.74281180530993], zoom_start=12)
 
     for shape in shapes:
-        if int(shape['shape_id']) in (522, 428, 446, 457):
+        if int(shape['shape_id']) in (522, 428, 446, 142, 935, 670, 671, 457):
             continue
         print(shape)
         shapes_points = Shapes.objects.filter(shape_id=shape['shape_id'])
