@@ -5290,7 +5290,8 @@ def get_closest_bus_stops(request):
             trips.shape_id,
             trips.trip_id,
             stops.latitude,
-            stops.longitude
+            stops.longitude,
+            routes.route_id
             from stop_times
             left join trips on trips.id = stop_times.trip_id
             left join routes on trips.route_id = routes.id
@@ -5305,18 +5306,22 @@ def get_closest_bus_stops(request):
 
         ''', [now, in_two_hours_timestring, stop_id])
         shape_ids = []
-        html = ""
+        html = "<h1>Transit Schedule:</h1>\n"
         stop_lat = None
         stop_lon = None
-
+        route_ids = []
         for x in cursor.fetchall():
-            print(x)
+            # trip = Trips.objects.filter(trip_id__contains=x[5][0:7])
+            route_id = int(x[8])
             bus_real_time_location = None
             for bus_position in bus_positions['entity']:
                 # print(bus_position['vehicle'])
-                if "trip" in bus_position['vehicle'] and "tripId" in bus_position['vehicle']['trip'] and bus_position['vehicle']['trip']["tripId"] == x[5]:
-                    bus_real_time_location = bus_position
-            html += f"<h1>{x[0]} - {x[1]}</h1></br>\n <h2>{bus_real_time_location} ---- {x[5]}</h2>"
+                if "trip" in bus_position['vehicle'] and int(bus_position['vehicle']['trip']['routeId']) == int(route_id):
+                    headsign = f"<h2>{x[1]}</h2>"
+                    folium.Marker(
+                        [float(bus_position['vehicle']['position']['latitude']), float(bus_position['vehicle']['position']['longitude'])], popup=folium.Popup(max_width=450, html=headsign, parse_html=False), icon=folium.Icon(color="green")
+                    ).add_to(m)
+            html += f"<h3>{x[0]} - {x[1]}</h3></br>"
             stop_lat = x[6]
             stop_lon = x[7]
             if int(x[4]) not in shape_ids:
