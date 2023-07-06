@@ -5325,20 +5325,20 @@ def get_closest_bus_stops(request):
             stop_lat = x[6]
             stop_lon = x[7]
             if int(x[4]) not in shape_ids:
-                shape_ids += [int(x[4])]
+                shape_ids += [{"shape": int(x[4]), "route": x[8]}]
         if stop_lat and stop_lon:
             folium.Marker(
                 [stop_lat, stop_lon], popup=folium.Popup(max_width=450, html=html, parse_html=False), icon=folium.Icon(color="red")
             ).add_to(m)
 
         for shape in shape_ids:
-            shapes_points = Shapes.objects.filter(shape_id=shape)
+            shapes_points = Shapes.objects.filter(shape_id=shape['shape'])
             line = []
             for shape_point in shapes_points:
                 # print(f"{shape_point.shape_pt_lat}, {shape_point.shape_pt_lon}")
                 line += [(float(shape_point.shape_pt_lat), float(shape_point.shape_pt_lon))]
             # line_string = LineString(line)
-            folium.PolyLine(line, tooltip="bus").add_to(m)
+            folium.PolyLine(line, tooltip= f"<h1>{shape['route']}</h1>").add_to(m)
 
     m = m._repr_html_()
     context = {"map": m}
