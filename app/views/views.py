@@ -5269,7 +5269,7 @@ def get_closest_bus_stops(request):
             latitude, longitude
         FROM stops
         order by SQRT(POWER(ABS(longitude - (%s)), 2) + POWER(ABS(latitude - (%s)), 2)) ASC
-        LIMIT 5;
+        LIMIT 10;
     """, [lon, lat, lon, lat])
     stop_ids = []
     # for stop in stops:
@@ -5310,6 +5310,9 @@ def get_closest_bus_stops(request):
         stop_lat = None
         stop_lon = None
         route_ids = []
+        folium.Marker(
+            [lat, lon], popup=folium.Popup(max_width=450, html="<h1>YOU</h1>", parse_html=False), icon=folium.Icon(color="black")
+        ).add_to(m)
         for x in cursor.fetchall():
             # trip = Trips.objects.filter(trip_id__contains=x[5][0:7])
             route_id = int(x[8])
