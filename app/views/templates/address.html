@@ -1,0 +1,27 @@
+<html>
+    {% load static %}
+    <h1>Enter Your Address</h1>
+    <input type="text" id="addr">
+    <button type="button" onclick="address()">
+        Search for your next bus
+      </button>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    // require {axios};
+    // axios.defaults.xsrfHeaderName = "X-CSRFToken";
+    // axios.defaults.xsrfCookieName = "csrftoken";
+    let headers = {
+            "Access-Control-Allow-Origin": "*",
+            'X-CSRFToken': document.cookie.split('=')[1],
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+        }
+      function address() {
+        let inputValue = document.getElementById("addr").value;
+        axios.get("https://nominatim.openstreetmap.org/search.php?q=" + inputValue, {headers: headers}).then((resp)=>{
+            console.log(resp.data)
+        })
+      }
+</script>
+
+</html>

@@ -5545,3 +5545,8 @@ def route(request):
     # print(f"take trip #{min_trip_id} to stop {min_stop_id} and walk for {min_dist} degrees")
     print(trip_times)
     return render(request, "bike_crash_map.html", context=context)
+
+
+@csrf_exempt
+def address(request):
+    return render(request, "address.html", context={})

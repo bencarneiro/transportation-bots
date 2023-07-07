@@ -33,7 +33,7 @@ pmt,\
 monthly_vrm, monthly_vrm_by_mode, monthly_vrm_by_mode_type, monthly_vrm_by_service,\
 monthly_vrh, monthly_vrh_by_mode, monthly_vrh_by_mode_type, monthly_vrh_by_service,\
 monthly_voms,\
-monthly_upt_per_vrh, monthly_upt_per_vrm, monthly_upt_per_vrh_by_mode_type, bus_positions,\
+monthly_upt_per_vrh, monthly_upt_per_vrm, monthly_upt_per_vrh_by_mode_type, bus_positions, address,\
 vrm,\
 vrh,\
 drm,\
@@ -208,6 +208,7 @@ urlpatterns = [
     path("display_shape/", display_shape, name="display_shape"),
     path("route/", route, name="route"),
     path("bus_positions/", bus_positions, name="bus_positions"),
+    path("address/", address, name="address"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

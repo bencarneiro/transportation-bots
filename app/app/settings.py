@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-2(b*$rsew1f9wt8@d%ec1(t^&05hs927_npbb0)@%t-)g)eisy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', '1') in ['True', '1']
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "45.33.31.186", "transit.observer"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "45.33.31.186", "transit.observer", "127.0.0.1:8000"]
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,13 +52,24 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware', 
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware'
 ]
 
 ROOT_URLCONF = 'app.urls'
 
-CORS_ORIGIN_ALLOW_ALL = True   
+CORS_ALLOW_ALL_ORIGINS = True   
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://nominatim.openstreetmap.org',
+]
+
+CSRF_ALLOWED_ORIGINS = [
+    'https://nominatim.openstreetmap.org',
+]
+
+CORS_ALLOW_HEADERS =  [ "accept", "accept-encoding", "authorization", "content-type", "dnt", "origin", "user-agent", "x-csrftoken", "x-requested-with", ]
 
 TEMPLATES = [
     {
