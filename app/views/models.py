@@ -302,3 +302,108 @@ class MonthlyVehicleRevenueHours(models.Model):
     class Meta:
         managed=True
         db_table = "monthly_vrh"
+
+
+class Shapes(models.Model):
+    id = models.AutoField(primary_key=True)
+    shape_id = models.PositiveIntegerField(null=False)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    shape_pt_lat = models.FloatField(null=False)
+    shape_pt_lon = models.FloatField(null=False)
+    shape_pt_sequence = models.PositiveIntegerField(null=True)
+    shape_dist_traveled = models.FloatField(null=False)
+    
+    class Meta:
+        managed=True
+        db_table="shapes"
+
+class CalendarDates(models.Model):
+
+    id = models.AutoField(primary_key=True)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    date = models.DateField(null=False)
+    service_id = models.CharField(null=False, max_length=64)
+    exception_type = models.IntegerField(default=1)
+
+    class Meta:
+        managed=True
+        db_table = "calendar_dates"
+
+
+class Routes(models.Model):
+
+    id = models.AutoField(primary_key=True)
+    route_id = models.PositiveBigIntegerField(null=False)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    route_short_name = models.CharField(null=True, blank=True, max_length=64)
+    route_long_name = models.CharField(null=True, blank=True, max_length=256)
+    route_type = models.PositiveSmallIntegerField(null=True)
+    route_url = models.CharField(null=True, blank=True, max_length=128)
+    route_color = models.CharField(null=True, blank=True, max_length=16)
+    route_text_color = models.CharField(null=True, blank=True, max_length=16)
+
+    class Meta:
+        managed=True
+        db_table="routes"
+
+
+class Trips(models.Model):
+
+    id = models.AutoField(primary_key=True)
+    trip_id = models.CharField(null=False, max_length=128)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    route = models.ForeignKey(Routes, on_delete=models.DO_NOTHING)
+    service_id = models.CharField(max_length=64)
+    trip_headsign  = models.CharField(max_length=64)
+    direction_id = models.IntegerField(default=0)
+    block_id = models.CharField(max_length=64)
+    shape_id = models.PositiveIntegerField(null=False)
+    scheduled_trip_id = models.PositiveIntegerField(null=True, blank=True)
+    trip_short_name = models.CharField(max_length=64)
+    wheelchair_accessible = models.BooleanField(default=True)
+    bikes_allowed = models.BooleanField(default=True)
+    
+    class Meta:
+        managed=True
+        db_table="trips"
+
+class Stops(models.Model):
+    id = models.AutoField(primary_key=True)
+    stop_id = models.PositiveIntegerField(null=False)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    at_street = models.CharField(max_length=128)
+    corner_placement = models.CharField(max_length=16)
+    heading = models.PositiveSmallIntegerField(null=True, blank=True)
+    location_type = models.PositiveSmallIntegerField(null=True, blank=True)
+    on_street = models.CharField(max_length=128)
+    parent_station = models.PositiveSmallIntegerField(null=True, blank=True)
+    stop_code = models.PositiveSmallIntegerField(null=True, blank=True)
+    stop_desc = models.CharField(max_length=128)
+    latitude = models.FloatField(null=True)
+    longitude = models.FloatField(null=True)
+    stop_name = models.CharField(max_length=128)
+    stop_position = models.CharField(max_length=16)
+    stop_timezone = models.CharField(max_length=16)
+    stop_url = models.CharField(max_length=128)
+    wheelchair_boarding = models.BooleanField(default=True)
+
+    class Meta:
+        managed=True
+        db_table="stops"
+
+class StopTimes(models.Model):
+    id = models.AutoField(primary_key=True)
+    transit_agency = models.ForeignKey(TransitAgency, on_delete=models.DO_NOTHING)
+    trip = models.ForeignKey(Trips, on_delete=models.DO_NOTHING)
+    stop = models.ForeignKey(Stops, on_delete=models.DO_NOTHING)
+    arrival_time = models.DateTimeField(null=True, blank=True)
+    departure_time = models.DateTimeField(null=True, blank=True)
+    stop_sequence = models.PositiveSmallIntegerField(null=True)
+    pickup_type = models.PositiveSmallIntegerField(null=True)
+    drop_off_type = models.PositiveSmallIntegerField(null=True)
+    shape_dist_traveled = models.FloatField(null=True)
+    timepoint = models.BooleanField(default=0)
+
+    class Meta:
+        managed=True
+        db_table="stop_times"

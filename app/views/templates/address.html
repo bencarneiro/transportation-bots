@@ -1,0 +1,39 @@
+<html>
+    {% load static %}
+    <h1>Enter your address or a description of your location</h1>
+    <input type="text" id="addr" placeholder="barton springs pool, austin">
+    <button type="button" onclick="address()">
+        Search for your next bus
+      </button>
+    <h2 id="error"></h2>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    function error() {
+        var error = document.getElementById("error")
+        error.textContent = "That Returned no results- Try being more descriptive or using an address"
+      }
+      function loading() {
+        var error = document.getElementById("error")
+        error.textContent = "loading"
+      }
+    let headers = {
+            "Access-Control-Allow-Origin": "*",
+            'X-CSRFToken': document.cookie.split('=')[1],
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+        }
+        
+      function address() {
+        let inputValue = document.getElementById("addr").value;
+        axios.get("https://nominatim.openstreetmap.org/search.php?q=" + inputValue + "&format=json", {headers: headers}).then((resp)=>{
+            console.log(resp.data[0].lat, resp.data[0].lon);
+            window.location.href = "/get_closest_bus_stops/?lat=" + resp.data[0].lat + "&lon=" + resp.data[0].lon;
+            loading()
+        }).catch(
+            error()
+        )
+      }
+      
+</script>
+
+</html>

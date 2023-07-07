@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 from views.views import spending_by_budget,\
 spending_by_category,\
 spending_by_mode,\
-spending_by_mode_type,\
+spending_by_mode_type, system_map, display_shape,\
 opexp_by_service,\
 spending_by_budget,\
 upt,\
@@ -33,7 +33,7 @@ pmt,\
 monthly_vrm, monthly_vrm_by_mode, monthly_vrm_by_mode_type, monthly_vrm_by_service,\
 monthly_vrh, monthly_vrh_by_mode, monthly_vrh_by_mode_type, monthly_vrh_by_service,\
 monthly_voms,\
-monthly_upt_per_vrh, monthly_upt_per_vrm, monthly_upt_per_vrh_by_mode_type,\
+monthly_upt_per_vrh, monthly_upt_per_vrm, monthly_upt_per_vrh_by_mode_type, bus_positions, address,\
 vrm,\
 vrh,\
 drm,\
@@ -94,7 +94,8 @@ pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
 get_agencies, HomePage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap,\
-commuter_rail_upt, commuter_rail_pmt, total_red_line_spending
+commuter_rail_upt, commuter_rail_pmt, total_red_line_spending, get_closest_bus_stops,\
+route
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -202,6 +203,12 @@ urlpatterns = [
     path("commuter_rail_upt/", commuter_rail_upt, name="commuter_rail_upt"),
     path("commuter_rail_pmt/", commuter_rail_pmt, name="commuter_rail_pmt"),
     path("total_red_line_spending", total_red_line_spending, name="total_red_line_spending"),
+    path("get_closest_bus_stops/", get_closest_bus_stops, name="get_closest_bus_stops"),
+    path("system_map/", system_map, name="system_map"),
+    path("display_shape/", display_shape, name="display_shape"),
+    path("route/", route, name="route"),
+    path("bus_positions/", bus_positions, name="bus_positions"),
+    path("busfinder/", address, name="address"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
