@@ -208,7 +208,7 @@ urlpatterns = [
     path("display_shape/", display_shape, name="display_shape"),
     path("route/", route, name="route"),
     path("bus_positions/", bus_positions, name="bus_positions"),
-    path("address/", address, name="address"),
+    path("busfinder/", address, name="address"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
