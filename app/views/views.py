@@ -5253,6 +5253,7 @@ def get_closest_bus_stops(request):
         lon = request.GET['lon']
     else:
         return JsonResponse({"hi": "hello"})
+    route_ids = []
     r = requests.get("https://data.texas.gov/download/cuc7-ywmd/text%2Fplain")
     bus_positions = json.loads(r.text)
     now = (datetime.datetime.now() - datetime.timedelta(hours=5, minutes=5)).strftime("%H:%M:%S") 
@@ -5275,6 +5276,7 @@ def get_closest_bus_stops(request):
     # for stop in stops:
     #     stop_ids += [stop.id]
     m = folium.Map(location=[lat, lon], zoom_start=12)
+ 
     for stop in stops:
         stop_ids += [stop.id]
         # move this into the next for loop, then write the upcoming schedule into the html object before adding the html to the stop marker
@@ -5309,24 +5311,23 @@ def get_closest_bus_stops(request):
         html = "<h1>Transit Schedule:</h1>\n"
         stop_lat = None
         stop_lon = None
-        route_ids = []
+        # route_ids = []
         folium.Marker(
             [lat, lon], popup=folium.Popup(max_width=450, html="<h1>YOU</h1>", parse_html=False), icon=folium.Icon(color="black")
         ).add_to(m)
         for x in cursor.fetchall():
-            # trip = Trips.objects.filter(trip_id__contains=x[5][0:7])
+            # print(x)
+            # print(x[8])
+            
+            # break
             route_id = int(x[8])
             bus_real_time_location = None
-            for bus_position in bus_positions['entity']:
-                # print(bus_position['vehicle'])
-                if "trip" in bus_position['vehicle'] and int(bus_position['vehicle']['trip']['routeId']) == int(route_id):
-                    headsign = f"<h2>{x[1]}</h2>"
-                    folium.Marker(
-                        [float(bus_position['vehicle']['position']['latitude']), float(bus_position['vehicle']['position']['longitude'])], popup=folium.Popup(max_width=450, html=headsign, parse_html=False), icon=folium.Icon(color="green")
-                    ).add_to(m)
             html += f"<h3>{x[0]} - {x[1]}</h3></br>"
             stop_lat = x[6]
             stop_lon = x[7]
+            # print(x)
+            if int(x[8]) not in route_ids:
+                route_ids += [int(x[8])]
             if int(x[4]) not in shape_ids:
                 shape_ids += [{"shape": int(x[4]), "route": x[8]}]
         if stop_lat and stop_lon:
@@ -5342,6 +5343,19 @@ def get_closest_bus_stops(request):
                 line += [(float(shape_point.shape_pt_lat), float(shape_point.shape_pt_lon))]
             # line_string = LineString(line)
             folium.PolyLine(line, tooltip= f"<h1>{shape['route']}</h1>").add_to(m)
+    print(route_ids)
+    for bus_position in bus_positions['entity']:
+        # print(bus_position['vehicle'])
+        if "trip" in bus_position['vehicle'] and int(bus_position['vehicle']['trip']['routeId']) in route_ids:
+            trips = Trips.objects.filter(trip_id__contains=bus_position['vehicle']['trip']['tripId'][0:7])
+            trip_name = "Unknown"
+            if len(trips) > 0:
+                trip_name = trips[0].trip_headsign
+            headsign = f"<h2>{trip_name}</h2>"
+            
+            folium.Marker(
+                [float(bus_position['vehicle']['position']['latitude']), float(bus_position['vehicle']['position']['longitude'])], popup=folium.Popup(max_width=450, html=headsign, parse_html=False), icon=folium.Icon(color="green",icon='<i class="fa-solid fa-car"></i>')
+            ).add_to(m)
 
     m = m._repr_html_()
     context = {"map": m}
