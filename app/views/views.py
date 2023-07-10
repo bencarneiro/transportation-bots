@@ -5567,3 +5567,9 @@ def route(request):
 @csrf_exempt
 def address(request):
     return render(request, "address.html", context={})
+
+
+class StravaHeatmap(View):
+    
+    def get(self, request, *args, **kwargs):
+        return render(request, "strava_heatmap.html")
