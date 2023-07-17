@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from views.models import Crash, TransitAgency, TransitExpense, MonthlyUnlinkedPassengerTrips, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, MonthlyVehicleRevenueHours, VehicleRevenueHours, MonthlyVehicleRevenueMiles, VehicleRevenueMiles, VehiclesOperatedMaximumService, MonthlyVehiclesOperatedMaximumService, DirectionalRouteMiles, Stops, StopTimes, Routes, Trips, Shapes, CalendarDates
+from views.models import Crash, TransitAgency, TransitExpense, MonthlyUnlinkedPassengerTrips, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, MonthlyVehicleRevenueHours, VehicleRevenueHours, MonthlyVehicleRevenueMiles, VehicleRevenueMiles, VehiclesOperatedMaximumService, MonthlyVehiclesOperatedMaximumService, DirectionalRouteMiles, Stops, StopTimes, Routes, Trips, Shapes, CalendarDates, RoutePerformance
 
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -5567,3 +5567,260 @@ def route(request):
 @csrf_exempt
 def address(request):
     return render(request, "address.html", context={})
+
+@csrf_exempt
+def monthly_ridership(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(riders=Round(Sum(F("number_days") * F("average_daily_riders")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "riders": row['riders']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_revenue_hours(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(revenue_hours=Round(Sum(F("number_days") * F("revenue_hours")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "revenue_hours": row['revenue_hours']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_revenue_miles(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(revenue_miles=Round(Sum(F("number_days") * F("revenue_miles")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "revenue_miles": row['revenue_miles']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_total_hours(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(total_hours=Round(Sum(F("number_days") * F("total_hours")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "total_hours": row['total_hours']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_total_miles(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(total_miles=Round(Sum(F("number_days") * F("total_miles")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "total_miles": row['total_miles']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+
+
+
+
+
+
+
+@csrf_exempt
+def monthly_ridership_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(riders=Round(Sum(F("number_days") * F("average_daily_riders")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "riders": row['riders']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_revenue_hours_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(revenue_hours=Round(Sum(F("number_days") * F("revenue_hours")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "revenue_hours": row['revenue_hours']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_revenue_miles_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(revenue_miles=Round(Sum(F("number_days") * F("revenue_miles")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "revenue_miles": row['revenue_miles']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_total_hours_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(total_hours=Round(Sum(F("number_days") * F("total_hours")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "total_hours": row['total_hours']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_total_miles_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(total_miles=Round(Sum(F("number_days") * F("total_miles")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "total_miles": row['total_miles']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
