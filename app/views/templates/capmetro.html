@@ -2,26 +2,17 @@
    
 {% load static %}
 <html>
-    <fieldset id="local">
+
+
+    
+<fieldset id="local">
     {% for key in local_routes %} 
-    <input type="checkbox" id="{{key.route_id__route_id|safe}}" name={{key.route_id__route_id|safe}} unchecked>
+    <input type="checkbox" id="{{key.route_id__route_id|safe}}" name="local" unchecked>
     <label for="scales">{{key.route_id__route_long_name}}</label>
   {% endfor %}
 </fieldset>
-<fieldset>
-    <legend>Choose your monster's features:</legend>
-
-    <div>
-      <input type="checkbox" id="scales" name="scales" checked>
-      <label for="scales">Scales</label>
-    </div>
-
-    <div>
-      <input type="checkbox" id="horns" name="horns">
-      <label for="horns">Horns</label>
-      <div id="otherValue"></div>
-    </div>
-</fieldset>
+<button onclick=selectLocal()>Select All Local Routes</button>
+<button onclick=deselectLocal()>Deselect All Local Routes</button>
 
 
  <div style="width: 100%;"><canvas id="chart"></canvas></div>
@@ -29,39 +20,65 @@
 
 
  <script>
+
     var localRouteArray = []
-    const otherCheckbox = document.querySelector("#horns");
-    const otherText = document.querySelector("#otherValue");
-    otherText.style.visibility = "hidden";
-    
     const localRoutes = document.querySelector("#local");
-
     localRoutes.addEventListener("change", (event) => {
-    if (!localRouteArray.includes(event.target.id)) {
-        localRouteArray.push(event.target.id)
-    } else {
-        localRouteArray = localRouteArray.filter(item => item !== event.target.id)
+
+        // if (!localRouteArray.includes(event.target.id)) {
+        //     localRouteArray.push(event.target.id)
+        // } else {
+        //     localRouteArray = localRouteArray.filter(item => item !== event.target.id)
+        // }
+        // console.log(localRouteArray)
+        var routes = getLocalRouteArray()
+        refreshRidership(routes)
+    });
+    // const allLocalRoutes = document.querySelector("#all");
+    function SelectAllLocalRoutes() {
+        console.log("hi")
     }
-    console.log(localRouteArray)
-});
+    function selectLocal(){  
+        var ele=document.getElementsByName('local');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectLocal(){  
+        var ele=document.getElementsByName('local');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+    function getLocalRouteArray(){  
+        var ele=document.getElementsByName('local');  
+        var localRouteArray = []
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox' && ele[i].checked==true)  
+                localRouteArray.push(ele[i].id)
+        } 
+        console.log(localRouteArray) 
+        return(localRouteArray)
+    }  
 
-otherCheckbox.addEventListener("change", () => {
-  if (otherCheckbox.checked) {
-    otherText.style.visibility = "visible";
-    otherText.value = "";
-  } else {
-    otherText.style.visibility = "hidden";
-  }
-});
+</script>
 
 
- </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
 
  
     <script>
-        const pmtByMode = axios.get("/monthly_ridership/?route_id=7").then((resp) => {
+        function refreshRidership(routes) {
+        console.log(routes)
+        ids = routes.join(",")
+        console.log(ids)
+        url = "/monthly_ridership/?route_id=" + ids
+        console.log(url)
+        const pmtByMode = axios.get(url).then((resp) => {
             const chart = new Chart(
                 document.getElementById('chart'),
                 {
@@ -100,9 +117,9 @@ otherCheckbox.addEventListener("change", () => {
                         labels: resp.data.data.map(row => row.date),
                         datasets: [
                         {
-                            label: 'Bus',
+                            label: 'Riders',
                             data: resp.data.data.map(row => row.riders),
-                            backgroundColor: "green",
+                            backgroundColor: "Black",
                             borderColor: "black"
                         },
                         ]
@@ -110,5 +127,6 @@ otherCheckbox.addEventListener("change", () => {
                 }
             )
         })
+    }
     </script>
     </html>
