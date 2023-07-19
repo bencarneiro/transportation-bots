@@ -93,7 +93,7 @@ pmt_per_vrh_by_service,\
 pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
-get_agencies, HomePage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap,\
+get_agencies, HomePage, CapMetroPage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap,\
 commuter_rail_upt, commuter_rail_pmt, total_red_line_spending, get_closest_bus_stops,\
 route, monthly_ridership_by_route, monthly_revenue_hours_by_route, monthly_revenue_miles_by_route, monthly_total_hours_by_route, monthly_total_miles_by_route, \
 monthly_ridership, monthly_revenue_hours, monthly_revenue_miles, monthly_total_hours, monthly_total_miles
@@ -198,6 +198,7 @@ urlpatterns = [
     path('get_agencies/', get_agencies, name="get_agencies"),
     path('', HomePage.as_view(), name="home"),
     path('blog/', BlogPage.as_view(), name="blog"),
+    path('capmetro/', CapMetroPage.as_view(), name="capmetro"),
     path('bike_crash_map/', BikeCrashMap.as_view(), name="bike_crash_map"),
     path('pedestrian_crash_map/', PedestrianCrashMap.as_view(), name="pedestrian_crash_map"),
     path('citymapper/', CityMapperPage.as_view(), name="citymapper"),

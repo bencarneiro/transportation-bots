@@ -4079,6 +4079,12 @@ class BlogPage(View):
     def get(self, request, *args, **kwargs):
 
         return render(request, "blog.html", context={"debug": DEBUG})
+    
+class CapMetroPage(View):
+    
+    def get(self, request, *args, **kwargs):
+        local_routes = RoutePerformance.objects.filter(route_id__route_id__gte=1, route_id__route_id__lte=99).values("route_id__route_long_name", "route_id__route_id").distinct
+        return render(request, "capmetro.html", context={"debug": DEBUG, "local_routes": local_routes})
 
         
 class CityMapperPage(View):
