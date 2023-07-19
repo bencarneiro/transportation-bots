@@ -72,8 +72,86 @@
 
  
     <script>
+        function addData(chart, label, data) {
+            chart.data.labels.push(label);
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.push(data);
+            });
+            chart.update();
+        }
+
+        function removeData(chart) {
+            chart.data.labels.pop();
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.pop();
+            });
+            chart.update();
+        }
+
         function refreshRidership(routes) {
-        console.log(routes)
+            chart = document.getElementById("chart")
+            console.log(routes)
+            ids = routes.join(",")
+            console.log(ids)
+            url = "/monthly_ridership/?route_id=" + ids
+            // console.log(url)
+            const pmtByMode = axios.get(url).then((resp) => {
+                chart.remove()
+                const pmtByMode = axios.get(url).then((resp) => {
+                    const chart = new Chart(
+                        document.getElementById('chart'),
+                        {
+                            type: 'line',
+                            options: {
+                                tooltips: {
+                                callbacks: {
+                                    label: function(tooltipItem, data) {
+                                        return (
+                                            new Intl.NumberFormat("en-US", {
+                                                notation: "compact",
+                                                compactDisplay: "short",
+                                                }).format(tooltipItem.yLabel)
+                                        )
+                                    }
+                                }
+                            },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            // Include a dollar sign in the ticks
+                                            callback: function(value, index, ticks) {
+                                                return (
+                                                    new Intl.NumberFormat("en-US", {
+                                                        notation: "compact",
+                                                        compactDisplay: "short",
+                                                        }).format(value)
+                                                )
+                                            }
+                                        }
+                                    }]
+                                }
+                            },
+                            data: 
+                            {
+                                labels: resp.data.data.map(row => row.year),
+                                datasets: [
+                                {
+                                    label: 'Riders',
+                                    data: resp.data.data.map(row => row.riders),
+                                    backgroundColor: "white",
+                                    borderColor: "black"
+                                },
+                                ]
+                            }
+                        }
+                    )
+                })
+                // addData(chart, resp.data.data, resp.data.data)
+            })
+        }
+
+
+        var routes = getLocalRouteArray()
         ids = routes.join(",")
         console.log(ids)
         url = "/monthly_ridership/?route_id=" + ids
@@ -114,12 +192,12 @@
                     },
                     data: 
                     {
-                        labels: resp.data.data.map(row => row.date),
+                        labels: resp.data.data.map(row => row.year),
                         datasets: [
                         {
                             label: 'Riders',
                             data: resp.data.data.map(row => row.riders),
-                            backgroundColor: "Black",
+                            backgroundColor: "white",
                             borderColor: "black"
                         },
                         ]
@@ -127,6 +205,5 @@
                 }
             )
         })
-    }
     </script>
     </html>
