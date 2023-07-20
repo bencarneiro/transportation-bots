@@ -5855,3 +5855,8 @@ def monthly_total_miles_by_route(request):
     }
     return(JsonResponse(resp))
 
+
+class StravaHeatmap(View):
+    
+    def get(self, request, *args, **kwargs):
+        return render(request, "strava_heatmap.html")
