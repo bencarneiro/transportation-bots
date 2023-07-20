@@ -11,29 +11,32 @@
     <label for="scales">{{key.route_id__route_long_name}}</label>
   {% endfor %}
 </fieldset>
+<div id="localSelectors">
 <button onclick=selectLocal()>Select All Local Routes</button>
 <button onclick=deselectLocal()>Deselect All Local Routes</button>
+</div>
 
 
- <div style="width: 100%;"><canvas id="chart"></canvas></div>
+ <div style="width: 100%;" id="chartContainer"><canvas id="upt"></canvas></div>
 
 
 
  <script>
 
-    var localRouteArray = []
     const localRoutes = document.querySelector("#local");
     localRoutes.addEventListener("change", (event) => {
 
-        // if (!localRouteArray.includes(event.target.id)) {
-        //     localRouteArray.push(event.target.id)
-        // } else {
-        //     localRouteArray = localRouteArray.filter(item => item !== event.target.id)
-        // }
-        // console.log(localRouteArray)
         var routes = getLocalRouteArray()
         refreshRidership(routes)
     });
+
+    const localSelectors = document.querySelector("#localSelectors");
+    localSelectors.addEventListener("click", (event) => {
+
+        var routes = getLocalRouteArray()
+        refreshRidership(routes)
+    });
+
     // const allLocalRoutes = document.querySelector("#all");
     function SelectAllLocalRoutes() {
         console.log("hi")
@@ -60,7 +63,6 @@
             if(ele[i].type=='checkbox' && ele[i].checked==true)  
                 localRouteArray.push(ele[i].id)
         } 
-        console.log(localRouteArray) 
         return(localRouteArray)
     }  
 
@@ -72,34 +74,24 @@
 
  
     <script>
-        function addData(chart, label, data) {
-            chart.data.labels.push(label);
-            chart.data.datasets.forEach((dataset) => {
-                dataset.data.push(data);
-            });
-            chart.update();
-        }
-
-        function removeData(chart) {
-            chart.data.labels.pop();
-            chart.data.datasets.forEach((dataset) => {
-                dataset.data.pop();
-            });
-            chart.update();
-        }
-
+        
         function refreshRidership(routes) {
-            chart = document.getElementById("chart")
+
+            // chart = Chart.getChart('chart')
             console.log(routes)
             ids = routes.join(",")
             console.log(ids)
             url = "/monthly_ridership/?route_id=" + ids
             // console.log(url)
             const pmtByMode = axios.get(url).then((resp) => {
-                chart.remove()
+                uptChart = document.getElementById("upt")
+                uptChart.remove()
+                let uptCanvas = document.createElement('canvas')
+                uptCanvas.id = "upt"
+                document.body.appendChild(uptCanvas);
                 const pmtByMode = axios.get(url).then((resp) => {
-                    const chart = new Chart(
-                        document.getElementById('chart'),
+                    var uptChart = new Chart(
+                        document.getElementById('upt'),
                         {
                             type: 'line',
                             options: {
@@ -157,8 +149,8 @@
         url = "/monthly_ridership/?route_id=" + ids
         console.log(url)
         const pmtByMode = axios.get(url).then((resp) => {
-            const chart = new Chart(
-                document.getElementById('chart'),
+            var uptChart = new Chart(
+                document.getElementById('upt'),
                 {
                     type: 'line',
                     options: {
