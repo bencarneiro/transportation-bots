@@ -13,7 +13,7 @@ class Command(BaseCommand):
             route_short_name = "IM",
             route_long_name = "Innovative Mobility",
             route_type = 3
-        ).save
+        ).save()
 
         Routes(
             route_id = 102,
