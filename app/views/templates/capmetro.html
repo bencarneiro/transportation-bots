@@ -183,7 +183,11 @@
 </div>
 
 
- <div style="width: 100%;" id="chartContainer"><canvas id="upt"></canvas></div>
+<div id="chartsContainer">
+ <canvas id="upt"></canvas>
+ <canvas id="vrh"></canvas>
+ <canvas id="vrm"></canvas>
+</div>
 
 <script>
     function getRouteArray() {
@@ -261,13 +265,13 @@
     rapidRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const rapidSelectors = document.querySelector("#rapidSelectors");
     rapidSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectRapid(){  
         var ele=document.getElementsByName('rapid');  
@@ -290,13 +294,13 @@
     localRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const localSelectors = document.querySelector("#localSelectors");
     localSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectLocal(){  
         var ele=document.getElementsByName('local');  
@@ -320,13 +324,13 @@
     crosstownRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const crosstownSelectors = document.querySelector("#crosstownSelectors");
     crosstownSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectCrosstown(){  
         var ele=document.getElementsByName('crosstown');  
@@ -350,13 +354,13 @@
     feederRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const feederSelectors = document.querySelector("#feederSelectors");
     feederSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectFeeder(){  
         var ele=document.getElementsByName('feeder');  
@@ -380,13 +384,13 @@
     flyerRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const flyerSelectors = document.querySelector("#flyerSelectors");
     flyerSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectFlyer(){  
         var ele=document.getElementsByName('flyer');  
@@ -410,13 +414,13 @@
     expressRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const expressSelectors = document.querySelector("#expressSelectors");
     expressSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectExpress(){  
         var ele=document.getElementsByName('express');  
@@ -440,13 +444,13 @@
     shuttleRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const shuttleSelectors = document.querySelector("#shuttleSelectors");
     shuttleSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectShuttle(){  
         var ele=document.getElementsByName('shuttle');  
@@ -470,13 +474,13 @@
     nightRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const nightSelectors = document.querySelector("#nightSelectors");
     nightSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectNight(){  
         var ele=document.getElementsByName('night');  
@@ -500,13 +504,13 @@
     railRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const railSelectors = document.querySelector("#railSelectors");
     railSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectRail(){  
         var ele=document.getElementsByName('rail');  
@@ -530,13 +534,13 @@
     utRoutes.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const utSelectors = document.querySelector("#utSelectors");
     utSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectUT(){  
         var ele=document.getElementsByName('ut');  
@@ -560,13 +564,13 @@
     paratransit.addEventListener("change", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     const paratransitSelectors = document.querySelector("#paratransitSelectors");
     paratransitSelectors.addEventListener("click", (event) => {
 
         var routes = getRouteArray()
-        refreshRidership(routes)
+        refreshCharts(routes)
     });
     function selectParatransit(){  
         var ele=document.getElementsByName('paratransit');  
@@ -600,128 +604,210 @@
  
     <script>
         
-        function refreshRidership(routes) {
+        async function refreshCharts(routes) {
 
             // chart = Chart.getChart('chart')
             console.log(routes)
             ids = routes.join(",")
             console.log(ids)
-            url = "/monthly_ridership/?route_id=" + ids
+            uptUrl = "/monthly_ridership/?route_id=" + ids
             // console.log(url)
-            const pmtByMode = axios.get(url).then((resp) => {
+            const uptRequest = await axios.get(uptUrl).then((resp) => {
                 uptChart = document.getElementById("upt")
                 uptChart.remove()
                 let uptCanvas = document.createElement('canvas')
                 uptCanvas.id = "upt"
-                document.body.appendChild(uptCanvas);
-                const pmtByMode = axios.get(url).then((resp) => {
-                    var uptChart = new Chart(
-                        document.getElementById('upt'),
+                uptCanvas.style = "padding-bottom:50px"
+               document.getElementById("chartsContainer").appendChild(uptCanvas);
+
+                var uptChart = new Chart(
+                    document.getElementById('upt'),
+                    {
+                        type: 'line',
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Monthly Riders',
+                                fontSize: 36,
+                                },
+                            legend: {display:false},
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(tooltipItem.yLabel).concat(" Monthly Riders")
+                                    ) 
+                                }
+                            }
+                        },
+                            scales: {
+                                yAxes: [{
+                                    label: "Riders",
+                                    ticks: {
+                                        // Include a dollar sign in the ticks
+                                        callback: function(value, index, ticks) {
+                                            return (
+                                                new Intl.NumberFormat("en-US", {
+                                                    notation: "compact",
+                                                    compactDisplay: "short",
+                                                    }).format(value)
+                                            )
+                                        }
+                                    }
+                                }]
+                            }
+                        },
+                        data: 
                         {
-                            type: 'line',
-                            options: {
-                                tooltips: {
+                            labels: resp.data.data.map(row => row.year + " - " + row.month),
+                            datasets: [
+                            {
+                                label: 'Monthly Passenger Trips',
+                                data: resp.data.data.map(row => row.riders),
+                                backgroundColor: "white",
+                                borderColor: "black"
+                            },
+                            ]
+                        }
+                    }
+                )
+            })
+
+            
+            vrhUrl = "/monthly_revenue_hours/?route_id=" + ids
+            const vrhRequest = await axios.get(vrhUrl).then((resp) => {
+                vrhChart = document.getElementById("vrh")
+                vrhChart.remove()
+                let vrhCanvas = document.createElement('canvas')
+                vrhCanvas.id = "vrh"
+                vrhCanvas.style = "padding-bottom:50px"
+                document.body.appendChild(vrhCanvas);
+                var vrhChart = new Chart(
+                    document.getElementById('vrh'),
+                    {
+                        type: 'line',
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Monthly Hours of Service',
+                                fontSize: 36,
+                                },
+                            legend: {display:false},
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(tooltipItem.yLabel).concat(" Hours of Service")
+                                    ) 
+                                }
+                            }
+                        },
+                            scales: {
+                                yAxes: [{
+                                    label: "Riders",
+                                    ticks: {
+                                        // Include a dollar sign in the ticks
+                                        callback: function(value, index, ticks) {
+                                            return (
+                                                new Intl.NumberFormat("en-US", {
+                                                    notation: "compact",
+                                                    compactDisplay: "short",
+                                                    }).format(value)
+                                            )
+                                        }
+                                    }
+                                }]
+                            }
+                        },
+                        data: 
+                        {
+                            labels: resp.data.data.map(row => row.year + " - " + row.month),
+                            datasets: [
+                            {
+                                label: 'Vehicle Revenue Hours',
+                                data: resp.data.data.map(row => row.revenue_hours),
+                                backgroundColor: "white",
+                                borderColor: "black"
+                            },
+                            ]
+                        }
+                    }
+                )
+            })
+
+
+            vrmUrl = "/monthly_revenue_miles/?route_id=" + ids
+            const vrmRequest = await axios.get(vrmUrl).then((resp) => {
+                vrmChart = document.getElementById("vrm")
+                vrmChart.remove()
+                let vrmCanvas = document.createElement('canvas')
+                vrmCanvas.id = "vrm"
+                vrmCanvas.style = "padding-bottom:50px"
+                document.body.appendChild(vrmCanvas);
+                var vrmChart = new Chart(
+                    document.getElementById('vrm'),
+                    {
+                        type: 'line',
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Monthly Miles of Service',
+                                fontSize: 36,
+                                },
+                            legend: {display:false},
+                            tooltips: {
                                 callbacks: {
                                     label: function(tooltipItem, data) {
                                         return (
                                             new Intl.NumberFormat("en-US", {
                                                 notation: "compact",
                                                 compactDisplay: "short",
-                                                }).format(tooltipItem.yLabel).concat(" Monthly Riders")
+                                                }).format(tooltipItem.yLabel).concat(" Miles of Service")
                                         ) 
                                     }
                                 }
                             },
-                                scales: {
-                                    yAxes: [{
-                                        label: "Riders",
-                                        ticks: {
-                                            // Include a dollar sign in the ticks
-                                            callback: function(value, index, ticks) {
-                                                return (
-                                                    new Intl.NumberFormat("en-US", {
-                                                        notation: "compact",
-                                                        compactDisplay: "short",
-                                                        }).format(value)
-                                                )
-                                            }
+                            scales: {
+                                yAxes: [{
+                                    label: "Riders",
+                                    ticks: {
+                                        // Include a dollar sign in the ticks
+                                        callback: function(value, index, ticks) {
+                                            return (
+                                                new Intl.NumberFormat("en-US", {
+                                                    notation: "compact",
+                                                    compactDisplay: "short",
+                                                    }).format(value)
+                                            )
                                         }
-                                    }]
-                                }
-                            },
-                            data: 
-                            {
-                                labels: resp.data.data.map(row => row.year),
-                                datasets: [
-                                {
-                                    label: 'Riders',
-                                    data: resp.data.data.map(row => row.riders),
-                                    backgroundColor: "white",
-                                    borderColor: "black"
-                                },
-                                ]
-                            }
-                        }
-                    )
-                })
-                // addData(chart, resp.data.data, resp.data.data)
-            })
-        }
-
-
-        var routes = getRouteArray()
-        ids = routes.join(",")
-        console.log(ids)
-        url = "/monthly_ridership/?route_id=" + ids
-        console.log(url)
-        const pmtByMode = axios.get(url).then((resp) => {
-            var uptChart = new Chart(
-                document.getElementById('upt'),
-                {
-                    type: 'line',
-                    options: {
-                        tooltips: {
-                        callbacks: {
-                            label: function(tooltipItem, data) {
-                                return (
-                                    new Intl.NumberFormat("en-US", {
-                                        notation: "compact",
-                                        compactDisplay: "short",
-                                        }).format(tooltipItem.yLabel).concat(" Monthly Riders")
-                                )
-                            }
-                        }
-                    },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    // Include a dollar sign in the ticks
-                                    callback: function(value, index, ticks) {
-                                        return (
-                                            new Intl.NumberFormat("en-US", {
-                                                notation: "compact",
-                                                compactDisplay: "short",
-                                                }).format(value)
-                                        )
                                     }
-                                }
-                            }]
-                        }
-                    },
-                    data: 
-                    {
-                        labels: resp.data.data.map(row =>  row.year + " - " + row.month),
-                        datasets: [
-                        {
-                            label: 'Riders',
-                            data: resp.data.data.map(row => row.riders),
-                            backgroundColor: "white",
-                            borderColor: "black"
+                                }]
+                            }
                         },
-                        ]
+                        data: 
+                        {
+                            labels: resp.data.data.map(row => row.year + " - " + row.month),
+                            datasets: [
+                            {
+                                label: 'Vehicle Revenue Miles',
+                                data: resp.data.data.map(row => row.revenue_miles),
+                                backgroundColor: "white",
+                                borderColor: "black"
+                            },
+                            ]
+                        }
                     }
-                }
-            )
-        })
+                )
+            })
+
+        }
+        var routes = getRouteArray()
+        refreshCharts(routes)
     </script>
     </html>
