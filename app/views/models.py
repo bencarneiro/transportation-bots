@@ -407,3 +407,21 @@ class StopTimes(models.Model):
     class Meta:
         managed=True
         db_table="stop_times"
+
+class RoutePerformance(models.Model):
+    id = models.AutoField(primary_key=True)
+    route = models.ForeignKey(Routes, on_delete=models.DO_NOTHING)
+    day_type = models.CharField(max_length=16)
+    year = models.PositiveSmallIntegerField(null=False)
+    month = models.PositiveSmallIntegerField(null=False)
+    date = models.DateTimeField(null=False, blank=False)
+    average_daily_riders = models.FloatField(null=False, default=0)
+    number_days = models.PositiveSmallIntegerField(null=False, default=0)
+    revenue_hours = models.FloatField(null=False, default=0)
+    revenue_miles = models.FloatField(null=False, default=0)
+    total_hours = models.FloatField(null=False, default=0)
+    total_miles = models.FloatField(null=False, default=0)
+    
+    class Meta:
+        managed=True
+        db_table="route_performance"

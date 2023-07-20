@@ -93,9 +93,10 @@ pmt_per_vrh_by_service,\
 pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
-get_agencies, HomePage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap, StravaHeatmap,\
+get_agencies, HomePage, CapMetroPage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap, StravaHeatmap,\
 commuter_rail_upt, commuter_rail_pmt, total_red_line_spending, get_closest_bus_stops,\
-route
+route, monthly_ridership_by_route, monthly_revenue_hours_by_route, monthly_revenue_miles_by_route, monthly_total_hours_by_route, monthly_total_miles_by_route, \
+monthly_ridership, monthly_revenue_hours, monthly_revenue_miles, monthly_total_hours, monthly_total_miles
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -197,6 +198,7 @@ urlpatterns = [
     path('get_agencies/', get_agencies, name="get_agencies"),
     path('', HomePage.as_view(), name="home"),
     path('blog/', BlogPage.as_view(), name="blog"),
+    path('capmetro/', CapMetroPage.as_view(), name="capmetro"),
     path('bike_crash_map/', BikeCrashMap.as_view(), name="bike_crash_map"),
     path('pedestrian_crash_map/', PedestrianCrashMap.as_view(), name="pedestrian_crash_map"),
     path('citymapper/', CityMapperPage.as_view(), name="citymapper"),
@@ -210,6 +212,16 @@ urlpatterns = [
     path("route/", route, name="route"),
     path("bus_positions/", bus_positions, name="bus_positions"),
     path("busfinder/", address, name="address"),
+    path("monthly_ridership_by_route/", monthly_ridership_by_route, name="monthly_ridership_by_route"),
+    path("monthly_revenue_hours_by_route/", monthly_revenue_hours_by_route, name="monthly_revenue_hours_by_route"),
+    path("monthly_revenue_miles_by_route/", monthly_revenue_miles_by_route, name="monthly_revenue_miles_by_route"),
+    path("monthly_total_hours_by_route/", monthly_total_hours_by_route, name="monthly_total_hours_by_route"),
+    path("monthly_total_miles_by_route/", monthly_total_miles_by_route, name="monthly_total_miles_by_route"),
+    path("monthly_ridership/", monthly_ridership, name="monthly_ridership"),
+    path("monthly_revenue_hours/", monthly_revenue_hours, name="monthly_revenue_hours"),
+    path("monthly_revenue_miles/", monthly_revenue_miles, name="monthly_revenue_miles"),
+    path("monthly_total_hours/", monthly_total_hours, name="monthly_total_hours"),
+    path("monthly_total_miles/", monthly_total_miles, name="monthly_total_miles"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

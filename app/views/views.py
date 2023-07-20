@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from views.models import Crash, TransitAgency, TransitExpense, MonthlyUnlinkedPassengerTrips, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, MonthlyVehicleRevenueHours, VehicleRevenueHours, MonthlyVehicleRevenueMiles, VehicleRevenueMiles, VehiclesOperatedMaximumService, MonthlyVehiclesOperatedMaximumService, DirectionalRouteMiles, Stops, StopTimes, Routes, Trips, Shapes, CalendarDates
+from views.models import Crash, TransitAgency, TransitExpense, MonthlyUnlinkedPassengerTrips, UnlinkedPassengerTrips, Fares, PassengerMilesTraveled, MonthlyVehicleRevenueHours, VehicleRevenueHours, MonthlyVehicleRevenueMiles, VehicleRevenueMiles, VehiclesOperatedMaximumService, MonthlyVehiclesOperatedMaximumService, DirectionalRouteMiles, Stops, StopTimes, Routes, Trips, Shapes, CalendarDates, RoutePerformance
 
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -4079,6 +4079,37 @@ class BlogPage(View):
     def get(self, request, *args, **kwargs):
 
         return render(request, "blog.html", context={"debug": DEBUG})
+    
+class CapMetroPage(View):
+    
+    def get(self, request, *args, **kwargs):
+        local_routes = RoutePerformance.objects.filter(route_id__route_id__gte=1, route_id__route_id__lte=99).values("route_id__route_long_name", "route_id__route_id").distinct
+        flyer_routes = RoutePerformance.objects.filter(route_id__route_id__gte=100, route_id__route_id__lte=199).exclude(route_id__route_id__in=[101,102]).values("route_id__route_long_name", "route_id__route_id").distinct
+        feeder_routes = RoutePerformance.objects.filter(route_id__route_id__gte=200, route_id__route_id__lte=299).values("route_id__route_long_name", "route_id__route_id").distinct
+        paratransit =  RoutePerformance.objects.filter(route_id__route_id__in=[101,102]).values("route_id__route_long_name", "route_id__route_id").distinct
+        night_routes = RoutePerformance.objects.filter(route_id__route_id__gte=480, route_id__route_id__lte=489).values("route_id__route_long_name", "route_id__route_id").distinct
+        crosstown_routes = RoutePerformance.objects.filter(route_id__route_id__gte=300, route_id__route_id__lte=399).values("route_id__route_long_name", "route_id__route_id").distinct()
+        shuttle_routes = RoutePerformance.objects.filter(route_id__route_id__gte=400, route_id__route_id__lte=499).exclude(route_id__route_id__in=[480,481,482,483,484,485,486,487,488,489]).values("route_id__route_long_name", "route_id__route_id").distinct
+        ut_routes = RoutePerformance.objects.filter(route_id__route_id__gte=600, route_id__route_id__lte=699).values("route_id__route_long_name", "route_id__route_id").distinct
+        rapid_routes = RoutePerformance.objects.filter(route_id__route_id__gte=800, route_id__route_id__lte=899).values("route_id__route_long_name", "route_id__route_id").distinct
+        express_routes = RoutePerformance.objects.filter(route_id__route_id__gte=900, route_id__route_id__lte=999).values("route_id__route_long_name", "route_id__route_id").distinct
+        rail_routes = RoutePerformance.objects.filter(route_id__route_id__gte=500, route_id__route_id__lte=599).values("route_id__route_long_name", "route_id__route_id").distinct
+
+        context = {
+            "local_routes": local_routes,
+            "flyer_routes": flyer_routes,
+            "feeder_routes": feeder_routes,
+            "paratransit": paratransit,
+            "crosstown_routes": crosstown_routes,
+            "night_routes": night_routes,
+            "shuttle_routes": shuttle_routes,
+            "ut_routes": ut_routes,
+            "rapid_routes": rapid_routes,
+            "express_routes": express_routes,
+            "rail_routes": rail_routes,
+            "debug": DEBUG
+        }
+        return render(request, "capmetro.html", context=context)
 
         
 class CityMapperPage(View):
@@ -5567,6 +5598,262 @@ def route(request):
 @csrf_exempt
 def address(request):
     return render(request, "address.html", context={})
+
+@csrf_exempt
+def monthly_ridership(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(riders=Round(Sum(F("number_days") * F("average_daily_riders")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "riders": row['riders']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_revenue_hours(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(revenue_hours=Round(Sum(F("number_days") * F("revenue_hours")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "revenue_hours": row['revenue_hours']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_revenue_miles(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(revenue_miles=Round(Sum(F("number_days") * F("revenue_miles")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "revenue_miles": row['revenue_miles']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_total_hours(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(total_hours=Round(Sum(F("number_days") * F("total_hours")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "total_hours": row['total_hours']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_total_miles(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("date", "month", "year").annotate(total_miles=Round(Sum(F("number_days") * F("total_miles")))).order_by("date")
+    for row in performance:
+        data += [{"year": row['year'], "month": row['month'], "date": row['date'], "total_miles": row['total_miles']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+
+
+
+
+
+
+
+@csrf_exempt
+def monthly_ridership_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(riders=Round(Sum(F("number_days") * F("average_daily_riders")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "riders": row['riders']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_revenue_hours_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(revenue_hours=Round(Sum(F("number_days") * F("revenue_hours")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "revenue_hours": row['revenue_hours']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_revenue_miles_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(revenue_miles=Round(Sum(F("number_days") * F("revenue_miles")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "revenue_miles": row['revenue_miles']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_total_hours_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(total_hours=Round(Sum(F("number_days") * F("total_hours")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "total_hours": row['total_hours']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+
+@csrf_exempt
+def monthly_total_miles_by_route(request):
+    # q = Q(route_id__route_id=7)
+    data = []
+    filters = {}
+    q = Q()
+
+    if "route_id" in request.GET and request.GET['route_id']:
+        filters['route_id'] = request.GET['route_id']
+        route_list = request.GET['route_id'].split(",")
+        q &= Q(route_id__route_id__in=route_list)
+
+
+    performance = RoutePerformance.objects.filter(q)\
+        .values("route_id__route_id", "date", "month", "year").annotate(total_miles=Round(Sum(F("number_days") * F("total_miles")))).order_by("date")
+    for row in performance:
+        data += [{"route": row['route_id__route_id'], "year": row['year'], "month": row['month'], "date": row['date'], "total_miles": row['total_miles']}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
 
 
 class StravaHeatmap(View):
