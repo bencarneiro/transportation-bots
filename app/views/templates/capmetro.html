@@ -2,45 +2,302 @@
    
 {% load static %}
 <html>
+<div style="display:flex">
+
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="rapid">
+        <h3 style="text-align:center">Rapid Routes</h3>
+        {% for key in rapid_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="rapid" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="rapidSelectors" style="text-align:center">
+    <button onclick=selectRapid()>Select All Rapid Routes</button>
+    <button onclick=deselectRapid()>Deselect All Rapid Routes</button>
+    </div>
+    <br></br>
+    </div>
+
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="rail">
+        <h3 style="text-align:center">Rail Routes</h3>
+        {% for key in rail_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="rail" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="railSelectors" style="text-align:center">
+    <button onclick=selectRail()>Select All Rail Routes</button>
+    <button onclick=deselectRail()>Deselect All Rail Routes</button>
+    </div>
+    <br></br>
+    </div>
+
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="local"">
+
+        <h3 style="text-align:center">Local Routes</h3>
+        {% for key in local_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="local" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="localSelectors" style="text-align:center">
+    <button onclick=selectLocal()>Select All Local Routes</button>
+    <button onclick=deselectLocal()>Deselect All Local Routes</button>
+    </div>
+    <br></br>
+    </div>
 
 
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="crosstown">
+        <h3 style="text-align:center">Crosstown Routes</h3>
+        {% for key in crosstown_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="crosstown" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="crosstownSelectors" style="text-align:center">
+    <button onclick=selectCrosstown()>Select All Crosstown Routes</button>
+    <button onclick=deselectCrosstown()>Deselect All Crosstown Routes</button>
+    </div>
+    <br></br>
+    </div>
+
+
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="feeder">
+        <h3 style="text-align:center">Feeder Routes</h3>
+        {% for key in feeder_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="feeder" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="feederSelectors" style="text-align:center">
+    <button onclick=selectFeeder()>Select All Feeder Routes</button>
+    <button onclick=deselectFeeder()>Deselect All Feeder Routes</button>
+    </div>
+    <br></br>
+    </div>
+
+
+</div>
+<div style="display:flex">
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="flyer">
+        <h3 style="text-align:center">Flyer Routes</h3>
+        {% for key in flyer_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="flyer" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="flyerSelectors" style="text-align:center">
+    <button onclick=selectFlyer()>Select All Flyer Routes</button>
+    <button onclick=deselectFlyer()>Deselect All Flyer Routes</button>
+    </div>
+    <br></br>
+    </div>
+
+
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="express">
+        <h3 style="text-align:center">Express Routes</h3>
+        {% for key in express_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="express" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="expressSelectors" style="text-align:center">
+    <button onclick=selectExpress()>Select All Express Routes</button>
+    <button onclick=deselectExpress()>Deselect All Express Routes</button>
+    </div>
+    <br></br>
+    </div>
+
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="ut">
+        <h3 style="text-align:center">UT Routes</h3>
+        {% for key in ut_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="ut" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="utSelectors" style="text-align:center">
+    <button onclick=selectUT()>Select All UT Routes</button>
+    <button onclick=deselectUT()>Deselect All UT Routes</button>
+    </div>
+    <br></br>
+    </div>
+
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="shuttle">
+        <h3 style="text-align:center">Shuttle Routes</h3>
+        {% for key in shuttle_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="shuttle" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="shuttleSelectors" style="text-align:center">
+    <button onclick=selectShuttle()>Select All Shuttle Routes</button>
+    <button onclick=deselectShuttle()>Deselect All Shuttle Routes</button>
+    </div>
+    <br></br>
+    </div>
+
+
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="night">
+        <h3 style="text-align:center">Night Routes</h3>
+        {% for key in night_routes %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="night" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="nightSelectors" style="text-align:center">
+    <button onclick=selectNight()>Select All Night Routes</button>
+    <button onclick=deselectNight()>Deselect All Night Routes</button>
+    </div>
+    <br></br>
+    </div>
+
+    <div style="width:100%">
+    <fieldset style="text-align:center" id="paratransit">
+        <h3 style="text-align:center">Paratransit Service</h3>
+        {% for key in paratransit %} 
+        <div><input type="checkbox" id="{{key.route_id__route_id|safe}}" name="paratransit" unchecked>
+        <label for="scales">{{key.route_id__route_long_name}}</label></div>
+    {% endfor %}
+    </fieldset>
+    <div id="paratransitSelectors" style="text-align:center">
+    <button onclick=selectParatransit()>Select All Paratransit Service</button>
+    <button onclick=deselectParatransit()>Deselect All Paratransit Service</button>
+    </div>
+    <br></br>
+    </div>
     
-<fieldset id="local">
-    {% for key in local_routes %} 
-    <input type="checkbox" id="{{key.route_id__route_id|safe}}" name="local" unchecked>
-    <label for="scales">{{key.route_id__route_long_name}}</label>
-  {% endfor %}
-</fieldset>
-<div id="localSelectors">
-<button onclick=selectLocal()>Select All Local Routes</button>
-<button onclick=deselectLocal()>Deselect All Local Routes</button>
+
+
+
 </div>
 
 
  <div style="width: 100%;" id="chartContainer"><canvas id="upt"></canvas></div>
 
+<script>
+    function getRouteArray() {
+        var local=document.getElementsByName('local');  
+        var routeArray = []
+        for(var i=0; i<local.length; i++){  
+            if(local[i].type=='checkbox' && local[i].checked==true)  
+            routeArray.push(local[i].id)
+        } 
 
+        var rapid=document.getElementsByName('rapid');  
+        for(var i=0; i<rapid.length; i++){  
+            if(rapid[i].type=='checkbox' && rapid[i].checked==true)  
+            routeArray.push(rapid[i].id)
+        } 
+
+        var crosstown=document.getElementsByName('crosstown');  
+        for(var i=0; i<crosstown.length; i++){  
+            if(crosstown[i].type=='checkbox' && crosstown[i].checked==true)  
+            routeArray.push(crosstown[i].id)
+        } 
+
+        var feeder=document.getElementsByName('feeder');  
+        for(var i=0; i<feeder.length; i++){  
+            if(feeder[i].type=='checkbox' && feeder[i].checked==true)  
+            routeArray.push(feeder[i].id)
+        } 
+
+        var rail=document.getElementsByName('rail');  
+        for(var i=0; i<rail.length; i++){  
+            if(rail[i].type=='checkbox' && rail[i].checked==true)  
+            routeArray.push(rail[i].id)
+        } 
+
+        var shuttle=document.getElementsByName('shuttle');  
+        for(var i=0; i<shuttle.length; i++){  
+            if(shuttle[i].type=='checkbox' && shuttle[i].checked==true)  
+            routeArray.push(shuttle[i].id)
+        } 
+
+        var flyer=document.getElementsByName('flyer');  
+        for(var i=0; i<flyer.length; i++){  
+            if(flyer[i].type=='checkbox' && flyer[i].checked==true)  
+            routeArray.push(flyer[i].id)
+        } 
+        var express=document.getElementsByName('express');  
+        for(var i=0; i<express.length; i++){  
+            if(express[i].type=='checkbox' && express[i].checked==true)  
+            routeArray.push(express[i].id)
+        } 
+
+        var paratransit=document.getElementsByName('paratransit');  
+        for(var i=0; i<paratransit.length; i++){  
+            if(paratransit[i].type=='checkbox' && paratransit[i].checked==true)  
+            routeArray.push(paratransit[i].id)
+        } 
+        var ut=document.getElementsByName('ut');  
+        for(var i=0; i<ut.length; i++){  
+            if(ut[i].type=='checkbox' && ut[i].checked==true)  
+            routeArray.push(ut[i].id)
+        } 
+        var night=document.getElementsByName('night');  
+        for(var i=0; i<night.length; i++){  
+            if(night[i].type=='checkbox' && night[i].checked==true)  
+            routeArray.push(night[i].id)
+        } 
+        
+
+        return(routeArray)   
+    }
+</script>
 
  <script>
+    const rapidRoutes = document.querySelector("#rapid");
+    rapidRoutes.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const rapidSelectors = document.querySelector("#rapidSelectors");
+    rapidSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectRapid(){  
+        var ele=document.getElementsByName('rapid');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectRapid(){  
+        var ele=document.getElementsByName('rapid');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
 
     const localRoutes = document.querySelector("#local");
     localRoutes.addEventListener("change", (event) => {
 
-        var routes = getLocalRouteArray()
+        var routes = getRouteArray()
         refreshRidership(routes)
     });
-
     const localSelectors = document.querySelector("#localSelectors");
     localSelectors.addEventListener("click", (event) => {
 
-        var routes = getLocalRouteArray()
+        var routes = getRouteArray()
         refreshRidership(routes)
     });
-
-    // const allLocalRoutes = document.querySelector("#all");
-    function SelectAllLocalRoutes() {
-        console.log("hi")
-    }
     function selectLocal(){  
         var ele=document.getElementsByName('local');  
         for(var i=0; i<ele.length; i++){  
@@ -56,15 +313,283 @@
                 
         }  
     } 
-    function getLocalRouteArray(){  
-        var ele=document.getElementsByName('local');  
-        var localRouteArray = []
+
+
+
+    const crosstownRoutes = document.querySelector("#crosstown");
+    crosstownRoutes.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const crosstownSelectors = document.querySelector("#crosstownSelectors");
+    crosstownSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectCrosstown(){  
+        var ele=document.getElementsByName('crosstown');  
         for(var i=0; i<ele.length; i++){  
-            if(ele[i].type=='checkbox' && ele[i].checked==true)  
-                localRouteArray.push(ele[i].id)
-        } 
-        return(localRouteArray)
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
     }  
+    function deselectCrosstown(){  
+        var ele=document.getElementsByName('crosstown');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
+
+
+    const feederRoutes = document.querySelector("#feeder");
+    feederRoutes.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const feederSelectors = document.querySelector("#feederSelectors");
+    feederSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectFeeder(){  
+        var ele=document.getElementsByName('feeder');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectFeeder(){  
+        var ele=document.getElementsByName('feeder');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
+
+    
+    const flyerRoutes = document.querySelector("#flyer");
+    flyerRoutes.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const flyerSelectors = document.querySelector("#flyerSelectors");
+    flyerSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectFlyer(){  
+        var ele=document.getElementsByName('flyer');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectFlyer(){  
+        var ele=document.getElementsByName('flyer');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
+
+
+    const expressRoutes = document.querySelector("#express");
+    expressRoutes.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const expressSelectors = document.querySelector("#expressSelectors");
+    expressSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectExpress(){  
+        var ele=document.getElementsByName('express');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectExpress(){  
+        var ele=document.getElementsByName('express');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
+
+
+    const shuttleRoutes = document.querySelector("#shuttle");
+    shuttleRoutes.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const shuttleSelectors = document.querySelector("#shuttleSelectors");
+    shuttleSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectShuttle(){  
+        var ele=document.getElementsByName('shuttle');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectShuttle(){  
+        var ele=document.getElementsByName('shuttle');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
+
+
+    const nightRoutes = document.querySelector("#night");
+    nightRoutes.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const nightSelectors = document.querySelector("#nightSelectors");
+    nightSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectNight(){  
+        var ele=document.getElementsByName('night');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectNight(){  
+        var ele=document.getElementsByName('night');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
+
+
+    const railRoutes = document.querySelector("#rail");
+    railRoutes.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const railSelectors = document.querySelector("#railSelectors");
+    railSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectRail(){  
+        var ele=document.getElementsByName('rail');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectRail(){  
+        var ele=document.getElementsByName('rail');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
+
+
+    const utRoutes = document.querySelector("#ut");
+    utRoutes.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const utSelectors = document.querySelector("#utSelectors");
+    utSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectUT(){  
+        var ele=document.getElementsByName('ut');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectUT(){  
+        var ele=document.getElementsByName('ut');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
+
+
+    const paratransit = document.querySelector("#paratransit");
+    paratransit.addEventListener("change", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    const paratransitSelectors = document.querySelector("#paratransitSelectors");
+    paratransitSelectors.addEventListener("click", (event) => {
+
+        var routes = getRouteArray()
+        refreshRidership(routes)
+    });
+    function selectParatransit(){  
+        var ele=document.getElementsByName('paratransit');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=true;  
+        }  
+    }  
+    function deselectParatransit(){  
+        var ele=document.getElementsByName('paratransit');  
+        for(var i=0; i<ele.length; i++){  
+            if(ele[i].type=='checkbox')  
+                ele[i].checked=false;  
+                
+        }  
+    } 
+
+
+
+
+
+
+    
 
 </script>
 
@@ -102,13 +627,14 @@
                                             new Intl.NumberFormat("en-US", {
                                                 notation: "compact",
                                                 compactDisplay: "short",
-                                                }).format(tooltipItem.yLabel)
-                                        )
+                                                }).format(tooltipItem.yLabel).concat(" Monthly Riders")
+                                        ) 
                                     }
                                 }
                             },
                                 scales: {
                                     yAxes: [{
+                                        label: "Riders",
                                         ticks: {
                                             // Include a dollar sign in the ticks
                                             callback: function(value, index, ticks) {
@@ -143,7 +669,7 @@
         }
 
 
-        var routes = getLocalRouteArray()
+        var routes = getRouteArray()
         ids = routes.join(",")
         console.log(ids)
         url = "/monthly_ridership/?route_id=" + ids
@@ -161,7 +687,7 @@
                                     new Intl.NumberFormat("en-US", {
                                         notation: "compact",
                                         compactDisplay: "short",
-                                        }).format(tooltipItem.yLabel)
+                                        }).format(tooltipItem.yLabel).concat(" Monthly Riders")
                                 )
                             }
                         }
@@ -184,7 +710,7 @@
                     },
                     data: 
                     {
-                        labels: resp.data.data.map(row => row.year),
+                        labels: resp.data.data.map(row =>  row.year + " - " + row.month),
                         datasets: [
                         {
                             label: 'Riders',

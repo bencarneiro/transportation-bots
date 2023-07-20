@@ -4084,7 +4084,32 @@ class CapMetroPage(View):
     
     def get(self, request, *args, **kwargs):
         local_routes = RoutePerformance.objects.filter(route_id__route_id__gte=1, route_id__route_id__lte=99).values("route_id__route_long_name", "route_id__route_id").distinct
-        return render(request, "capmetro.html", context={"debug": DEBUG, "local_routes": local_routes})
+        flyer_routes = RoutePerformance.objects.filter(route_id__route_id__gte=100, route_id__route_id__lte=199).exclude(route_id__route_id__in=[101,102]).values("route_id__route_long_name", "route_id__route_id").distinct
+        feeder_routes = RoutePerformance.objects.filter(route_id__route_id__gte=200, route_id__route_id__lte=299).values("route_id__route_long_name", "route_id__route_id").distinct
+        paratransit =  RoutePerformance.objects.filter(route_id__route_id__in=[101,102]).values("route_id__route_long_name", "route_id__route_id").distinct
+        night_routes = RoutePerformance.objects.filter(route_id__route_id__gte=480, route_id__route_id__lte=489).values("route_id__route_long_name", "route_id__route_id").distinct
+        crosstown_routes = RoutePerformance.objects.filter(route_id__route_id__gte=300, route_id__route_id__lte=399).values("route_id__route_long_name", "route_id__route_id").distinct()
+        shuttle_routes = RoutePerformance.objects.filter(route_id__route_id__gte=400, route_id__route_id__lte=499).exclude(route_id__route_id__in=[480,481,482,483,484,485,486,487,488,489]).values("route_id__route_long_name", "route_id__route_id").distinct
+        ut_routes = RoutePerformance.objects.filter(route_id__route_id__gte=600, route_id__route_id__lte=699).values("route_id__route_long_name", "route_id__route_id").distinct
+        rapid_routes = RoutePerformance.objects.filter(route_id__route_id__gte=800, route_id__route_id__lte=899).values("route_id__route_long_name", "route_id__route_id").distinct
+        express_routes = RoutePerformance.objects.filter(route_id__route_id__gte=900, route_id__route_id__lte=999).values("route_id__route_long_name", "route_id__route_id").distinct
+        rail_routes = RoutePerformance.objects.filter(route_id__route_id__gte=500, route_id__route_id__lte=599).values("route_id__route_long_name", "route_id__route_id").distinct
+
+        context = {
+            "local_routes": local_routes,
+            "flyer_routes": flyer_routes,
+            "feeder_routes": feeder_routes,
+            "paratransit": paratransit,
+            "crosstown_routes": crosstown_routes,
+            "night_routes": night_routes,
+            "shuttle_routes": shuttle_routes,
+            "ut_routes": ut_routes,
+            "rapid_routes": rapid_routes,
+            "express_routes": express_routes,
+            "rail_routes": rail_routes,
+            "debug": DEBUG
+        }
+        return render(request, "capmetro.html", context=context)
 
         
 class CityMapperPage(View):
