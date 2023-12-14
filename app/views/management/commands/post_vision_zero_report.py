@@ -89,6 +89,7 @@ class Command(BaseCommand):
                         description += details
                     description += f"\n\nLink to Location: {link}"
                     description += f"\nAdditional Info: {'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + incident['crash_id']}"
+                    description += f"\n#visionzero #mobility #austin #accident #crash"
              
                     print(description)
                     if media_id:

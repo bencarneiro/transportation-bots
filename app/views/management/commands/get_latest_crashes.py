@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 media_id = uploadable_media['id']
                 link = "https://www.google.com/maps/search/?api=1&query=" + report['latitude'] + "%2C" + report['longitude']
                 # 30.281821%2C-97.708529
-                status_text = f"{report['issue_reported']} at {report['address']} --- {link}"
+                status_text = f"{report['issue_reported']} at {report['address']} --- {link} --- #austin #austintx #traffic"
                 api.status_post(status_text, media_ids=[media_id])
                 print("NEW CRASH")
             else:
