@@ -21,6 +21,13 @@ class Command(BaseCommand):
     Shapes.objects.all().delete()
     # Routes.objects.all().delete()
 
+    rs = Routes.objects.all()
+    for r in rs:
+        try:
+            r.delete()
+        except:
+            print("no")
+
     Stops.objects.all().delete()
 
     dates = gtfs.open("calendar_dates.txt")
@@ -44,25 +51,26 @@ class Command(BaseCommand):
             print(f"saved the date data for {results[1]}")
 
     #routes
-   
     routes = gtfs.open("routes.txt")
     for x in routes.readlines():
         results = x.decode()
         results = results.split(',')
         if results[0] != "route_id":
             print(results)
-            route = Routes(
-                route_id = int(results[0]),
-                transit_agency = cmta,
-                route_short_name = results[2],
-                route_long_name = results[3],
-                route_type = int(results[4]),
-                route_url = results[5],
-                route_color =  results[6],
-                route_text_color =  results[7][:-1]
-            )
-            route.save()
-            print(f"Route #{results[0]} written")
+            found_routes = Routes.objects.filter(route_id=int(results[0]))
+            if len(found_routes) == 0:
+                route = Routes(
+                    route_id = int(results[0]),
+                    transit_agency = cmta,
+                    route_short_name = results[2],
+                    route_long_name = results[3],
+                    route_type = int(results[4]),
+                    route_url = results[5],
+                    route_color =  results[6],
+                    route_text_color =  results[7][:-1]
+                )
+                route.save()
+                print(f"Route #{results[0]} written")
 
     #shapes
     shapes = gtfs.open("shapes.txt")
