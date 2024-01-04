@@ -9,6 +9,7 @@ import folium
 from django.db.models.functions import Round
 from app.settings import DEBUG
 import datetime
+from dateutil import tz
 import requests
 import json
 # from shapely.geometry import LineString
@@ -4067,7 +4068,31 @@ def get_agencies(request):
     else:
         agencies = TransitAgency.objects.values('agency_name', 'id').distinct().order_by('agency_name')
         return JsonResponse(list(agencies), safe=False)
-    
+
+@csrf_exempt
+def austin_safety_crisis(request):
+    # q = (Q(pedestrian_death_count__gte=1) | Q(pedestrian_serious_injury_count__gte=1) | Q(bicycle_death_count__gte=1) | Q(bicycle_serious_injury_count__gte=1) | Q(other_death_count__gte=1) | Q(other_serious_injury_count__gte=1))
+    # atd_failures = Crash.objects.filter(q)
+    crash_counts = Crash.objects.raw("""
+    select 1 as crash_id,
+        YEAR(crash_date) as year,
+        MONTH(crash_date) as month,
+        sum(bicycle_death_count) as bicycle_death_count,
+        sum(bicycle_serious_injury_count) as bicycle_serious_injury_count,
+        sum(pedestrian_death_count) as pedestrian_death_count,
+        sum(pedestrian_serious_injury_count) as pedestrian_serious_injury_count,
+        sum(other_death_count) as other_death_count,
+        sum(other_serious_injury_count) as other_serious_injury_count
+    from transportation.crash 
+    group by 
+    YEAR(crash_date),
+    MONTH(crash_date)
+    order by 
+    YEAR(crash_date),
+    MONTH(crash_date);
+    """)
+    return render(request, "austin_safety_crisis.html", context={"crashes": crash_counts})
+
 class HomePage(View):
     
     def get(self, request, *args, **kwargs):
@@ -5276,6 +5301,15 @@ def total_red_line_spending(request):
     resp = {"data": data}
     return JsonResponse(resp)
 
+def get_transit_date():
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('America/Chicago')
+    utc = datetime.datetime.today()
+    central = utc.astimezone(to_zone)
+    todays_transit_date = central.strftime("%Y%m%d")
+    if central.strftime("%T")[:2] == "00":
+        todays_transit_date = str(int(todays_transit_date) - 1)
+    return todays_transit_date
 
 @csrf_exempt
 def get_closest_bus_stops(request):
@@ -5284,6 +5318,7 @@ def get_closest_bus_stops(request):
         lon = request.GET['lon']
     else:
         return JsonResponse({"hi": "hello"})
+    todays_transit_date = get_transit_date()
     route_ids = []
     r = requests.get("https://data.texas.gov/download/cuc7-ywmd/text%2Fplain")
     bus_positions = json.loads(r.text)
@@ -5331,13 +5366,13 @@ def get_closest_bus_stops(request):
             LEFT JOIN stops on stop_times.stop_id = stops.id
             where stop_times.trip_id in
             (select id from trips where service_id in 
-            (select service_id from calendar_dates where date = 20230629))
+            (select service_id from calendar_dates where date = %s))
             and departure_time > "1970-01-01 %s"
             and departure_time < "1970-01-01 %s"
             and stop_times.stop_id = %s
             order by stop_times.departure_time;
 
-        ''', [now, in_two_hours_timestring, stop_id])
+        ''', [todays_transit_date, now, in_two_hours_timestring, stop_id])
         shape_ids = []
         html = "<h1>Transit Schedule:</h1>\n"
         stop_lat = None
