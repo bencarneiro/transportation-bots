@@ -5322,9 +5322,9 @@ def get_closest_bus_stops(request):
     route_ids = []
     r = requests.get("https://data.texas.gov/download/cuc7-ywmd/text%2Fplain")
     bus_positions = json.loads(r.text)
-    now = (datetime.datetime.now() - datetime.timedelta(hours=5, minutes=5)).strftime("%H:%M:%S") 
+    now = (datetime.datetime.now() - datetime.timedelta(hours=6, minutes=5)).strftime("%H:%M:%S") 
     # now_timestring = now
-    in_two_hours = datetime.datetime.now() - datetime.timedelta(hours=3)
+    in_two_hours = datetime.datetime.now() - datetime.timedelta(hours=4)
     in_two_hours_timestring = in_two_hours.strftime("%H:%M:%S")
     print(f"NOW {now}")
     print(f"INTWOHOURS {in_two_hours_timestring}")
