@@ -19,6 +19,8 @@
         <canvas id="pedestrianSeriousInjuries"></canvas>
         <canvas id="bikeDeaths"></canvas>
         <canvas id="bikeSeriousInjuries"></canvas>
+        <canvas id="micromobilityDeaths"></canvas>
+        <canvas id="micromobilitySeriousInjuries"></canvas>
         <canvas id="motorcycleDeaths"></canvas>
         <canvas id="motorcycleSeriousInjuries"></canvas>
         <canvas id="otherDeaths"></canvas>
@@ -293,6 +295,129 @@ async function refreshCharts() {
             }
         )
 
+        // create Micromobility deaths chart
+        micromobilityDeathsChart = document.getElementById("micromobilityDeaths")
+        micromobilityDeathsChart.remove()
+        let micromobilityDeathsCanvas = document.createElement('canvas')
+        micromobilityDeathsCanvas.id = "micromobilityDeaths"
+        micromobilityDeathsCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(micromobilityDeathsCanvas);
+
+        var micromobilityDeathsChart = new Chart(
+            document.getElementById('micromobilityDeaths'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Micromobility Deaths',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Micromobility Deaths")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Micromobility Deaths',
+                        data: resp.data.data.map(row => row.bicycle_death_count),
+                        backgroundColor: "red",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+        // create micromobility injuries chart
+        micromobilitySeriousInjuriesChart = document.getElementById("micromobilitySeriousInjuries")
+        micromobilitySeriousInjuriesChart.remove()
+        let micromobilitySeriousInjuriesCanvas = document.createElement('canvas')
+        micromobilitySeriousInjuriesCanvas.id = "micromobilitySeriousInjuries"
+        micromobilitySeriousInjuriesCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(micromobilitySeriousInjuriesCanvas);
+
+        var micromobilityDeathsChart = new Chart(
+            document.getElementById('micromobilitySeriousInjuries'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Micromobility Serious Injuries',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Micromobility Serious Injuries")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bicycle Serious Injuries',
+                        data: resp.data.data.map(row => row.bicycle_serious_injury_count),
+                        backgroundColor: "grey",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
         // create motorcycle deaths chart
         motorcycleDeathsChart = document.getElementById("motorcycleDeaths")
         motorcycleDeathsChart.remove()

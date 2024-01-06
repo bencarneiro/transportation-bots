@@ -145,6 +145,10 @@ def save_crash(incident):
     other_fl = False
     if "other_fl" in incident and incident['other_fl'] == "Y":
         other_fl = True
+    # micromobility_fl
+    micromobility_fl = False
+    if "micromobility_fl" in incident and incident['micromobility_fl'] == "Y":
+        micromobility_fl = True
 
     # point
     point = None
@@ -199,6 +203,14 @@ def save_crash(incident):
     other_serious_injury_count = 0
     if "other_serious_injury_count" in incident:
         other_serious_injury_count = int(incident['other_serious_injury_count'])
+    # micromobility_death_count
+    micromobility_death_count = 0
+    if "micromobility_death_count" in incident:
+        micromobility_death_count = int(incident['micromobility_death_count'])
+    # micromobility_serious_injury_count
+    micromobility_serious_injury_count = 0
+    if "micromobility_serious_injury_count" in incident:
+        micromobility_serious_injury_count = int(incident['micromobility_serious_injury_count'])
     # onsys_fl
     onsys_fl = False
     if "onsys_fl" in incident and incident['onsys_fl'] == "Y":
@@ -257,6 +269,9 @@ def save_crash(incident):
         motorcycle_serious_injury_count=motorcycle_serious_injury_count,
         other_death_count=other_death_count,
         other_serious_injury_count=other_serious_injury_count,
+        micromobility_death_count=micromobility_death_count,
+        micromobility_serious_injury_count=micromobility_serious_injury_count,
+        micromobility_fl=micromobility_fl,
         onsys_fl=onsys_fl,
         private_dr_fl=private_dr_fl
     )
@@ -4087,7 +4102,9 @@ def austin_safety_crisis_data(request):
         sum(pedestrian_death_count) as pedestrian_death_count,
         sum(pedestrian_serious_injury_count) as pedestrian_serious_injury_count,
         sum(other_death_count) as other_death_count,
-        sum(other_serious_injury_count) as other_serious_injury_count
+        sum(other_serious_injury_count) as other_serious_injury_count,
+        sum(micromobility_death_count) as micromobility_death_count,
+        sum(micromobility_serious_injury_count) as micromobility_serious_injury_count
     from transportation.crash 
     group by 
     YEAR(crash_date)
@@ -4098,7 +4115,7 @@ def austin_safety_crisis_data(request):
     crash_counts = cursor.fetchall()
 
     for row in crash_counts:
-        data += [{"year": row[1], "motor_vehicle_death_count": row[2], "motor_vehicle_serious_injury_count": row[3], "motorcycle_death_count": row[4], "motorcycle_serious_injury_count": row[5], "bicycle_death_count": row[6], "bicycle_serious_injury_count": row[7], "pedestrian_death_count": row[8], "pedestrian_serious_injury_count": row[9], "other_death_count": row[10], "other_serious_injury_count": row[11]  }]
+        data += [{"year": row[1], "motor_vehicle_death_count": row[2], "motor_vehicle_serious_injury_count": row[3], "motorcycle_death_count": row[4], "motorcycle_serious_injury_count": row[5], "bicycle_death_count": row[6], "bicycle_serious_injury_count": row[7], "pedestrian_death_count": row[8], "pedestrian_serious_injury_count": row[9], "other_death_count": row[10], "other_serious_injury_count": row[11], "micromobility_death_count": row[12], "micromobility_serious_injury_count": row[13]}]
         length = len(data)
     resp = {
         "length": length,

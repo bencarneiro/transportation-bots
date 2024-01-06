@@ -12,6 +12,7 @@ class Command(BaseCommand):
     #     parser.add_argument('end_block', type=int, help='Stop Scraping Transactions when this block # is reached')
 
     def handle(self, *args, **kwargs):
+        Crash.objects.all().delete()
         offset = 0
         keep_going = True
         while keep_going:
@@ -26,3 +27,4 @@ class Command(BaseCommand):
                 keep_going = False
             else: 
                 offset += 1000
+                print(offset)
