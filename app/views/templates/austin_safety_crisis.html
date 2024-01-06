@@ -353,7 +353,7 @@ async function refreshCharts() {
                     datasets: [
                     {
                         label: 'Micromobility Deaths',
-                        data: resp.data.data.map(row => row.bicycle_death_count),
+                        data: resp.data.data.map(row => row.micromobility_death_count),
                         backgroundColor: "red",
                         borderColor: "black"
                     }
@@ -415,8 +415,8 @@ async function refreshCharts() {
                     labels: resp.data.data.map(row => row.year),
                     datasets: [
                     {
-                        label: 'Bicycle Serious Injuries',
-                        data: resp.data.data.map(row => row.bicycle_serious_injury_count),
+                        label: 'Micromobility Serious Injuries',
+                        data: resp.data.data.map(row => row.micromobility_serious_injury_count),
                         backgroundColor: "grey",
                         borderColor: "black"
                     }
