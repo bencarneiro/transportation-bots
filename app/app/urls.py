@@ -96,7 +96,7 @@ get_states,\
 get_agencies, HomePage, CapMetroPage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap, StravaHeatmap,\
 commuter_rail_upt, commuter_rail_pmt, total_red_line_spending, get_closest_bus_stops,\
 route, monthly_ridership_by_route, monthly_revenue_hours_by_route, monthly_revenue_miles_by_route, monthly_total_hours_by_route, monthly_total_miles_by_route, \
-monthly_ridership, monthly_revenue_hours, monthly_revenue_miles, monthly_total_hours, monthly_total_miles
+monthly_ridership, monthly_revenue_hours, monthly_revenue_miles, monthly_total_hours, monthly_total_miles, austin_safety_crisis, austin_safety_crisis_data
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -222,6 +222,8 @@ urlpatterns = [
     path("monthly_revenue_miles/", monthly_revenue_miles, name="monthly_revenue_miles"),
     path("monthly_total_hours/", monthly_total_hours, name="monthly_total_hours"),
     path("monthly_total_miles/", monthly_total_miles, name="monthly_total_miles"),
+    path("austin_safety_crisis/", austin_safety_crisis, name="austin_safety_crisis"),
+    path("austin_safety_crisis_data/", austin_safety_crisis_data, name="austin_safety_crisis_data"),
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': STATIC_ROOT}), 
     
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

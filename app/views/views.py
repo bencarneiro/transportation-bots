@@ -4070,13 +4070,18 @@ def get_agencies(request):
         return JsonResponse(list(agencies), safe=False)
 
 @csrf_exempt
-def austin_safety_crisis(request):
-    # q = (Q(pedestrian_death_count__gte=1) | Q(pedestrian_serious_injury_count__gte=1) | Q(bicycle_death_count__gte=1) | Q(bicycle_serious_injury_count__gte=1) | Q(other_death_count__gte=1) | Q(other_serious_injury_count__gte=1))
-    # atd_failures = Crash.objects.filter(q)
-    crash_counts = Crash.objects.raw("""
+def austin_safety_crisis_data(request):
+     # q = Q(route_id__route_id=7)
+    data = []
+    cursor = connection.cursor()
+
+    cursor.execute("""
     select 1 as crash_id,
         YEAR(crash_date) as year,
-        MONTH(crash_date) as month,
+        sum(motor_vehicle_death_count) as motor_vehicle_death_count,
+        sum(motor_vehicle_serious_injury_count) as motor_vehicle_serious_injury_count,
+        sum(motorcycle_death_count) as motorcycle_death_count,
+        sum(motorcycle_serious_injury_count) as motorcycle_serious_injury_count,
         sum(bicycle_death_count) as bicycle_death_count,
         sum(bicycle_serious_injury_count) as bicycle_serious_injury_count,
         sum(pedestrian_death_count) as pedestrian_death_count,
@@ -4085,13 +4090,28 @@ def austin_safety_crisis(request):
         sum(other_serious_injury_count) as other_serious_injury_count
     from transportation.crash 
     group by 
-    YEAR(crash_date),
-    MONTH(crash_date)
+    YEAR(crash_date)
     order by 
-    YEAR(crash_date),
-    MONTH(crash_date);
+    YEAR(crash_date);
     """)
-    return render(request, "austin_safety_crisis.html", context={"crashes": crash_counts})
+
+    crash_counts = cursor.fetchall()
+
+    for row in crash_counts:
+        data += [{"year": row[1], "motor_vehicle_death_count": row[2], "motor_vehicle_serious_injury_count": row[3], "motorcycle_death_count": row[4], "motorcycle_serious_injury_count": row[5], "bicycle_death_count": row[6], "bicycle_serious_injury_count": row[7], "pedestrian_death_count": row[8], "pedestrian_serious_injury_count": row[9], "other_death_count": row[10], "other_serious_injury_count": row[11]  }]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+@csrf_exempt
+def austin_safety_crisis(request):
+    # q = (Q(pedestrian_death_count__gte=1) | Q(pedestrian_serious_injury_count__gte=1) | Q(bicycle_death_count__gte=1) | Q(bicycle_serious_injury_count__gte=1) | Q(other_death_count__gte=1) | Q(other_serious_injury_count__gte=1))
+    # atd_failures = Crash.objects.filter(q)
+    
+    return render(request, "austin_safety_crisis.html", context={"crashes": ["hi"]})
 
 class HomePage(View):
     
