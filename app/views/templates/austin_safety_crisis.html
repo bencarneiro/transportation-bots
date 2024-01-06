@@ -1,0 +1,810 @@
+<html>
+    <style>
+        h1 {font-family:Arial, Helvetica, sans-serif}
+        h1 {text-align:center}
+        h1 {font-size:6rem}
+        #links {text-align: center}
+    </style>
+    <h1>Austin Has a Traffic Safety Crisis</h1>
+    <!-- {% load static %}
+    <
+
+    {% for c in crashes %}
+    {{ c }} <br>
+    {% endfor %} -->
+
+
+    <div id="chartsContainer">
+        <canvas id="pedestrianDeaths"></canvas>
+        <canvas id="pedestrianSeriousInjuries"></canvas>
+        <canvas id="bikeDeaths"></canvas>
+        <canvas id="bikeSeriousInjuries"></canvas>
+        <canvas id="micromobilityDeaths"></canvas>
+        <canvas id="micromobilitySeriousInjuries"></canvas>
+        <canvas id="motorcycleDeaths"></canvas>
+        <canvas id="motorcycleSeriousInjuries"></canvas>
+        <canvas id="motorVehicleDeaths"></canvas>
+        <canvas id="motorVehicleSeriousInjuries"></canvas>
+       </div>
+       <div id="links">
+        <div><a href="/pedestrian_crash_map/">See Map of Pedestrian Injuries and Fatalities</a></div><br>
+        <div><a href="/bike_crash_map/">See Map of Bicycle Injuries and Fatalities</a></div><br>
+        <div><a href="/micromobility_crash_map/">See Map of Micromobility Injuries and Fatalities</a></div><br>
+        <div><a href="/motorcycle_crash_map/">See Map of Motorcycle Injuries and Fatalities</a></div><br>
+        <div><a href="https://visionzero.austin.gov/viewer/">City Vision Zero Viewer</a></div><br>
+        <div><a href="https://data.austintexas.gov/Transportation-and-Mobility/Austin-Crash-Report-Data-Crash-Level-Records/y2wy-tgr5/about_data">Original Source - Austin Open Data Portal</a></div>
+    </div>
+       
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+<script>
+url = "/austin_safety_crisis_data/"
+// console.log(url)
+
+async function refreshCharts() {
+
+    const request = await axios.get(url).then((resp) => {
+
+        // create pedestrian deaths chart
+        pedestrianDeathsChart = document.getElementById("pedestrianDeaths")
+        pedestrianDeathsChart.remove()
+        let pedestrianDeathsCanvas = document.createElement('canvas')
+        pedestrianDeathsCanvas.id = "pedestrianDeaths"
+        pedestrianDeathsCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(pedestrianDeathsCanvas);
+
+        var pedestrianDeathsChart = new Chart(
+            document.getElementById('pedestrianDeaths'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Pedestrian Deaths',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Pedestrian Deaths")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Pedestrian Deaths',
+                        data: resp.data.data.map(row => row.pedestrian_death_count),
+                        backgroundColor: "red",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+        // create Pedestrian Serious injuries chart
+        pedestrianSeriousInjuriesChart = document.getElementById("pedestrianSeriousInjuries")
+        pedestrianSeriousInjuriesChart.remove()
+        let pedestrianSeriousInjuriesCanvas = document.createElement('canvas')
+        pedestrianSeriousInjuriesCanvas.id = "pedestrianSeriousInjuries"
+        pedestrianSeriousInjuriesCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(pedestrianSeriousInjuriesCanvas);
+
+        var pedestrianInjuriesChart = new Chart(
+            document.getElementById('pedestrianSeriousInjuries'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Pedestrian Serious Injuries',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Pedestrian Serious Injuries")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Pedestrian Serious Injuries',
+                        data: resp.data.data.map(row => row.pedestrian_serious_injury_count),
+                        backgroundColor: "grey",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+        // create bike deaths chart
+        bikeDeathsChart = document.getElementById("bikeDeaths")
+        bikeDeathsChart.remove()
+        let bikeDeathsCanvas = document.createElement('canvas')
+        bikeDeathsCanvas.id = "bikeDeaths"
+        bikeDeathsCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(bikeDeathsCanvas);
+
+        var bikeDeathsChart = new Chart(
+            document.getElementById('bikeDeaths'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Bicycle Deaths',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Bike Deaths")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bicycle Deaths',
+                        data: resp.data.data.map(row => row.bicycle_death_count),
+                        backgroundColor: "red",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+        // create bike injuries chart
+        bikeSeriousInjuriesChart = document.getElementById("bikeSeriousInjuries")
+        bikeSeriousInjuriesChart.remove()
+        let bikeSeriousInjuriesCanvas = document.createElement('canvas')
+        bikeSeriousInjuriesCanvas.id = "bikeSeriousInjuries"
+        bikeSeriousInjuriesCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(bikeSeriousInjuriesCanvas);
+
+        var bikeDeathsChart = new Chart(
+            document.getElementById('bikeSeriousInjuries'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Bicycle Serious Injuries',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Bike Serious Injuries")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bicycle Serious Injuries',
+                        data: resp.data.data.map(row => row.bicycle_serious_injury_count),
+                        backgroundColor: "grey",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+        // create Micromobility deaths chart
+        micromobilityDeathsChart = document.getElementById("micromobilityDeaths")
+        micromobilityDeathsChart.remove()
+        let micromobilityDeathsCanvas = document.createElement('canvas')
+        micromobilityDeathsCanvas.id = "micromobilityDeaths"
+        micromobilityDeathsCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(micromobilityDeathsCanvas);
+
+        var micromobilityDeathsChart = new Chart(
+            document.getElementById('micromobilityDeaths'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Micromobility Deaths',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Micromobility Deaths")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Micromobility Deaths',
+                        data: resp.data.data.map(row => row.bicycle_death_count),
+                        backgroundColor: "red",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+        // create micromobility injuries chart
+        micromobilitySeriousInjuriesChart = document.getElementById("micromobilitySeriousInjuries")
+        micromobilitySeriousInjuriesChart.remove()
+        let micromobilitySeriousInjuriesCanvas = document.createElement('canvas')
+        micromobilitySeriousInjuriesCanvas.id = "micromobilitySeriousInjuries"
+        micromobilitySeriousInjuriesCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(micromobilitySeriousInjuriesCanvas);
+
+        var micromobilityDeathsChart = new Chart(
+            document.getElementById('micromobilitySeriousInjuries'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Micromobility Serious Injuries',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Micromobility Serious Injuries")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Bicycle Serious Injuries',
+                        data: resp.data.data.map(row => row.bicycle_serious_injury_count),
+                        backgroundColor: "grey",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+        // create motorcycle deaths chart
+        motorcycleDeathsChart = document.getElementById("motorcycleDeaths")
+        motorcycleDeathsChart.remove()
+        let motorcycleDeathsCanvas = document.createElement('canvas')
+        motorcycleDeathsCanvas.id = "motorcycleDeaths"
+        motorcycleDeathsCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(motorcycleDeathsCanvas);
+
+        var motorcycleDeathsChart = new Chart(
+            document.getElementById('motorcycleDeaths'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Motorcycle Deaths',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" motorcycle Deaths")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Motorcycle Deaths',
+                        data: resp.data.data.map(row => row.motorcycle_death_count),
+                        backgroundColor: "red",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+        // create motorcycle injuries chart
+        motorcycleSeriousInjuriesChart = document.getElementById("motorcycleSeriousInjuries")
+        motorcycleSeriousInjuriesChart.remove()
+        let motorcycleSeriousInjuriesCanvas = document.createElement('canvas')
+        motorcycleSeriousInjuriesCanvas.id = "motorcycleSeriousInjuries"
+        motorcycleSeriousInjuriesCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(motorcycleSeriousInjuriesCanvas);
+
+        var motorcycleDeathsChart = new Chart(
+            document.getElementById('motorcycleSeriousInjuries'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Motorcycle Serious Injuries',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Motorcycle Serious Injuries")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Motorcycle Serious Injuries',
+                        data: resp.data.data.map(row => row.motorcycle_serious_injury_count),
+                        backgroundColor: "grey",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+        // // create other deaths chart
+        // otherDeathsChart = document.getElementById("otherDeaths")
+        // otherDeathsChart.remove()
+        // let otherDeathsCanvas = document.createElement('canvas')
+        // otherDeathsCanvas.id = "otherDeaths"
+        // otherDeathsCanvas.style = "padding-bottom:50px"
+        // document.getElementById("chartsContainer").appendChild(otherDeathsCanvas);
+
+        // var otherDeathsChart = new Chart(
+        //     document.getElementById('otherDeaths'),
+        //     {
+        //         type: 'line',
+        //         options: {
+        //             title: {
+        //                 display: true,
+        //                 text: 'Other Deaths',
+        //                 fontSize: 36,
+        //                 },
+        //             legend: {display:false},
+        //         tooltips: {
+        //             callbacks: {
+        //                 label: function(tooltipItem, data) {
+        //                     return (
+        //                         new Intl.NumberFormat("en-US", {
+        //                             notation: "compact",
+        //                             compactDisplay: "short",
+        //                             }).format(tooltipItem.yLabel).concat(" Other Deaths")
+        //                     ) 
+        //                 }
+        //             }
+        //         },
+        //             scales: {
+        //                 yAxes: [{
+        //                     ticks: {
+        //                         suggestedMin: 0,
+        //                         // Include a dollar sign in the ticks
+        //                         callback: function(value, index, ticks) {
+        //                             return (
+        //                                 new Intl.NumberFormat("en-US", {
+        //                                     notation: "compact",
+        //                                     compactDisplay: "short",
+        //                                     }).format(value)
+        //                             )
+        //                         }
+        //                     }
+        //                 }]
+        //             }
+        //         },
+        //         data: 
+        //         {
+        //             labels: resp.data.data.map(row => row.year),
+        //             datasets: [
+        //             {
+        //                 label: 'Other Deaths',
+        //                 data: resp.data.data.map(row => row.other_death_count),
+        //                 backgroundColor: "red",
+        //                 borderColor: "black"
+        //             }
+        //             ]
+        //         }
+        //     }
+        // )
+
+        // // create other injuries chart
+        // otherSeriousInjuriesChart = document.getElementById("otherSeriousInjuries")
+        // otherSeriousInjuriesChart.remove()
+        // let otherSeriousInjuriesCanvas = document.createElement('canvas')
+        // otherSeriousInjuriesCanvas.id = "otherSeriousInjuries"
+        // otherSeriousInjuriesCanvas.style = "padding-bottom:50px"
+        // document.getElementById("chartsContainer").appendChild(otherSeriousInjuriesCanvas);
+
+        // var otherDeathsChart = new Chart(
+        //     document.getElementById('otherSeriousInjuries'),
+        //     {
+        //         type: 'line',
+        //         options: {
+        //             title: {
+        //                 display: true,
+        //                 text: 'Other Serious Injuries',
+        //                 fontSize: 36,
+        //                 },
+        //             legend: {display:false},
+        //         tooltips: {
+        //             callbacks: {
+        //                 label: function(tooltipItem, data) {
+        //                     return (
+        //                         new Intl.NumberFormat("en-US", {
+        //                             notation: "compact",
+        //                             compactDisplay: "short",
+        //                             }).format(tooltipItem.yLabel).concat(" Other Serious Injuries")
+        //                     ) 
+        //                 }
+        //             }
+        //         },
+        //             scales: {
+        //                 yAxes: [{
+        //                     ticks: {
+        //                         suggestedMin: 0,
+        //                         // Include a dollar sign in the ticks
+        //                         callback: function(value, index, ticks) {
+        //                             return (
+        //                                 new Intl.NumberFormat("en-US", {
+        //                                     notation: "compact",
+        //                                     compactDisplay: "short",
+        //                                     }).format(value)
+        //                             )
+        //                         }
+        //                     }
+        //                 }]
+        //             }
+        //         },
+        //         data: 
+        //         {
+        //             labels: resp.data.data.map(row => row.year),
+        //             datasets: [
+        //             {
+        //                 label: 'Other Serious Injuries',
+        //                 data: resp.data.data.map(row => row.other_serious_injury_count),
+        //                 backgroundColor: "grey",
+        //                 borderColor: "black"
+        //             }
+        //             ]
+        //         }
+        //     }
+        // )
+
+
+        // create motorVehicle deaths chart
+        motorVehicleDeathsChart = document.getElementById("motorVehicleDeaths")
+        motorVehicleDeathsChart.remove()
+        let motorVehicleDeathsCanvas = document.createElement('canvas')
+        motorVehicleDeathsCanvas.id = "motorVehicleDeaths"
+        motorVehicleDeathsCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(motorVehicleDeathsCanvas);
+
+        var motorVehicleDeathsChart = new Chart(
+            document.getElementById('motorVehicleDeaths'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Motor Vehicle Deaths',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Motor Vehicle Deaths")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Motor Vehicle Deaths',
+                        data: resp.data.data.map(row => row.motor_vehicle_death_count),
+                        backgroundColor: "red",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+        // create motorVehicle injuries chart
+        motorVehicleSeriousInjuriesChart = document.getElementById("motorVehicleSeriousInjuries")
+        motorVehicleSeriousInjuriesChart.remove()
+        let motorVehicleSeriousInjuriesCanvas = document.createElement('canvas')
+        motorVehicleSeriousInjuriesCanvas.id = "motorVehicleSeriousInjuries"
+        motorVehicleSeriousInjuriesCanvas.style = "padding-bottom:50px"
+        document.getElementById("chartsContainer").appendChild(motorVehicleSeriousInjuriesCanvas);
+
+        var motorVehicleDeathsChart = new Chart(
+            document.getElementById('motorVehicleSeriousInjuries'),
+            {
+                type: 'line',
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Motor Vehicle Serious Injuries',
+                        fontSize: 36,
+                        },
+                    legend: {display:false},
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return (
+                                new Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    compactDisplay: "short",
+                                    }).format(tooltipItem.yLabel).concat(" Motor Vehicle Serious Injuries")
+                            ) 
+                        }
+                    }
+                },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, ticks) {
+                                    return (
+                                        new Intl.NumberFormat("en-US", {
+                                            notation: "compact",
+                                            compactDisplay: "short",
+                                            }).format(value)
+                                    )
+                                }
+                            }
+                        }]
+                    }
+                },
+                data: 
+                {
+                    labels: resp.data.data.map(row => row.year),
+                    datasets: [
+                    {
+                        label: 'Motor Vehicle Serious Injuries',
+                        data: resp.data.data.map(row => row.motor_vehicle_serious_injury_count),
+                        backgroundColor: "grey",
+                        borderColor: "black"
+                    }
+                    ]
+                }
+            }
+        )
+
+    })
+}
+refreshCharts()
+</script>
+</html>

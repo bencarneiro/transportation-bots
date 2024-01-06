@@ -145,6 +145,10 @@ def save_crash(incident):
     other_fl = False
     if "other_fl" in incident and incident['other_fl'] == "Y":
         other_fl = True
+    # micromobility_fl
+    micromobility_fl = False
+    if "micromobility_fl" in incident and incident['micromobility_fl'] == "Y":
+        micromobility_fl = True
 
     # point
     point = None
@@ -199,6 +203,14 @@ def save_crash(incident):
     other_serious_injury_count = 0
     if "other_serious_injury_count" in incident:
         other_serious_injury_count = int(incident['other_serious_injury_count'])
+    # micromobility_death_count
+    micromobility_death_count = 0
+    if "micromobility_death_count" in incident:
+        micromobility_death_count = int(incident['micromobility_death_count'])
+    # micromobility_serious_injury_count
+    micromobility_serious_injury_count = 0
+    if "micromobility_serious_injury_count" in incident:
+        micromobility_serious_injury_count = int(incident['micromobility_serious_injury_count'])
     # onsys_fl
     onsys_fl = False
     if "onsys_fl" in incident and incident['onsys_fl'] == "Y":
@@ -257,6 +269,9 @@ def save_crash(incident):
         motorcycle_serious_injury_count=motorcycle_serious_injury_count,
         other_death_count=other_death_count,
         other_serious_injury_count=other_serious_injury_count,
+        micromobility_death_count=micromobility_death_count,
+        micromobility_serious_injury_count=micromobility_serious_injury_count,
+        micromobility_fl=micromobility_fl,
         onsys_fl=onsys_fl,
         private_dr_fl=private_dr_fl
     )
@@ -4070,28 +4085,50 @@ def get_agencies(request):
         return JsonResponse(list(agencies), safe=False)
 
 @csrf_exempt
-def austin_safety_crisis(request):
-    # q = (Q(pedestrian_death_count__gte=1) | Q(pedestrian_serious_injury_count__gte=1) | Q(bicycle_death_count__gte=1) | Q(bicycle_serious_injury_count__gte=1) | Q(other_death_count__gte=1) | Q(other_serious_injury_count__gte=1))
-    # atd_failures = Crash.objects.filter(q)
-    crash_counts = Crash.objects.raw("""
+def austin_safety_crisis_data(request):
+     # q = Q(route_id__route_id=7)
+    data = []
+    cursor = connection.cursor()
+
+    cursor.execute("""
     select 1 as crash_id,
         YEAR(crash_date) as year,
-        MONTH(crash_date) as month,
+        sum(motor_vehicle_death_count) as motor_vehicle_death_count,
+        sum(motor_vehicle_serious_injury_count) as motor_vehicle_serious_injury_count,
+        sum(motorcycle_death_count) as motorcycle_death_count,
+        sum(motorcycle_serious_injury_count) as motorcycle_serious_injury_count,
         sum(bicycle_death_count) as bicycle_death_count,
         sum(bicycle_serious_injury_count) as bicycle_serious_injury_count,
         sum(pedestrian_death_count) as pedestrian_death_count,
         sum(pedestrian_serious_injury_count) as pedestrian_serious_injury_count,
         sum(other_death_count) as other_death_count,
-        sum(other_serious_injury_count) as other_serious_injury_count
+        sum(other_serious_injury_count) as other_serious_injury_count,
+        sum(micromobility_death_count) as micromobility_death_count,
+        sum(micromobility_serious_injury_count) as micromobility_serious_injury_count
     from transportation.crash 
     group by 
-    YEAR(crash_date),
-    MONTH(crash_date)
+    YEAR(crash_date)
     order by 
-    YEAR(crash_date),
-    MONTH(crash_date);
+    YEAR(crash_date);
     """)
-    return render(request, "austin_safety_crisis.html", context={"crashes": crash_counts})
+
+    crash_counts = cursor.fetchall()
+
+    for row in crash_counts:
+        data += [{"year": row[1], "motor_vehicle_death_count": row[2], "motor_vehicle_serious_injury_count": row[3], "motorcycle_death_count": row[4], "motorcycle_serious_injury_count": row[5], "bicycle_death_count": row[6], "bicycle_serious_injury_count": row[7], "pedestrian_death_count": row[8], "pedestrian_serious_injury_count": row[9], "other_death_count": row[10], "other_serious_injury_count": row[11], "micromobility_death_count": row[12], "micromobility_serious_injury_count": row[13]}]
+        length = len(data)
+    resp = {
+        "length": length,
+        "data": data
+    }
+    return(JsonResponse(resp))
+
+@csrf_exempt
+def austin_safety_crisis(request):
+    # q = (Q(pedestrian_death_count__gte=1) | Q(pedestrian_serious_injury_count__gte=1) | Q(bicycle_death_count__gte=1) | Q(bicycle_serious_injury_count__gte=1) | Q(other_death_count__gte=1) | Q(other_serious_injury_count__gte=1))
+    # atd_failures = Crash.objects.filter(q)
+    
+    return render(request, "austin_safety_crisis.html", context={"crashes": ["hi"]})
 
 class HomePage(View):
     
@@ -4252,6 +4289,165 @@ class PedestrianCrashMap(View):
         context = {"map": m}
         return render(request, "bike_crash_map.html", context=context)
     
+class MicromobilityCrashMap(View):
+    
+    def get(self, request, *args, **kwargs):
+
+        m = folium.Map(location=[30.297370913553245, -97.7313631855747], zoom_start=12)
+        # crashes = Crash.objects.filter(Q(pedestrian_death_count__gt = 0) | Q(bicycle_death_count__gt = 0))
+        crashes = Crash.objects.filter(Q(micromobility_serious_injury_count__gt = 0) | Q(micromobility_death_count__gt = 0))
+        # Crash.bicycle_serious_injury_count
+        print(len(crashes))
+        
+        
+        for crash in crashes:
+            # print(crash)
+            # print(crash.atd_mode_category_metadata)
+            description = f"{'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + str(crash.crash_id)}"
+
+            link = f"<a target='_blank' href='{description}'>Link to More Info</a>"
+            tooltip = f"""
+            <div>{crash.crash_date.strftime("%Y-%m-%d")}</div></br>
+            {crash.micromobility_death_count} deaths </br>
+            {crash.micromobility_serious_injury_count} serious injuries</br>
+            {crash.units_involved}
+            """
+            crash_summary = f"""
+            <h4>{crash.crash_date.strftime("%Y-%m-%d")}</h4></br>
+
+            <div>Micromobility Deaths: {crash.micromobility_death_count}</div></br>
+
+            <div>Serious Injuries: {crash.micromobility_serious_injury_count}</div></br>
+            
+            <div>{crash.units_involved}</div></br>
+
+            {link}
+            """
+            # crash_summary = {
+            #     "date": crash.crash_date.strftime("%Y-%m-%d"),
+            #     "bike_deaths": crash.bicycle_death_count,
+            #     "bicycle_serious_injuries": crash.bicycle_serious_injury_count,
+            #     "more_info": link
+            # }
+            if crash.latitude and crash.longitude and crash.latitude != 0  and crash.longitude != 0:
+                if crash.micromobility_death_count > 0:
+                    folium.Marker(
+                        [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
+                    ).add_to(m)
+                else:
+                    folium.Marker(
+                        [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="green")
+                    ).add_to(m)
+        # folium.GeoJson(geojson, name="geojson", tooltip="hi").add_to(m)
+        m = m._repr_html_()
+        context = {"map": m}
+        return render(request, "bike_crash_map.html", context=context)
+    
+    
+class MotorcycleCrashMap(View):
+    
+    def get(self, request, *args, **kwargs):
+
+        m = folium.Map(location=[30.297370913553245, -97.7313631855747], zoom_start=12)
+        crashes = Crash.objects.filter(Q(motorcycle_serious_injury_count__gt = 0) | Q(motorcycle_death_count__gt = 0))
+        print(len(crashes))
+        
+        
+        for crash in crashes:
+            # print(crash)
+            # print(crash.atd_mode_category_metadata)
+            description = f"{'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + str(crash.crash_id)}"
+
+            link = f"<a target='_blank' href='{description}'>Link to More Info</a>"
+            tooltip = f"""
+            <div>{crash.crash_date.strftime("%Y-%m-%d")}</div></br>
+            {crash.motorcycle_death_count} deaths </br>
+            {crash.motorcycle_serious_injury_count} serious injuries</br>
+            {crash.units_involved}
+            """
+            crash_summary = f"""
+            <h4>{crash.crash_date.strftime("%Y-%m-%d")}</h4></br>
+
+            <div>Motorcycle Deaths: {crash.motorcycle_death_count}</div></br>
+
+            <div>Serious Injuries: {crash.motorcycle_serious_injury_count}</div></br>
+            
+            <div>{crash.units_involved}</div></br>
+
+            {link}
+            """
+            # crash_summary = {
+            #     "date": crash.crash_date.strftime("%Y-%m-%d"),
+            #     "bike_deaths": crash.bicycle_death_count,
+            #     "bicycle_serious_injuries": crash.bicycle_serious_injury_count,
+            #     "more_info": link
+            # }
+            if crash.latitude and crash.longitude and crash.latitude != 0  and crash.longitude != 0:
+                if crash.motorcycle_death_count > 0:
+                    folium.Marker(
+                        [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
+                    ).add_to(m)
+                else:
+                    folium.Marker(
+                        [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="green")
+                    ).add_to(m)
+        # folium.GeoJson(geojson, name="geojson", tooltip="hi").add_to(m)
+        m = m._repr_html_()
+        context = {"map": m}
+        return render(request, "bike_crash_map.html", context=context)
+    
+    
+class OtherCrashMap(View):
+    
+    def get(self, request, *args, **kwargs):
+
+        m = folium.Map(location=[30.297370913553245, -97.7313631855747], zoom_start=12)
+        crashes = Crash.objects.filter(Q(other_serious_injury_count__gt = 0) | Q(other_death_count__gt = 0))
+        print(len(crashes))
+        
+        
+        for crash in crashes:
+            # print(crash)
+            # print(crash.atd_mode_category_metadata)
+            description = f"{'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + str(crash.crash_id)}"
+
+            link = f"<a target='_blank' href='{description}'>Link to More Info</a>"
+            tooltip = f"""
+            <div>{crash.crash_date.strftime("%Y-%m-%d")}</div></br>
+            {crash.other_death_count} deaths </br>
+            {crash.other_serious_injury_count} serious injuries</br>
+            {crash.units_involved}
+            """
+            crash_summary = f"""
+            <h4>{crash.crash_date.strftime("%Y-%m-%d")}</h4></br>
+
+            <div>Other Deaths: {crash.other_death_count}</div></br>
+
+            <div>Serious Injuries: {crash.other_serious_injury_count}</div></br>
+            
+            <div>{crash.units_involved}</div></br>
+
+            {link}
+            """
+            # crash_summary = {
+            #     "date": crash.crash_date.strftime("%Y-%m-%d"),
+            #     "bike_deaths": crash.bicycle_death_count,
+            #     "bicycle_serious_injuries": crash.bicycle_serious_injury_count,
+            #     "more_info": link
+            # }
+            if crash.latitude and crash.longitude and crash.latitude != 0  and crash.longitude != 0:
+                if crash.other_death_count > 0:
+                    folium.Marker(
+                        [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="red")
+                    ).add_to(m)
+                else:
+                    folium.Marker(
+                        [crash.latitude, crash.longitude], popup=folium.Popup(max_width=450, html=crash_summary, parse_html=False), icon=folium.Icon(color="green")
+                    ).add_to(m)
+        # folium.GeoJson(geojson, name="geojson", tooltip="hi").add_to(m)
+        m = m._repr_html_()
+        context = {"map": m}
+        return render(request, "bike_crash_map.html", context=context)
     
 
 @csrf_exempt

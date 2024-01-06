@@ -58,6 +58,7 @@ class Crash(models.Model):
     motorcycle_fl = models.BooleanField(default=False)
     bicycle_fl = models.BooleanField(default=False)
     other_fl = models.BooleanField(default=False)
+    micromobility_fl = models.BooleanField(default=False)
     point = models.CharField(max_length=256, null=True)
     apd_confirmed_fatality = models.BooleanField(default=False) # this one needs to be converted from N / Y
     apd_confirmed_death_count = models.PositiveIntegerField(default=0)
@@ -71,6 +72,8 @@ class Crash(models.Model):
     motorcycle_serious_injury_count = models.PositiveIntegerField(default=0)
     other_death_count = models.PositiveIntegerField(default=0)
     other_serious_injury_count = models.PositiveIntegerField(default=0)
+    micromobility_death_count = models.PositiveIntegerField(default=0)
+    micromobility_serious_injury_count = models.PositiveIntegerField(default=0)
     onsys_fl = models.BooleanField(default=False)
     private_dr_fl = models.BooleanField(default=False)
         
