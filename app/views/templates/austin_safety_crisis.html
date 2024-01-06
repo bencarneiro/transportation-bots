@@ -23,8 +23,6 @@
         <canvas id="micromobilitySeriousInjuries"></canvas>
         <canvas id="motorcycleDeaths"></canvas>
         <canvas id="motorcycleSeriousInjuries"></canvas>
-        <canvas id="otherDeaths"></canvas>
-        <canvas id="otherSeriousInjuries"></canvas>
         <canvas id="motorVehicleDeaths"></canvas>
         <canvas id="motorVehicleSeriousInjuries"></canvas>
        </div>
@@ -32,6 +30,7 @@
         <div><a href="/pedestrian_crash_map/">See Map of Pedestrian Injuries and Fatalities</a></div><br>
         <div><a href="/bike_crash_map/">See Map of Bicycle Injuries and Fatalities</a></div><br>
         <div><a href="/micromobility_crash_map/">See Map of Micromobility Injuries and Fatalities</a></div><br>
+        <div><a href="/motorcycle_crash_map/">See Map of Motorcycle Injuries and Fatalities</a></div><br>
         <div><a href="https://visionzero.austin.gov/viewer/">City Vision Zero Viewer</a></div><br>
         <div><a href="https://data.austintexas.gov/Transportation-and-Mobility/Austin-Crash-Report-Data-Crash-Level-Records/y2wy-tgr5/about_data">Original Source - Austin Open Data Portal</a></div>
     </div>
@@ -551,131 +550,131 @@ async function refreshCharts() {
             }
         )
 
-        // create other deaths chart
-        otherDeathsChart = document.getElementById("otherDeaths")
-        otherDeathsChart.remove()
-        let otherDeathsCanvas = document.createElement('canvas')
-        otherDeathsCanvas.id = "otherDeaths"
-        otherDeathsCanvas.style = "padding-bottom:50px"
-        document.getElementById("chartsContainer").appendChild(otherDeathsCanvas);
+        // // create other deaths chart
+        // otherDeathsChart = document.getElementById("otherDeaths")
+        // otherDeathsChart.remove()
+        // let otherDeathsCanvas = document.createElement('canvas')
+        // otherDeathsCanvas.id = "otherDeaths"
+        // otherDeathsCanvas.style = "padding-bottom:50px"
+        // document.getElementById("chartsContainer").appendChild(otherDeathsCanvas);
 
-        var otherDeathsChart = new Chart(
-            document.getElementById('otherDeaths'),
-            {
-                type: 'line',
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Other Deaths',
-                        fontSize: 36,
-                        },
-                    legend: {display:false},
-                tooltips: {
-                    callbacks: {
-                        label: function(tooltipItem, data) {
-                            return (
-                                new Intl.NumberFormat("en-US", {
-                                    notation: "compact",
-                                    compactDisplay: "short",
-                                    }).format(tooltipItem.yLabel).concat(" Other Deaths")
-                            ) 
-                        }
-                    }
-                },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                suggestedMin: 0,
-                                // Include a dollar sign in the ticks
-                                callback: function(value, index, ticks) {
-                                    return (
-                                        new Intl.NumberFormat("en-US", {
-                                            notation: "compact",
-                                            compactDisplay: "short",
-                                            }).format(value)
-                                    )
-                                }
-                            }
-                        }]
-                    }
-                },
-                data: 
-                {
-                    labels: resp.data.data.map(row => row.year),
-                    datasets: [
-                    {
-                        label: 'Other Deaths',
-                        data: resp.data.data.map(row => row.other_death_count),
-                        backgroundColor: "red",
-                        borderColor: "black"
-                    }
-                    ]
-                }
-            }
-        )
+        // var otherDeathsChart = new Chart(
+        //     document.getElementById('otherDeaths'),
+        //     {
+        //         type: 'line',
+        //         options: {
+        //             title: {
+        //                 display: true,
+        //                 text: 'Other Deaths',
+        //                 fontSize: 36,
+        //                 },
+        //             legend: {display:false},
+        //         tooltips: {
+        //             callbacks: {
+        //                 label: function(tooltipItem, data) {
+        //                     return (
+        //                         new Intl.NumberFormat("en-US", {
+        //                             notation: "compact",
+        //                             compactDisplay: "short",
+        //                             }).format(tooltipItem.yLabel).concat(" Other Deaths")
+        //                     ) 
+        //                 }
+        //             }
+        //         },
+        //             scales: {
+        //                 yAxes: [{
+        //                     ticks: {
+        //                         suggestedMin: 0,
+        //                         // Include a dollar sign in the ticks
+        //                         callback: function(value, index, ticks) {
+        //                             return (
+        //                                 new Intl.NumberFormat("en-US", {
+        //                                     notation: "compact",
+        //                                     compactDisplay: "short",
+        //                                     }).format(value)
+        //                             )
+        //                         }
+        //                     }
+        //                 }]
+        //             }
+        //         },
+        //         data: 
+        //         {
+        //             labels: resp.data.data.map(row => row.year),
+        //             datasets: [
+        //             {
+        //                 label: 'Other Deaths',
+        //                 data: resp.data.data.map(row => row.other_death_count),
+        //                 backgroundColor: "red",
+        //                 borderColor: "black"
+        //             }
+        //             ]
+        //         }
+        //     }
+        // )
 
-        // create other injuries chart
-        otherSeriousInjuriesChart = document.getElementById("otherSeriousInjuries")
-        otherSeriousInjuriesChart.remove()
-        let otherSeriousInjuriesCanvas = document.createElement('canvas')
-        otherSeriousInjuriesCanvas.id = "otherSeriousInjuries"
-        otherSeriousInjuriesCanvas.style = "padding-bottom:50px"
-        document.getElementById("chartsContainer").appendChild(otherSeriousInjuriesCanvas);
+        // // create other injuries chart
+        // otherSeriousInjuriesChart = document.getElementById("otherSeriousInjuries")
+        // otherSeriousInjuriesChart.remove()
+        // let otherSeriousInjuriesCanvas = document.createElement('canvas')
+        // otherSeriousInjuriesCanvas.id = "otherSeriousInjuries"
+        // otherSeriousInjuriesCanvas.style = "padding-bottom:50px"
+        // document.getElementById("chartsContainer").appendChild(otherSeriousInjuriesCanvas);
 
-        var otherDeathsChart = new Chart(
-            document.getElementById('otherSeriousInjuries'),
-            {
-                type: 'line',
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Other Serious Injuries',
-                        fontSize: 36,
-                        },
-                    legend: {display:false},
-                tooltips: {
-                    callbacks: {
-                        label: function(tooltipItem, data) {
-                            return (
-                                new Intl.NumberFormat("en-US", {
-                                    notation: "compact",
-                                    compactDisplay: "short",
-                                    }).format(tooltipItem.yLabel).concat(" Other Serious Injuries")
-                            ) 
-                        }
-                    }
-                },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                suggestedMin: 0,
-                                // Include a dollar sign in the ticks
-                                callback: function(value, index, ticks) {
-                                    return (
-                                        new Intl.NumberFormat("en-US", {
-                                            notation: "compact",
-                                            compactDisplay: "short",
-                                            }).format(value)
-                                    )
-                                }
-                            }
-                        }]
-                    }
-                },
-                data: 
-                {
-                    labels: resp.data.data.map(row => row.year),
-                    datasets: [
-                    {
-                        label: 'Other Serious Injuries',
-                        data: resp.data.data.map(row => row.other_serious_injury_count),
-                        backgroundColor: "grey",
-                        borderColor: "black"
-                    }
-                    ]
-                }
-            }
-        )
+        // var otherDeathsChart = new Chart(
+        //     document.getElementById('otherSeriousInjuries'),
+        //     {
+        //         type: 'line',
+        //         options: {
+        //             title: {
+        //                 display: true,
+        //                 text: 'Other Serious Injuries',
+        //                 fontSize: 36,
+        //                 },
+        //             legend: {display:false},
+        //         tooltips: {
+        //             callbacks: {
+        //                 label: function(tooltipItem, data) {
+        //                     return (
+        //                         new Intl.NumberFormat("en-US", {
+        //                             notation: "compact",
+        //                             compactDisplay: "short",
+        //                             }).format(tooltipItem.yLabel).concat(" Other Serious Injuries")
+        //                     ) 
+        //                 }
+        //             }
+        //         },
+        //             scales: {
+        //                 yAxes: [{
+        //                     ticks: {
+        //                         suggestedMin: 0,
+        //                         // Include a dollar sign in the ticks
+        //                         callback: function(value, index, ticks) {
+        //                             return (
+        //                                 new Intl.NumberFormat("en-US", {
+        //                                     notation: "compact",
+        //                                     compactDisplay: "short",
+        //                                     }).format(value)
+        //                             )
+        //                         }
+        //                     }
+        //                 }]
+        //             }
+        //         },
+        //         data: 
+        //         {
+        //             labels: resp.data.data.map(row => row.year),
+        //             datasets: [
+        //             {
+        //                 label: 'Other Serious Injuries',
+        //                 data: resp.data.data.map(row => row.other_serious_injury_count),
+        //                 backgroundColor: "grey",
+        //                 borderColor: "black"
+        //             }
+        //             ]
+        //         }
+        //     }
+        // )
 
 
         // create motorVehicle deaths chart
