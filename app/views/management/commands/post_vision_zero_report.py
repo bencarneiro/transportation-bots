@@ -23,7 +23,7 @@ class Command(BaseCommand):
     #     parser.add_argument('end_block', type=int, help='Stop Scraping Transactions when this block # is reached')
 
     def handle(self, *args, **kwargs):
-        vision_zero_data_api_url =f"https://data.austintexas.gov/resource/y2wy-tgr5.json?$order=crash_date%20DESC"
+        vision_zero_data_api_url =f"https://data.austintexas.gov/resource/y2wy-tgr5.json?$order=crash_timestamp%20DESC"
 
         response = requests.get(vision_zero_data_api_url)
         
@@ -57,13 +57,13 @@ class Command(BaseCommand):
                     link = "NO LOCATION PROVIDED"
                     media_id = None
 
-                crash_date = incident['crash_date'][0:10]
+                crash_timestamp = incident['crash_timestamp'][0:10]
 
-                crash_utc_time = parse(incident['crash_date']).replace(tzinfo=tz.tzutc())
+                crash_utc_time = parse(incident['crash_timestamp']).replace(tzinfo=tz.tzutc())
                 my_datetime_cst = crash_utc_time.astimezone(pytz.timezone('US/Central')).strftime('%I:%M:%S %p')
                 day_of_the_week = calendar.day_name[crash_utc_time.astimezone(pytz.timezone('US/Central')).weekday()]
                 time_string = my_datetime_cst + " CST"
-                description = f"Vision Zero Crash Report\n\nCollision at {address} at {time_string} on {day_of_the_week} {crash_date} involving:"
+                description = f"Vision Zero Crash Report\n\nCollision at {address} at {time_string} on {day_of_the_week} {crash_timestamp} involving:"
                 if "atd_mode_category_metadata" in incident:
                     for party in json.loads(incident['atd_mode_category_metadata']):
                         details = "("
