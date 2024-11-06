@@ -3,10 +3,9 @@ from views.models import Animal
 
 from dateutil.parser import parse
 import requests
-from app.settings import MASTODON_API_BASE_URL, MASTODON_FIRST_SECRET, MASTODON_PUPPY_EMAIL, MASTODON_LOGIN_PASSWORD, MASTODON_SECOND_SECRET
+from app.settings import PUPPY_TOKEN
 from mastodon import Mastodon
-api = Mastodon(MASTODON_FIRST_SECRET, MASTODON_SECOND_SECRET, api_base_url=MASTODON_API_BASE_URL)
-api.log_in(MASTODON_PUPPY_EMAIL, MASTODON_LOGIN_PASSWORD, scopes=["read", "write"])
+api = Mastodon(api_base_url="https://mastodon.social", access_token=PUPPY_TOKEN)
 
 class Command(BaseCommand):
 

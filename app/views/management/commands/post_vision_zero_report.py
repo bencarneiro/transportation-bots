@@ -3,7 +3,7 @@
 import requests
 from django.core.management.base import BaseCommand
 from views.models import Crash
-from app.settings import MASTODON_API_BASE_URL, MASTODON_FIRST_SECRET, VISION_ZERO_EMAIL, MASTODON_LOGIN_PASSWORD, MASTODON_SECOND_SECRET, GOOGLE_MAPS_API_KEY
+from app.settings import VISION_ZERO_TOKEN, GOOGLE_MAPS_API_KEY
 from mastodon import Mastodon
 from dateutil.parser import parse
 import datetime
@@ -13,8 +13,7 @@ from dateutil import tz
 import pytz
 import calendar
 
-api = Mastodon(MASTODON_FIRST_SECRET, MASTODON_SECOND_SECRET, api_base_url=MASTODON_API_BASE_URL)
-api.log_in(VISION_ZERO_EMAIL, MASTODON_LOGIN_PASSWORD, scopes=["read", "write"])
+api = Mastodon(api_base_url="https://mastodon.social", access_token=VISION_ZERO_TOKEN)
 
 class Command(BaseCommand):
 

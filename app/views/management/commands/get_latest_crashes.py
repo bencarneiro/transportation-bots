@@ -3,11 +3,11 @@ from views.models import TrafficReport
 import requests
 import datetime
 from dateutil.parser import parse
-from app.settings import MASTODON_API_BASE_URL, MASTODON_FIRST_SECRET, MASTODON_LOGIN_EMAIL, MASTODON_LOGIN_PASSWORD, MASTODON_SECOND_SECRET, GOOGLE_MAPS_API_KEY
+from app.settings import GOOGLE_MAPS_API_KEY, TRAFFIC_TOKEN
 from mastodon import Mastodon
 
-api = Mastodon(MASTODON_FIRST_SECRET, MASTODON_SECOND_SECRET, api_base_url=MASTODON_API_BASE_URL)
-api.log_in(MASTODON_LOGIN_EMAIL, MASTODON_LOGIN_PASSWORD, scopes=["read", "write"])
+api = Mastodon(api_base_url="https://mastodon.social", access_token=TRAFFIC_TOKEN)
+
 
 class Command(BaseCommand):
 
