@@ -26,11 +26,11 @@ Think of it as "one endpoint per chart"
 # Create your views here.
 
 def save_crash(incident):
-    crash_id = incident['crash_id']
+    crash_id = incident['id']
     crash_fatal_fl = False
     if "crash_fatal_fl" in incident and incident['crash_fatal_fl'] == "Y":
         crash_fatal_fl = True
-    crash_date = incident['crash_date']
+    crash_date = incident['crash_timestamp']
     case_id = None
     if "case_id" in incident:
         case_id = incident['case_id']
@@ -276,7 +276,7 @@ def save_crash(incident):
         private_dr_fl=private_dr_fl
     )
     new_crash.save()
-    print(f"SUCCESSFULLY SAVED CRASH_ID {incident['crash_id']}")
+    print(f"SUCCESSFULLY SAVED CRASH_ID {incident['id']}")
 
 
 def process_params(params):
