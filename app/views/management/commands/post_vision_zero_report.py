@@ -31,7 +31,7 @@ class Command(BaseCommand):
         for incident in response.json():
             print(incident)
             try:
-                crash_exists = Crash.objects.get(crash_id=int(incident['crash_id']))
+                crash_exists = Crash.objects.get(crash_id=int(incident['id']))
                 print("Crash already in DB")
                 break
             except:
@@ -50,7 +50,7 @@ class Command(BaseCommand):
                     google_maps_base_url = "https://maps.googleapis.com/maps/api/staticmap?center="
                     map_request_url = google_maps_base_url + incident['latitude'] + "," + incident['longitude'] + "&key=" + GOOGLE_MAPS_API_KEY + "&zoom=20&size=1000x1000&maptype=satellite"
                     response = requests.get(map_request_url)
-                    uploadable_media = api.media_post(response.content, mime_type="image", file_name=f"{incident['crash_id']}.jpg")
+                    uploadable_media = api.media_post(response.content, mime_type="image", file_name=f"{incident['id']}.jpg")
                     media_id = uploadable_media['id']
                 else:
                     link = "NO LOCATION PROVIDED"
@@ -87,7 +87,7 @@ class Command(BaseCommand):
                         description += " "
                         description += details
                     description += f"\n\nLink to Location: {link}"
-                    description += f"\nAdditional Info: {'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + incident['crash_id']}"
+                    description += f"\nAdditional Info: {'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + incident['id']}"
                     description += f"\n#visionzero #mobility #austin #accident #crash"
              
                     print(description)
