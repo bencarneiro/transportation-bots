@@ -36,7 +36,7 @@ class Command(BaseCommand):
                 break
             except:
                 save_crash(incident)
-                address = incident['address_primary']
+                address = incident['address_primary'] + " / " + incident['address_secondary']
                 
                 if "latitude" in incident and "longitude" in incident:
                     link = "https://www.google.com/maps/search/?api=1&query=" + incident['latitude'] + "%2C" + incident['longitude']
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 
                 description = f"Vision Zero Crash Report\n\nCollision at {address} at {time_string} on {day_of_the_week} {crash_timestamp} \ninvolving: {incident['units_involved']} \n{incident['death_cnt']} deaths and {incident['tot_injry_cnt']} injuries"
                 description += f"\n\nLink to Location: {link}"
-                description += f"\nAdditional Info: {'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + incident['cris_crash_id']}"
+                description += f"\nAdditional Info: {'https://data.austintexas.gov/resource/y2wy-tgr5.json?cris_crash_id=' + incident['cris_crash_id']}"
                 description += f"\n#visionzero #mobility #austin #accident #crash"
             
                 print(description)
