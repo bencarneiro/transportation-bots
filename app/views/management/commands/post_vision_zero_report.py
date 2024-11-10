@@ -36,14 +36,7 @@ class Command(BaseCommand):
                 break
             except:
                 save_crash(incident)
-                address = ""
-                if "street_nbr" in incident:
-                    address = incident['street_nbr']
-                    address += " "
-                if "street_name" in incident:
-                    address += incident['street_name']
-                if not address:
-                    address = "NO ADDRESS"
+                address = incident['address_primary']
                 
                 if "latitude" in incident and "longitude" in incident:
                     link = "https://www.google.com/maps/search/?api=1&query=" + incident['latitude'] + "%2C" + incident['longitude']
@@ -62,40 +55,18 @@ class Command(BaseCommand):
                 my_datetime_cst = crash_utc_time.astimezone(pytz.timezone('US/Central')).strftime('%I:%M:%S %p')
                 day_of_the_week = calendar.day_name[crash_utc_time.astimezone(pytz.timezone('US/Central')).weekday()]
                 time_string = my_datetime_cst + " CST"
-                description = f"Vision Zero Crash Report\n\nCollision at {address} at {time_string} on {day_of_the_week} {crash_timestamp} involving:"
-                if "atd_mode_category_metadata" in incident:
-                    for party in json.loads(incident['atd_mode_category_metadata']):
-                        details = "("
-                        # description = ""
-                        description += "\n -"
-                        description += party['mode_desc']
-                        if int(party['death_cnt']) > 0:
-                            details += f"{party['death_cnt']} Deaths, "
-                        if int(party['sus_serious_injry_cnt']) > 0:
-                            details += f"{party['sus_serious_injry_cnt']} Serious Injuries, "
-                        if int(party['nonincap_injry_cnt']) > 0:
-                            details += f"{party['nonincap_injry_cnt']} Non-Incapacitating Injuries, "
-                        if int(party['non_injry_cnt']) > 0:
-                            details += f"{party['non_injry_cnt']} Not Injured, "
-                        if int(party['unkn_injry_cnt']) > 0:
-                            details += f"{party['unkn_injry_cnt']} Unknown Injuries, "
-                        if int(party['poss_injry_cnt']) > 0:
-                            details += f"{party['poss_injry_cnt']} Possible Injuries"
-                        if len(details) > 2 and details[-2:] == ", ":
-                            details = details[:-2]
-                        details += ")"
-                        description += " "
-                        description += details
-                    description += f"\n\nLink to Location: {link}"
-                    description += f"\nAdditional Info: {'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + incident['cris_crash_id']}"
-                    description += f"\n#visionzero #mobility #austin #accident #crash"
-             
-                    print(description)
-                    if media_id:
-                        api.status_post(description, media_ids=[media_id])
-                    else:
-                        api.toot(description)
-        
-                    # print()
-
                 
+                description = f"Vision Zero Crash Report\n\nCollision at {address} at {time_string} on {day_of_the_week} {crash_timestamp} \ninvolving: {incident['units_involved']} \n{incident['death_cnt']} deaths and {incident['tot_injry_cnt']} injuries"
+                description += f"\n\nLink to Location: {link}"
+                description += f"\nAdditional Info: {'https://data.austintexas.gov/resource/y2wy-tgr5.json?crash_id=' + incident['cris_crash_id']}"
+                description += f"\n#visionzero #mobility #austin #accident #crash"
+            
+                print(description)
+                if media_id:
+                    api.status_post(description, media_ids=[media_id])
+                else:
+                    api.toot(description)
+    
+                # print()
+
+            
