@@ -5014,7 +5014,7 @@ def upt_month_over_month_baseline(request):
     filters, q = process_params(request.GET)
     baseline_ridership_start_date = datetime.datetime(year=2019,month=1,day=1)
     baseline_ridership_end_date = datetime.datetime(year=2020,month=1,day=1)
-    ridership_data_start_date = datetime.datetime(year=2020,month=1,day=1)
+    ridership_data_start_date = datetime.datetime(year=2019,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     baseline_q = q & Q(date__gte=baseline_ridership_start_date, date__lt=baseline_ridership_end_date)
 
@@ -5061,7 +5061,7 @@ def upt_month_over_month_baseline_by_mode_type(request):
     filters, q = process_params(request.GET)
     baseline_ridership_start_date = datetime.datetime(year=2019,month=1,day=1)
     baseline_ridership_end_date = datetime.datetime(year=2020,month=1,day=1)
-    ridership_data_start_date = datetime.datetime(year=2020,month=1,day=1)
+    ridership_data_start_date = datetime.datetime(year=2019,month=1,day=1)
     months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     baseline_q = q & Q(date__gte=baseline_ridership_start_date, date__lt=baseline_ridership_end_date)
 
