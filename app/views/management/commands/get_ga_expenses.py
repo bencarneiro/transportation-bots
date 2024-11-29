@@ -37,6 +37,7 @@ class Command(BaseCommand):
                 transit_agency = transit_agencies[0]
             print(x)
             # print(expense_ga[year][x])
+            expenses = []
             for year in years:
                 new_transit_expense = TransitExpense(
                     transit_agency=transit_agency,
@@ -45,4 +46,6 @@ class Command(BaseCommand):
                     year_id = int(year),
                     expense_type_id = "GA",
                     expense = expense_ga[year][x]
-                ).save()
+                )
+                expenses += [new_transit_expense]
+            TransitExpense.objects.bulk_create(expenses)
