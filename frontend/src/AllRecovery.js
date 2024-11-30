@@ -26,26 +26,22 @@ function AllRecovery(props) {
 
   React.useEffect(() => {
     if (props.params) {
-      axios.get(`/upt_month_over_month_baseline/?start=2020-01-01${props.params}`)
+      axios.get(`/upt_month_over_month_baseline/?start=2019-01-01${props.params}`)
       .then(response => setUptMom(response.data.data));
-      axios.get(`/upt_month_over_month_baseline_by_mode_type/?start=2020-01-01${props.params}`)
+      axios.get(`/upt_month_over_month_baseline_by_mode_type/?start=2019-01-01${props.params}`)
       .then(response => setUptMomByModeType(response.data.data));
-      axios.get(`/monthly_upt/?start=2020-01-01${props.params}`)
+      axios.get(`/monthly_upt/?start=2019-01-01${props.params}`)
       .then(response => setMonthlyUpt(response.data.data));
-      axios.get(`/monthly_upt_by_mode_type/?start=2020-01-01${props.params}`)
+      axios.get(`/monthly_upt_by_mode_type/?start=2019-01-01${props.params}`)
       .then(response => setMonthlyUptByModeType(response.data.data));
-      axios.get(`/monthly_vrm/?start=2020-01-01${props.params}`)
+      axios.get(`/monthly_vrm/?start=2019-01-01${props.params}`)
       .then(response => setMonthlyVrm(response.data.data));
-      axios.get(`/monthly_vrm_by_mode_type/?start=2020-01-01${props.params}`)
+      axios.get(`/monthly_vrm_by_mode_type/?start=2019-01-01${props.params}`)
       .then(response => setMonthlyVrmByModeType(response.data.data));
-      axios.get(`/monthly_vrh/?start=2020-01-01${props.params}`)
+      axios.get(`/monthly_vrh/?start=2019-01-01${props.params}`)
       .then(response => setMonthlyVrh(response.data.data));
-      axios.get(`/monthly_vrh_by_mode_type/?start=2020-01-01${props.params}`)
+      axios.get(`/monthly_vrh_by_mode_type/?start=2019-01-01${props.params}`)
       .then(response => setMonthlyVrhByModeType(response.data.data));
-      // axios.get(`/monthly_upt_per_vrh/?start=2020-01-01${props.params}`)
-      // .then(response => setMonthlyUptPerVrh(response.data.data));
-      // axios.get(`/monthly_upt_per_vrh_by_mode_type/?start=2020-01-01${props.params}`)
-      // .then(response => setMonthlyUptPerVrhByModeType(response.data.data));
       }}
 
 

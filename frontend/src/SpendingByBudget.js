@@ -62,9 +62,7 @@ const SpendingByBudget = (props) => (
     <Line dataKey="opexp" name="Operating Expenditures" stroke="black" fill="black" />
 
     <Line dataKey="capexp" name="Capital Expenditures" stroke="red" fill="Red" />
-    {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
-    {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
-    {/* <Bar dataKey="year" fill="#82ca9d" /> */}
+    
   </LineChart>
   </ResponsiveContainer>
 )

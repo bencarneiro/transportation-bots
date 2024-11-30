@@ -65,15 +65,15 @@ function AllSummary(props) {
         <h2>Passenger Miles</h2>
         <PmtByModeType chartData={pmtByModeType} axisLabel={"Passenger Miles Traveled"}/>
         <h2>Operating Expense</h2>
-        <OpexpByModeType chartData={opexpByModeType} axisLabel={"2022 Dollars"} />
+        <OpexpByModeType chartData={opexpByModeType} axisLabel={"2024 Dollars"} />
         <br/>
         <h2>Capital Expense</h2>
-        <CapexpByModeType chartData={capexpByModeType} axisLabel={"2022 Dollars"} />
+        <CapexpByModeType chartData={capexpByModeType} axisLabel={"2024 Dollars"} />
         <br/>
         <h2>Cost Per Passenger</h2>
-        <PerformanceByModeType chartData={costPerUptByModeType} axisLabel={"2022 Dollars / Passenger"}/>
+        <PerformanceByModeType chartData={costPerUptByModeType} axisLabel={"2024 Dollars / Passenger"}/>
         <h2>Cost Per Passenger Mile Traveled</h2>
-        <PerformanceByModeType chartData={costPerPmtByModeType} axisLabel={"2022 Dollars / Mile"}/>
+        <PerformanceByModeType chartData={costPerPmtByModeType} axisLabel={"2024 Dollars / Mile"}/>
         {/* <h2>Monthly Ridership</h2>
         <MonthlyUpt chartData={monthlyUpt} axisLabel={'Unlinked Passenger Trips'}/> */}
         <br/>

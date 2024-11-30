@@ -25,3 +25,7 @@ https://mastodon.social/@austin_traffic_bot
 OK UPDATE 4/20:
 
 This repo also now contains a lot of ETL code for NTD expenses timeseries, and performance timeseries as well. I'll eventually use this repo to build and API / site for visualizing transit data
+
+to build webpack into production ready bundle.js file, run
+
+npx webpack --config webpack.config.js --mode production

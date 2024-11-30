@@ -61,7 +61,7 @@ const BarChartComponent = (props) => (
             }).format(value)}/> */}
             <Tooltip content={<CustomTooltip />} />
     <Legend />
-    <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" />
+    <Bar dataKey="expense" name="2024 Dollars" fill="#8884d8" />
     <Bar dataKey="year" fill="#82ca9d" />
   </BarChart>
   </ResponsiveContainer>

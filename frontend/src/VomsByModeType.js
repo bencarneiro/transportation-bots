@@ -97,9 +97,7 @@ const VomsByModeType = (props) => (
       <Line dataKey="microtransit" name="MicroTransit" fill="Green" stroke="Green" />
       <Line dataKey="ferry" name="Ferry" fill="blue" stroke="blue" />
       <Line dataKey="other" name="Other" fill="Grey" stroke="Grey" />
-      {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
-      {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
-      {/* <Bar dataKey="year" fill="#82ca9d" /> */}
+      
     </LineChart>
   </ResponsiveContainer>
 )

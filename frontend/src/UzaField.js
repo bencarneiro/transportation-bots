@@ -20,7 +20,7 @@ export default function UzaField(props) {
 
 
     const [uzaList, setUzaList] = React.useState(null)
-    const [filters, setFilters] = React.useState(([{uza_name: 'Austin, TX', uza: 37}]))
+    const [filters, setFilters] = React.useState(([{uza_name: 'Austin, TX', uza: 4384}]))
     // const [uzaIds, setUzaIds] = React.useState
 
     React.useEffect(() => {

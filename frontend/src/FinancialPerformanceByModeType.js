@@ -72,8 +72,6 @@ const PerformanceByModeType = (props) => (
       {/* <XAxis dataKey="expense_type_id_budget"/> */}
       <YAxis 
         label={{ value: props.axisLabel, angle: -90, position: 'left' }}
-        
-        label={{ value: "2022 Dollars", angle: -90, position: 'left', fontSize: 16}}
         tickFormatter={(value) =>
           new Intl.NumberFormat("en-US", {
             notation: "compact",
@@ -98,9 +96,6 @@ const PerformanceByModeType = (props) => (
       <Line dataKey="microtransit" name="MicroTransit" fill="Green" stroke="Green" />
       <Line dataKey="ferry" name="Ferry" fill="blue" stroke="blue" />
       <Line dataKey="other" name="Other" fill="Grey" stroke="Grey" />
-      {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
-      {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
-      {/* <Bar dataKey="year" fill="#82ca9d" /> */}
     </LineChart>
   </ResponsiveContainer>
 )

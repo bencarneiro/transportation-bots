@@ -67,9 +67,7 @@ const PmtPerVrh = (props) => (
     {/* <Line dataKey="purchased_transportation" name="Purchased Transportation" fill="Red" stroke="Red"/>
     <Line dataKey="taxi" name="Taxi" fill="Taxi" stroke="Green" />
     <Line dataKey="other" name="Other" fill="Other" stroke="Orange" /> */}
-    {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
-    {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
-    {/* <Bar dataKey="year" fill="#82ca9d" /> */}
+    
   </LineChart>
   </ResponsiveContainer>
 )

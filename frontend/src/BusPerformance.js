@@ -118,14 +118,14 @@ function AllPerformance(props) {
     <div className="App">
 
         <h2>Cost Per Passenger</h2>
-        <CostPerUpt chartData={costPerUpt} axisLabel={"2022 Dollars / Passenger"}/>
-        <BusPerformanceByMode chartData={costPerUptBymode} axisLabel={"2022 Dollars / Passenger"}/>
-        <PerformanceByService chartData={costPerUptByService} axisLabel={"2022 Dollars / Passenger"}/>
+        <CostPerUpt chartData={costPerUpt} axisLabel={"2024 Dollars / Passenger"}/>
+        <BusPerformanceByMode chartData={costPerUptBymode} axisLabel={"2024 Dollars / Passenger"}/>
+        <PerformanceByService chartData={costPerUptByService} axisLabel={"2024 Dollars / Passenger"}/>
         <br/>
         <h2>Cost Per Passenger Mile</h2>
-        <CostPerPmt chartData={costPerPmt} axisLabel={"2022 Dollars / Mile"}/>
-        <BusPerformanceByMode chartData={costPerPmtBymode} axisLabel={"2022 Dollars / Mile"}/>
-        <PerformanceByService chartData={costPerPmtByService} axisLabel={"2022 Dollars / Mile"}/>
+        <CostPerPmt chartData={costPerPmt} axisLabel={"2024 Dollars / Mile"}/>
+        <BusPerformanceByMode chartData={costPerPmtBymode} axisLabel={"2024 Dollars / Mile"}/>
+        <PerformanceByService chartData={costPerPmtByService} axisLabel={"2024 Dollars / Mile"}/>
         <br/>
         {/* <h2>Cost Per Vehicle Service Mile</h2>
         <CostPerVrm chartData={costPerVrm}/>
