@@ -133,9 +133,7 @@ const RailPerformanceByMode = (props) => (
       <Line dataKey="ar" name="Alaska Rail" fill="black" stroke="black" />
 
       <Line dataKey="or" name="Other" fill="black" stroke="black" />
-      {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
-      {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
-      {/* <Bar dataKey="year" fill="#82ca9d" /> */}
+      
     </LineChart>
   </ResponsiveContainer>
 )

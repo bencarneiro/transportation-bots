@@ -80,10 +80,6 @@ const CapexpByCategory = (props) => (
 
     <Line dataKey="facilities" name="Facilities" stroke="red" fill="red" />
     <Line dataKey="other_capital" name="Other Capital" stroke="blue" fill="blue" />
-    {/* <Bar dataKey="general_administration" name="General Administration" fill="Grey" /> */}
-    {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
-    {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
-    {/* <Bar dataKey="year" fill="#82ca9d" /> */}
   </LineChart>
   </ResponsiveContainer>
 )

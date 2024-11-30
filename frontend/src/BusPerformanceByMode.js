@@ -97,9 +97,6 @@ const BusPerformanceByMode = (props) => (
       <Line dataKey="tb" name="Trolley Bus" fill="Green" stroke="Green" />
       <Line dataKey="cb" name="Commuter Bus" fill="b,ue" stroke="blue" />
       <Line dataKey="pb" name="Publico" fill="Grey" stroke="Grey" />
-      {/* <Bar dataKey="expense_type_id_budget" name="2022 Dollars" fill="#Black" /> */}
-      {/* <Bar dataKey="expense" name="2022 Dollars" fill="#8884d8" /> */}
-      {/* <Bar dataKey="year" fill="#82ca9d" /> */}
     </LineChart>
   </ResponsiveContainer>
 )
