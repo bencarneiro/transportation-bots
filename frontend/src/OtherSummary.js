@@ -60,15 +60,15 @@ function BusSummary(props) {
         <h2>Passenger Miles</h2>
         <OtherPerformanceByMode chartData={pmtByMode} axisLabel={"Unlinked Passenger Trips"}/>
         <h2>Operating Expense</h2>
-        <OtherOpexpByMode chartData={opexpByMode} axisLabel={"2022 Dollars"}/>
+        <OtherOpexpByMode chartData={opexpByMode} axisLabel={"2024 Dollars"}/>
         <br/>
         <h2>Capital Expense</h2>
-        <OtherOpexpByMode chartData={capexpByMode} axisLabel={"2022 Dollars"}/>
+        <OtherOpexpByMode chartData={capexpByMode} axisLabel={"2024 Dollars"}/>
         <br/>
         <h2>Cost Per Passenger</h2>
-        <OtherPerformanceByMode chartData={costPerUptByMode} axisLabel={"2022 Dollars / Passenger"}/>
+        <OtherPerformanceByMode chartData={costPerUptByMode} axisLabel={"2024 Dollars / Passenger"}/>
         <h2>Cost Per Passenger Mile Traveled</h2>
-        <OtherPerformanceByMode chartData={costPerPmtByMode} axisLabel={"2022 Dollars / Mile"}/>
+        <OtherPerformanceByMode chartData={costPerPmtByMode} axisLabel={"2024 Dollars / Mile"}/>
         <br/>
     </div>
   );

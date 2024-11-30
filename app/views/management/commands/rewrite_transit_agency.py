@@ -7,6 +7,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         cmta_id = TransitAgency.objects.get(ntd_id=60048).id
+        
 
         Shapes.objects.all().update(transit_agency_id=cmta_id)
         CalendarDates.objects.all().update(transit_agency_id=cmta_id)

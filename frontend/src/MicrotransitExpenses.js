@@ -41,22 +41,22 @@ function BusExpenses(props) {
     <div className="expenses">
         <></>
         <h2>Expense by Budget</h2>
-        <SpendingByBudget chartData={spendingByBudget}  axisLabel={"2022 Dollars"}/>
+        <SpendingByBudget chartData={spendingByBudget}  axisLabel={"2024 Dollars"}/>
         <br/>
         <h2>Operating Expense by Category</h2>
-        <OpexpByCategory chartData={opexpByCategory} axisLabel={"2022 Dollars"}/>
+        <OpexpByCategory chartData={opexpByCategory} axisLabel={"2024 Dollars"}/>
         <br/>
         <h2>Capital Expense by Category</h2>
-        <CapexpByCategory chartData={capexpByCategory} axisLabel={"2022 Dollars"}/>
+        <CapexpByCategory chartData={capexpByCategory} axisLabel={"2024 Dollars"}/>
         <br/>
         <h2>Operating Expense By Mode</h2>
-        <MicrotransitOpexpByMode chartData={opexpByMode} axisLabel={"2022 Dollars"}/>
+        <MicrotransitOpexpByMode chartData={opexpByMode} axisLabel={"2024 Dollars"}/>
         <br/>
         <h2>Capital Expense By Mode</h2>
-        <MicrotransitOpexpByMode chartData={capexpByMode} axisLabel={"2022 Dollars"}/>
+        <MicrotransitOpexpByMode chartData={capexpByMode} axisLabel={"2024 Dollars"}/>
         <br/>
         <h2>Operating Expense By Service</h2>
-        <OpexpByService chartData={opexpByService} axisLabel={"2022 Dollars"}/>
+        <OpexpByService chartData={opexpByService} axisLabel={"2024 Dollars"}/>
         <br/>
     </div>
   );
