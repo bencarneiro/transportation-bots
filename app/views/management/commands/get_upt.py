@@ -7,10 +7,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         years = []
-        storage_options = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"} 
+        
         for x in range(2015,2025):
             years += [str(x)]
-        upt = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-10/2024%20TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode.xlsx', storage_options=storage_options, sheet_name="UPT", engine="openpyxl")
+        upt = pd.read_excel('/root/opexp_2024.xlsx', sheet_name="UPT", engine="openpyxl")
         upt[years] = upt[years].fillna(0)
         upt[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = upt[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in upt.index: 
