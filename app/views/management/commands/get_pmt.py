@@ -14,19 +14,22 @@ class Command(BaseCommand):
         pmt[years] = pmt[years].fillna(0)
         pmt[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = pmt[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in pmt.index: 
-            transit_agencies = TransitAgency.objects.filter(ntd_id=pmt['NTD ID'][x], legacy_ntd_id=pmt['Legacy NTD ID'][x])
+            transit_agencies = TransitAgency.objects.filter(ntd_id=pmt['NTD ID'][x])
             if len(transit_agencies) < 1:
+                try: 
+                    census = int(pmt['Census Year'][x])
+                except:
+                    census = None
                 transit_agency = TransitAgency(
                     last_report_year=pmt['Last Report Year'][x],
                     ntd_id = pmt['NTD ID'][x],
-                    legacy_ntd_id = pmt['Legacy NTD ID'][x],
                     agency_name = pmt['Agency Name'][x],
                     agency_status = pmt['Agency Status'][x],
                     reporter_type = pmt['Reporter Type'][x],
                     reporting_module = pmt['Reporting Module'][x],
                     city = pmt['City'][x],
                     state = pmt['State'][x],
-                    census_year = pmt['Census Year'][x],
+                    census_year = census,
                     uza_name = pmt['Primary UZA Name'][x],
                     uza = pmt['UACE Code'][x],
                     uza_area_sqm = pmt['UZA Area SQ Miles'][x],
