@@ -93,7 +93,7 @@ pmt_per_vrh_by_service,\
 pmt_per_vrm_by_service,\
 get_uzas,\
 get_states,\
-get_agencies, HomePage, CapMetroPage, BlogPage, CityMapperPage, BikeCrashMap, PedestrianCrashMap, StravaHeatmap, MicromobilityCrashMap, MotorcycleCrashMap, OtherCrashMap,\
+get_agencies, HomePage, CapMetroPage, BlogPage, CityMapperPage, StravaHeatmap,\
 commuter_rail_upt, commuter_rail_pmt, total_red_line_spending, get_closest_bus_stops,\
 route, monthly_ridership_by_route, monthly_revenue_hours_by_route, monthly_revenue_miles_by_route, monthly_total_hours_by_route, monthly_total_miles_by_route, \
 monthly_ridership, monthly_revenue_hours, monthly_revenue_miles, monthly_total_hours, monthly_total_miles, austin_safety_crisis, austin_safety_crisis_data
@@ -199,13 +199,13 @@ urlpatterns = [
     path('', HomePage.as_view(), name="home"),
     path('blog/', BlogPage.as_view(), name="blog"),
     path('capmetro/', CapMetroPage.as_view(), name="capmetro"),
-    path('bike_crash_map/', BikeCrashMap.as_view(), name="bike_crash_map"),
-    path('pedestrian_crash_map/', PedestrianCrashMap.as_view(), name="pedestrian_crash_map"),
+    # path('bike_crash_map/', BikeCrashMap.as_view(), name="bike_crash_map"),
+    # path('pedestrian_crash_map/', PedestrianCrashMap.as_view(), name="pedestrian_crash_map"),
     path('citymapper/', CityMapperPage.as_view(), name="citymapper"),
     path("strava/", StravaHeatmap.as_view(), name="strava"),
-    path("micromobility_crash_map/", MicromobilityCrashMap.as_view(), name="micromobility_crash_map"),
-    path("motorcycle_crash_map/", MotorcycleCrashMap.as_view(), name="motorcycle_crash_map"),
-    path("other_crash_map/", OtherCrashMap.as_view(), name="other_crash_map"),
+    # path("micromobility_crash_map/", MicromobilityCrashMap.as_view(), name="micromobility_crash_map"),
+    # path("motorcycle_crash_map/", MotorcycleCrashMap.as_view(), name="motorcycle_crash_map"),
+    # path("other_crash_map/", OtherCrashMap.as_view(), name="other_crash_map"),
     path("commuter_rail_upt/", commuter_rail_upt, name="commuter_rail_upt"),
     path("commuter_rail_pmt/", commuter_rail_pmt, name="commuter_rail_pmt"),
     path("total_red_line_spending", total_red_line_spending, name="total_red_line_spending"),
