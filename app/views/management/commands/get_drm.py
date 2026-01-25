@@ -14,19 +14,22 @@ class Command(BaseCommand):
         drm[years] = drm[years].fillna(0)
         drm[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = drm[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in drm.index: 
-            transit_agencies = TransitAgency.objects.filter(ntd_id=drm['NTD ID'][x], legacy_ntd_id=drm['Legacy NTD ID'][x])
+            transit_agencies = TransitAgency.objects.filter(ntd_id=drm['NTD ID'][x])
             if len(transit_agencies) < 1:
+                try: 
+                    census = int(drm['Census Year'][x])
+                except:
+                    census = None
                 transit_agency = TransitAgency(
                     last_report_year=drm['Last Report Year'][x],
                     ntd_id = drm['NTD ID'][x],
-                    legacy_ntd_id = drm['Legacy NTD ID'][x],
                     agency_name = drm['Agency Name'][x],
                     agency_status = drm['Agency Status'][x],
                     reporter_type = drm['Reporter Type'][x],
                     reporting_module = drm['Reporting Module'][x],
                     city = drm['City'][x],
                     state = drm['State'][x],
-                    census_year = drm['Census Year'][x],
+                    census_year = census,
                     uza_name = drm['Primary UZA Name'][x],
                     uza = drm['UACE Code'][x],
                     uza_area_sqm = drm['UZA Area SQ Miles'][x],

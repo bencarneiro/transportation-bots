@@ -46,6 +46,3 @@ python3 manage.py get_monthly_vrm
 echo "done with monthly vrm"
 python3 manage.py get_monthly_voms
 echo "done with monthly voms"
-
-python3 manage.py rewrite_transit_agency
-echo "done reqriting transit agency to shapefiles"
