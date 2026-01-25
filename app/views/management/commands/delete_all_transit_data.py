@@ -31,5 +31,5 @@ class Command(BaseCommand):
         Fares.objects.filter(year__gte=2015).delete()
         print("Fares done")
 
-        Mode.objects.all().delete()
-        Service.objects.all().delete()
+        # Mode.objects.all().delete()
+        # Service.objects.all().delete()

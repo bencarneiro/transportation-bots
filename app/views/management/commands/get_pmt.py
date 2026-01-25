@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 year_of_trips = PassengerMilesTraveled(
                     transit_agency=transit_agency,
                     mode_id = pmt['Mode'][x],
-                    service_id = pmt['Service'][x],
+                    service_id = pmt['Type of Service'][x],
                     year = int(year),
                     pmt = pmt[year][x]
                 )

@@ -16,6 +16,10 @@ class Command(BaseCommand):
         for x in expense_rs.index: 
             transit_agencies = TransitAgency.objects.filter(ntd_id=expense_rs['NTD ID'][x], legacy_ntd_id=expense_rs['Legacy NTD ID'][x])
             if len(transit_agencies) < 1:
+                try: 
+                    census = int(expense_rs['Census Year'][x])
+                except:
+                    census = None
                 transit_agency = TransitAgency(
                     last_report_year=expense_rs['Last Report Year'][x],
                     ntd_id = expense_rs['NTD ID'][x],
@@ -26,7 +30,7 @@ class Command(BaseCommand):
                     reporting_module = expense_rs['Reporting Module'][x],
                     city = expense_rs['City'][x],
                     state = expense_rs['State'][x],
-                    census_year = expense_rs['Census Year'][x],
+                    census_year = census,
                     uza_name = expense_rs['UZA Name'][x],
                     uza = expense_rs['UACE Code'][x],
                     uza_area_sqm = expense_rs['UZA Area SQ Miles'][x],

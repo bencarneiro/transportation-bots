@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 year_of_trips = DirectionalRouteMiles(
                     transit_agency=transit_agency,
                     mode_id = drm['Mode'][x],
-                    service_id = drm['Service'][x],
+                    service_id = drm['Type of Service'][x],
                     year = int(year),
                     drm = drm[year][x]
                 )

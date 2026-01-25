@@ -14,19 +14,22 @@ class Command(BaseCommand):
         upt[years] = upt[years].fillna(0)
         upt[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = upt[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in upt.index: 
-            transit_agencies = TransitAgency.objects.filter(ntd_id=upt['NTD ID'][x], legacy_ntd_id=upt['Legacy NTD ID'][x])
+            transit_agencies = TransitAgency.objects.filter(ntd_id=upt['NTD ID'][x])
             if len(transit_agencies) < 1:
+                try: 
+                    census = int(upt['Census Year'][x])
+                except:
+                    census = None
                 transit_agency = TransitAgency(
                     last_report_year=upt['Last Report Year'][x],
                     ntd_id = upt['NTD ID'][x],
-                    legacy_ntd_id = upt['Legacy NTD ID'][x],
                     agency_name = upt['Agency Name'][x],
                     agency_status = upt['Agency Status'][x],
                     reporter_type = upt['Reporter Type'][x],
                     reporting_module = upt['Reporting Module'][x],
                     city = upt['City'][x],
                     state = upt['State'][x],
-                    census_year = upt['Census Year'][x],
+                    census_year = census,
                     uza_name = upt['Primary UZA Name'][x],
                     uza = upt['UACE Code'][x],
                     uza_area_sqm = upt['UZA Area SQ Miles'][x],
@@ -43,7 +46,7 @@ class Command(BaseCommand):
                 year_of_trips = UnlinkedPassengerTrips(
                     transit_agency=transit_agency,
                     mode_id = upt['Mode'][x],
-                    service_id = upt['Service'][x],
+                    service_id = upt['Type of Service'][x],
                     year = int(year),
                     upt = upt[year][x]
                 )

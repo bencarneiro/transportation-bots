@@ -14,19 +14,22 @@ class Command(BaseCommand):
         expense_vo[years] = expense_vo[years].fillna(0)
         expense_vo[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = expense_vo[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in expense_vo.index: 
-            transit_agencies = TransitAgency.objects.filter(ntd_id=expense_vo['NTD ID'][x], legacy_ntd_id=expense_vo['Legacy NTD ID'][x])
+            transit_agencies = TransitAgency.objects.filter(ntd_id=expense_vo['NTD ID'][x])
             if len(transit_agencies) < 1:
+                try: 
+                    census = int(expense_vo['Census Year'][x])
+                except:
+                    census = None
                 transit_agency = TransitAgency(
                     last_report_year=expense_vo['Last Report Year'][x],
                     ntd_id = expense_vo['NTD ID'][x],
-                    legacy_ntd_id = expense_vo['Legacy NTD ID'][x],
                     agency_name = expense_vo['Agency Name'][x],
                     agency_status = expense_vo['Agency Status'][x],
                     reporter_type = expense_vo['Reporter Type'][x],
                     reporting_module = expense_vo['Reporting Module'][x],
                     city = expense_vo['City'][x],
                     state = expense_vo['State'][x],
-                    census_year = expense_vo['Census Year'][x],
+                    census_year = census,
                     uza_name = expense_vo['Primary UZA Name'][x],
                     uza = expense_vo['UACE Code'][x],
                     uza_area_sqm = expense_vo['UZA Area SQ Miles'][x],
@@ -43,7 +46,7 @@ class Command(BaseCommand):
                 new_transit_expense = TransitExpense(
                     transit_agency=transit_agency,
                     mode_id = expense_vo['Mode'][x],
-                    service_id = expense_vo['Service'][x],
+                    service_id = expense_vo['Type of Service'][x],
                     year_id = int(year),
                     expense_type_id = "VO",
                     expense = expense_vo[year][x]
