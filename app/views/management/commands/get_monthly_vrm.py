@@ -7,7 +7,7 @@ import datetime
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
-
+        storage_options = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"} 
         MonthlyVehicleRevenueMiles.objects.all().delete()
         dates = []
         for year in range(2002,2025):
@@ -18,7 +18,7 @@ class Command(BaseCommand):
                 if year == 2024 and month == 9:
                     break
                 dates += [date]
-        vrm = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2026-01/November%20Complete%20Monthly%20Ridership%20%28with%20adjustments%20and%20estimates%29_260102.xlsx', sheet_name="VRM", engine="openpyxl")
+        vrm = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2026-01/November%20Complete%20Monthly%20Ridership%20%28with%20adjustments%20and%20estimates%29_260102.xlsx', storage_options=storage_options, sheet_name="VRM", engine="openpyxl")
         vrm[dates] = vrm[dates].fillna(0)
         vrm[['UACE CD', 'NTD ID']] = vrm[['UACE CD', 'NTD ID']].fillna(0)
 
