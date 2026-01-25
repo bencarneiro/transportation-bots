@@ -7,25 +7,29 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         years = []
-        for x in range(1991,2024):
+        storage_options = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"} 
+        for x in range(2015,2025):
             years += [str(x)]
-        expense_nvm = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2024-10/2023%20TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode.xlsx', sheet_name="OpExp NVM", engine="openpyxl")
+        expense_nvm = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-10/2024%20TS2.1%20Service%20Data%20and%20Operating%20Expenses%20Time%20Series%20by%20Mode.xlsx', storage_options=storage_options, sheet_name="OpExp NVM", engine="openpyxl")
         expense_nvm[years] = expense_nvm[years].fillna(0)
         expense_nvm[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = expense_nvm[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in expense_nvm.index: 
-            transit_agencies = TransitAgency.objects.filter(ntd_id=expense_nvm['NTD ID'][x], legacy_ntd_id=expense_nvm['Legacy NTD ID'][x])
+            transit_agencies = TransitAgency.objects.filter(ntd_id=expense_nvm['NTD ID'][x])
             if len(transit_agencies) < 1:
+                try: 
+                    census = int(expense_nvm['Census Year'][x])
+                except:
+                    census = None
                 transit_agency = TransitAgency(
                     last_report_year=expense_nvm['Last Report Year'][x],
                     ntd_id = expense_nvm['NTD ID'][x],
-                    legacy_ntd_id = expense_nvm['Legacy NTD ID'][x],
                     agency_name = expense_nvm['Agency Name'][x],
                     agency_status = expense_nvm['Agency Status'][x],
                     reporter_type = expense_nvm['Reporter Type'][x],
                     reporting_module = expense_nvm['Reporting Module'][x],
                     city = expense_nvm['City'][x],
                     state = expense_nvm['State'][x],
-                    census_year = expense_nvm['Census Year'][x],
+                    census_year = census,
                     uza_name = expense_nvm['Primary UZA Name'][x],
                     uza = expense_nvm['UACE Code'][x],
                     uza_area_sqm = expense_nvm['UZA Area SQ Miles'][x],
@@ -42,7 +46,7 @@ class Command(BaseCommand):
                 new_transit_expense = TransitExpense(
                     transit_agency=transit_agency,
                     mode_id = expense_nvm['Mode'][x],
-                    service_id = expense_nvm['Service'][x],
+                    service_id = expense_nvm['Type of Service'][x],
                     year_id = int(year),
                     expense_type_id = "NVM",
                     expense = expense_nvm[year][x]

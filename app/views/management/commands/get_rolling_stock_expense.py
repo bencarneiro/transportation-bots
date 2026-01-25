@@ -7,14 +7,19 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         years = []
-        for x in range(1992,2024):
+        storage_options = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"} 
+        for x in range(1992,2025):
             years += [str(x)]
-        expense_rs = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2024-10/2023%20TS3.1%20Capital%20Expenditures%20Time%20Series.xlsx', sheet_name="Rolling Stock", engine="openpyxl")
+        expense_rs = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-10/2024%20TS3.1%20Capital%20Expenditures%20Time%20Series.xlsx', storage_options=storage_options, sheet_name="Rolling Stock", engine="openpyxl")
         expense_rs[years] = expense_rs[years].fillna(0)
         expense_rs[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = expense_rs[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in expense_rs.index: 
             transit_agencies = TransitAgency.objects.filter(ntd_id=expense_rs['NTD ID'][x], legacy_ntd_id=expense_rs['Legacy NTD ID'][x])
             if len(transit_agencies) < 1:
+                try: 
+                    census = int(expense_rs['Census Year'][x])
+                except:
+                    census = None
                 transit_agency = TransitAgency(
                     last_report_year=expense_rs['Last Report Year'][x],
                     ntd_id = expense_rs['NTD ID'][x],
@@ -25,7 +30,7 @@ class Command(BaseCommand):
                     reporting_module = expense_rs['Reporting Module'][x],
                     city = expense_rs['City'][x],
                     state = expense_rs['State'][x],
-                    census_year = expense_rs['Census Year'][x],
+                    census_year = census,
                     uza_name = expense_rs['UZA Name'][x],
                     uza = expense_rs['UACE Code'][x],
                     uza_area_sqm = expense_rs['UZA Area SQ Miles'][x],
