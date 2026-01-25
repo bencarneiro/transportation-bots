@@ -18,7 +18,7 @@ class Command(BaseCommand):
                 if year == 2024 and month == 9:
                     break
                 dates += [date]
-        vrm = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2024-11/September%202024%20Complete%20Monthly%20Ridership%20%28with%20adjustments%20and%20estimates%29_241101.xlsx', sheet_name="VRM", engine="openpyxl")
+        vrm = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2026-01/November%20Complete%20Monthly%20Ridership%20%28with%20adjustments%20and%20estimates%29_260102.xlsx', sheet_name="VRM", engine="openpyxl")
         vrm[dates] = vrm[dates].fillna(0)
         vrm[['UACE CD', 'NTD ID']] = vrm[['UACE CD', 'NTD ID']].fillna(0)
 

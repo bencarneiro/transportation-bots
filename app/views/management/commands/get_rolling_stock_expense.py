@@ -9,7 +9,7 @@ class Command(BaseCommand):
         years = []
         for x in range(1992,2024):
             years += [str(x)]
-        expense_rs = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2024-10/2023%20TS3.1%20Capital%20Expenditures%20Time%20Series.xlsx', sheet_name="Rolling Stock", engine="openpyxl")
+        expense_rs = pd.read_excel('https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-10/2024%20TS3.1%20Capital%20Expenditures%20Time%20Series.xlsx', sheet_name="Rolling Stock", engine="openpyxl")
         expense_rs[years] = expense_rs[years].fillna(0)
         expense_rs[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']] = expense_rs[['UACE Code', 'UZA Area SQ Miles', 'UZA Population', 'NTD ID']].fillna(0)
         for x in expense_rs.index: 
